@@ -1,5 +1,11 @@
 var feng3d;
 (function (feng3d) {
+    feng3d.DisplayObject = laya.display.Sprite;
+    feng3d.Sprite = laya.display.Sprite;
+    feng3d.TextField = laya.display.Text;
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 访问类型
      * @author feng 2016-3-28
@@ -63,7 +69,7 @@ var feng3d;
             if (typeof obj == "string") {
                 return obj;
             }
-            var className = getQualifiedClassName(obj);
+            var className = feng3d.getClassName(obj);
             if (className == "null" || className == "void") {
                 return "";
             }
@@ -89,7 +95,7 @@ var feng3d;
          * @return
          */
         static getInstance(obj) {
-            var cls = getClass(obj);
+            var cls = this.getClass(obj);
             try {
                 var instance = new cls();
             }
@@ -97,247 +103,6 @@ var feng3d;
                 return null;
             }
             return instance;
-        }
-        /**
-         * 构造实例
-         * @param cla						类定义
-         * @param params					构造参数
-         * @return							构造出的实例
-         */
-        static structureInstance(cla, params) {
-            if (params == null) {
-                return new cla();
-            }
-            var paramNum = params.length;
-            switch (paramNum) {
-                case 0:
-                    return new cla();
-                case 1:
-                    return new cla(params[0]);
-                case 2:
-                    return new cla(params[0], params[1]);
-                case 3:
-                    return new cla(params[0], params[1], params[2]);
-                case 4:
-                    return new cla(params[0], params[1], params[2], params[3]);
-                case 5:
-                    return new cla(params[0], params[1], params[2], params[3], params[4]);
-                case 6:
-                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5]);
-                case 7:
-                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
-                case 8:
-                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]);
-                case 9:
-                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8]);
-                case 10:
-                    return new cla(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9]);
-                default:
-                    throw new Error("不支持" + paramNum + "个参数的类构造");
-            }
-        }
-        /**
-         * 构造实例
-         * @param space						运行空间
-         * @param funcName					函数名称
-         * @param params					函数参数
-         * @return							函数返回值
-         */
-        static call(space, funcName, params) {
-            var func = space[funcName];
-            var result = func.apply(null, params);
-            return result;
-        }
-        /**
-         * 编码参数
-         * @param params		参数数组
-         */
-        static encodeParams(params) {
-            for (var i = 0; i < params.length; i++) {
-                var item = params[i];
-                var paramType = getQualifiedClassName(item);
-                params[i] = { paramType: paramType, paramValue: item };
-            }
-        }
-        /**
-         * 解码参数
-         * @param params		参数数组
-         */
-        static decodeParams(params) {
-            for (var i = 0; i < params.length; i++) {
-                var item = params[i];
-                if (item.hasOwnProperty("paramType") && item.hasOwnProperty("paramValue")) {
-                    var obj;
-                    if (item.paramType == "flash.geom::Matrix3D") {
-                        obj = new Matrix3D(Vector.(item.paramValue.rawData));
-                    }
-                    else {
-                        obj = ClassUtils.getInstance(item.paramType);
-                        if (isBaseType(item.paramValue)) {
-                            obj = item.paramValue;
-                        }
-                        else {
-                            deepCopy(obj, item.paramValue);
-                        }
-                    }
-                    params[i] = obj;
-                }
-            }
-        }
-        /**
-         * 拷贝数据（深度拷贝，不支持循环引用） （支持无参数构建的强类型/弱类型/Array/Vector，注意:不支持Dictionary/内部类）
-         * @param obj			需要赋值的对象
-         * @param value			拥有数据的对象
-         */
-        static deepCopy(obj, value) {
-            if (obj == null || value == null)
-                return;
-            if (isVector(obj)) {
-                copyVectorValue(obj, value);
-                return;
-            }
-            getCanCopyAttributeList(obj, value);
-        }
-        /**
-         * 获取可赋值的属性列表
-         * @param obj
-         * @param value
-         * @return
-         */
-        static getCanCopyAttributeList(obj, value) {
-            var objAttributeList = this.getAttributeInfoList(obj);
-            var valueAttributeList = this.getAttributeInfoList(value);
-            var isDynamic = describeTypeInstance(this.getClass(obj)).isDynamic;
-            var temp;
-            var dic = {};
-            var i = 0;
-            for (i = 0; i < objAttributeList.length; i++) {
-                dic[objAttributeList[i].name] = objAttributeList[i];
-            }
-            for (i = 0; i < valueAttributeList.length; i++) {
-                var valueAttributeInfo = valueAttributeList[i];
-                var attributeName = valueAttributeInfo.name;
-                var objAttributeInfo = dic[attributeName];
-                if (valueAttributeInfo.access == feng3d.AccessType.readwrite || valueAttributeInfo.access == feng3d.AccessType.readonly) {
-                    if (objAttributeInfo != null && objAttributeInfo.access == feng3d.AccessType.writeonly) {
-                        temp = this.getInstance(objAttributeInfo.type);
-                        this.deepCopy(temp, value[attributeName]);
-                        obj[attributeName] = temp;
-                    }
-                    else if (isDynamic || (objAttributeInfo != null && objAttributeInfo.access == feng3d.AccessType.readwrite)) {
-                        if (this.isBaseType(value[attributeName])) {
-                            obj[attributeName] = value[attributeName];
-                        }
-                        else {
-                            temp = obj[attributeName];
-                            if (obj[attributeName] == null) {
-                                if (objAttributeInfo != null) {
-                                    temp = this.getInstance(objAttributeInfo.type);
-                                }
-                                else {
-                                    temp = this.getInstance(valueAttributeInfo.type);
-                                }
-                            }
-                            this.deepCopy(temp, value[attributeName]);
-                            obj[attributeName] = temp;
-                        }
-                    }
-                }
-            }
-        }
-        /**
-         * 拷贝数据到向量数组中
-         * @param obj				需要赋值的对象
-         * @param value				拥有数据的对象
-         * @param attributeName		属性名称
-         */
-        static copyVectorValue(obj, value) {
-            obj.length = 0;
-            var lenght = obj.length = value.length;
-            var objClassName = ClassUtils.getClassName(obj);
-            var itemClassName = objClassName.replace("__AS3__.vec::Vector.<", "").replace(">", "");
-            for (var i = 0; i < value.length; i++) {
-                if (value[i] != null) {
-                    if (this.isBaseType(value[i])) {
-                        obj[i] = value[i];
-                    }
-                    else {
-                        obj[i] = ClassUtils.getInstance(itemClassName);
-                        this.deepCopy(obj[i], value[i]);
-                    }
-                }
-            }
-        }
-        /**
-         * 获取对象（类）属性类型
-         * @param obj					对象（类）
-         * @param attributeName			属性名称
-         * @return 						属性类型
-         */
-        static getAttributeType(obj, attributeName) {
-            var objectAttributeInfos = this.getAttributeInfoList(obj);
-            for (var i = 0; i < objectAttributeInfos.length; i++) {
-                if (objectAttributeInfos[i].name == attributeName) {
-                    return objectAttributeInfos[i].type;
-                }
-            }
-            return null;
-        }
-        /**
-         * 判断对象是否为基础类型
-         * @param obj			对象
-         * @return				true为基础类型，false为复杂类型
-         */
-        static isBaseType(obj) {
-            if (obj)
-                is;
-            Function;
-            return true;
-            if (obj)
-                is;
-            Class;
-            return true;
-            var type = getQualifiedClassName(obj);
-            var index = this.BASETYPES.indexOf(type);
-            return index != -1;
-        }
-        /**
-         * 是否为动态对象
-         * @param obj
-         * @return
-         */
-        static isDynamic(obj) {
-            var cls = ClassUtils.getClass(obj);
-            var describeInfo = describeTypeInstance(cls);
-            return describeInfo.isDynamic;
-        }
-        /**
-         * 是否为向量数组
-         * @param obj			对象
-         * @return
-         */
-        static isVector(obj) {
-            var objClassName = ClassUtils.getClassName(obj);
-            return objClassName.indexOf("__AS3__.vec::Vector.<") != -1;
-        }
-        /**
-         * 获取对象默认名称
-         * @param obj				对象
-         * @return					对象默认名称
-         */
-        static getDefaultName(obj) {
-            return getQualifiedClassName(obj).split("::").pop();
-        }
-        /**
-         * 判断两个对象的完全限定类名是否相同
-         * @param obj1			对象1
-         * @param obj2			对象2
-         * @return
-         */
-        static isSameClass(obj1, obj2) {
-            var className1 = getQualifiedClassName(obj1);
-            var className2 = getQualifiedClassName(obj2);
-            return className1 == className2;
         }
         /**
          * 获取对象（类）属性列表
@@ -373,7 +138,7 @@ var feng3d;
                 objectAttributeInfos.push(new feng3d.AttributeInfo(accessor.name, accessor.type, accessor.access));
             }
             if (!(object))
-                is;
+                feng3d.is;
             Class;
             {
                 for (var name in object) {
@@ -389,7 +154,7 @@ var feng3d;
          * @return
          */
         static getAttributeInfo(object, attribute) {
-            var objectAttributeInfos = getAttributeInfoList(object);
+            var objectAttributeInfos = this.getAttributeInfoList(object);
             for (var i = 0; i < objectAttributeInfos.length; i++) {
                 if (objectAttributeInfos[i].name == attribute)
                     return objectAttributeInfos[i];
@@ -397,10 +162,6 @@ var feng3d;
             return null;
         }
     }
-    /**
-     * 基础类型列表
-     */
-    ClassUtils.BASETYPES = ["int", "Boolean", "Number", "uint", "String", "null"];
     feng3d.ClassUtils = ClassUtils;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -632,7 +393,7 @@ var feng3d;
         initDefault(object) {
             this.attributeDefinitionVec.length = 0;
             this.blockDefinitionVec.length = 0;
-            var attributes = feng3d.ClassUtils.getAttributeList(object);
+            var attributes = Object.keys(object);
             attributes = attributes.sort(feng3d.SortCompare.stringCompare);
             for (var i = 0; i < attributes.length; i++) {
                 this.getAttributeDefinition(attributes[i]);
@@ -649,7 +410,7 @@ var feng3d;
      * 对象界面事件
      * @author feng 2016-4-19
      */
-    class ObjectViewEvent extends Event {
+    class ObjectViewEvent extends feng3d.Event {
         /**
          * 构建
          */
@@ -853,7 +614,7 @@ var feng3d;
                 return this.objectBlockInfos;
             var dic = {};
             var objectBlockInfo;
-            var objectAttributeInfos = getObjectAttributeInfos();
+            var objectAttributeInfos = this.getObjectAttributeInfos();
             //收集块信息
             var i = 0;
             var tempVec = [];
@@ -918,7 +679,7 @@ var feng3d;
          */
         getView() {
             this.initComponent();
-            var cls = feng3d.ClassUtils.getClass(component);
+            var cls = feng3d.ClassUtils.getClass(this.component);
             var view = new cls(this);
             return view;
         }
@@ -931,7 +692,7 @@ var feng3d;
      * 默认基础对象界面
      * @author feng 2016-3-11
      */
-    class DefaultBaseObjectView extends TextField {
+    class DefaultBaseObjectView extends feng3d.TextField {
         constructor(objectViewInfo) {
             super();
             this._space = objectViewInfo.owner;
@@ -965,31 +726,25 @@ var feng3d;
      * 默认对象属性界面
      * @author feng 2016-3-10
      */
-    class DefaultObjectAttributeView extends Sprite {
+    class DefaultObjectAttributeView extends feng3d.Sprite {
         constructor(attributeViewInfo) {
             super();
             this._space = attributeViewInfo.owner;
             this._attributeName = attributeViewInfo.name;
             this._attributeType = attributeViewInfo.type;
-            this.label = new TextField();
+            this.label = new feng3d.TextField();
             //			label.height = 50;
             this.label.width = 100;
             this.label.height = 20;
             this.addChild(this.label);
-            this.text = new TextField();
-            this.text.border = true;
+            this.text = new feng3d.TextField();
+            this.text.bold = true;
             this.text.x = 100;
             this.text.height = 20;
             this.text.width = 100;
-            this.text.type = TextFieldType.INPUT;
-            this.text.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);
-            this.text.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
             this.addChild(this.text);
-            this.graphics.beginFill(0x999999);
-            this.graphics.drawRect(0, 0, 200, 24);
-            if (!attributeViewInfo.isEditable()) {
-                this.text.type = TextFieldType.DYNAMIC;
-            }
+            this.graphics.drawRect(0, 0, 200, 24, 0x999999);
+            this.text.mouseEnabled = attributeViewInfo.isEditable();
             this.updateView();
         }
         get space() {
@@ -1013,14 +768,14 @@ var feng3d;
                 objectViewEvent.space = this._space;
                 objectViewEvent.attributeName = this._attributeName;
                 objectViewEvent.attributeValue = this.attributeValue;
-                dispatchEvent(objectViewEvent);
+                this.dispatchEvent(objectViewEvent);
             }
             this.updateView();
         }
         onFocusOut(event) {
             if (this.textTemp != this.text.text) {
                 var cls = getDefinitionByName(this._attributeType);
-                this.attributeValue = cls(text.text);
+                this.attributeValue = cls(this.text.text);
                 if (cls == Boolean && (this.text.text == "0" || this.text.text == "false")) {
                     this.attributeValue = false;
                 }
@@ -1046,7 +801,7 @@ var feng3d;
      * 默认对象属性块界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectBlockView extends Sprite {
+    class DefaultObjectBlockView extends feng3d.Sprite {
         /**
          * @inheritDoc
          */
@@ -1060,11 +815,11 @@ var feng3d;
         initView() {
             var h = 0;
             if (this._blockName != null && this._blockName.length > 0) {
-                var blockTitle = new TextField();
+                var blockTitle = new feng3d.TextField();
                 //			label.height = 50;
                 blockTitle.width = 100;
                 blockTitle.height = 20;
-                blockTitle.textColor = 0xff0000;
+                blockTitle.color = "#ff0000";
                 blockTitle.text = this._blockName;
                 this.addChild(blockTitle);
                 h = blockTitle.x + blockTitle.height + 2;
@@ -1081,14 +836,7 @@ var feng3d;
                 this.attributeViews.push(displayObject);
             }
             this.graphics.clear();
-            this.graphics.beginFill(0x666666);
-            this.graphics.lineStyle(null, 0x00ff00);
-            this.graphics.moveTo(0, 0);
-            this.graphics.lineTo(200, 0);
-            this.graphics.lineTo(200, h);
-            this.graphics.lineTo(0, h);
-            this.graphics.lineTo(0, 0);
-            this.graphics.endFill();
+            this.graphics.drawRect(0, 0, 200, h, 0x666666, 0x00ff00);
             this.isInitView = true;
         }
         get space() {
@@ -1135,7 +883,7 @@ var feng3d;
      * 默认使用块的对象界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectView extends Sprite {
+    class DefaultObjectView extends feng3d.Sprite {
         /**
          * 对象界面数据
          */
@@ -1154,9 +902,7 @@ var feng3d;
                 this.blockViews.push(displayObject);
             }
             this.graphics.clear();
-            this.graphics.beginFill(0x666666);
-            this.graphics.drawRect(0, 0, 200, h);
-            this.graphics.endFill();
+            this.graphics.drawRect(0, 0, 200, h, 0x666666);
             this.$updateView();
         }
         get space() {

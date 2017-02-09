@@ -42,14 +42,14 @@ module feng3d {
 		/**
 		 * 是否可编辑
 		 */
-		public isEditable(): Boolean {
+		public isEditable(): boolean {
 			return this.access != AccessType.readonly;
 		}
 
 		/**
 		 * 是否可读
 		 */
-		public canRead(): Boolean {
+		public canRead(): boolean {
 			return this.access == AccessType.readonly || this.access == AccessType.readwrite;
 		}
 
@@ -61,7 +61,7 @@ module feng3d {
 				return;
 
 			var defaultViewClass: AttributeTypeDefinition = ObjectViewConfig.instance.getAttributeDefaultViewClass(this.type, false);
-			var tempComponent: String = defaultViewClass ? defaultViewClass.component : "";
+			var tempComponent = defaultViewClass ? defaultViewClass.component : "";
 			if (tempComponent != null && tempComponent != "") {
 				this.component = defaultViewClass.component;
 				this.componentParam = defaultViewClass.componentParam;
@@ -79,7 +79,7 @@ module feng3d {
 		public getView(): DisplayObject {
 			this.initComponent();
 
-			var cls: Class = ClassUtils.getClass(this.component);
+			var cls = ClassUtils.getClass(this.component);
 			var view: DisplayObject = new cls(this);
 			return view;
 		}

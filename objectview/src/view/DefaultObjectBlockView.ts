@@ -24,13 +24,13 @@ module feng3d {
 		}
 
 		private initView(): void {
-			var h: Number = 0;
+			var h = 0;
 			if (this._blockName != null && this._blockName.length > 0) {
 				var blockTitle: TextField = new TextField();
 				//			label.height = 50;
 				blockTitle.width = 100;
 				blockTitle.height = 20;
-				blockTitle.textColor = 0xff0000;
+				blockTitle.color = "#ff0000";
 				blockTitle.text = this._blockName;
 				this.addChild(blockTitle);
 				h = blockTitle.x + blockTitle.height + 2;
@@ -45,17 +45,10 @@ module feng3d {
 				displayObject.y = h;
 				this.addChild(displayObject);
 				h += displayObject.height + 2;
-				this.attributeViews.push(displayObject as IObjectAttributeView);
+				this.attributeViews.push(<any>displayObject);
 			}
 			this.graphics.clear();
-			this.graphics.beginFill(0x666666);
-			this.graphics.lineStyle(null, 0x00ff00);
-			this.graphics.moveTo(0, 0);
-			this.graphics.lineTo(200, 0);
-			this.graphics.lineTo(200, h);
-			this.graphics.lineTo(0, h);
-			this.graphics.lineTo(0, 0);
-			this.graphics.endFill();
+			this.graphics.drawRect(0, 0, 200, h, 0x666666, 0x00ff00);
 
 			this.isInitView = true;
 		}
@@ -73,7 +66,7 @@ module feng3d {
 			this.$updateView();
 		}
 
-		public get blockName(): String {
+		public get blockName(): string {
 			return this._blockName;
 		}
 

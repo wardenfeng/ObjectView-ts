@@ -61,7 +61,7 @@ module feng3d {
 		public getView(): DisplayObject {
 			this.initComponent();
 
-			var cls: Class = ClassUtils.getClass(this.component);
+			var cls = ClassUtils.getClass(this.component);
 			var view: DisplayObject = new cls(this);
 			return view;
 		}

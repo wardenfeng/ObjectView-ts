@@ -17,19 +17,17 @@ module feng3d {
 			this._space = objectViewInfo.owner;
 
 			this.blockViews = [];
-			var h: Number = 0;
+			var h = 0;
 			var objectBlockInfos: BlockViewInfo[] = this._objectViewInfo.getObjectBlockInfos();
 			for (var i = 0; i < objectBlockInfos.length; i++) {
 				var displayObject: DisplayObject = objectBlockInfos[i].getView();
 				displayObject.y = h;
 				this.addChild(displayObject);
 				h += displayObject.height + 2;
-				this.blockViews.push(displayObject as IObjectBlockView);
+				this.blockViews.push(<any>displayObject);
 			}
 			this.graphics.clear();
-			this.graphics.beginFill(0x666666);
-			this.graphics.drawRect(0, 0, 200, h);
-			this.graphics.endFill();
+			this.graphics.drawRect(0, 0, 200, h, 0x666666);
 
 			this.$updateView();
 		}
@@ -65,7 +63,7 @@ module feng3d {
 
 		}
 
-		public getblockView(blockName: String): IObjectBlockView {
+		public getblockView(blockName: string): IObjectBlockView {
 			for (var i = 0; i < this.blockViews.length; i++) {
 				if (this.blockViews[i].blockName == blockName) {
 					return this.blockViews[i];
@@ -74,7 +72,7 @@ module feng3d {
 			return null;
 		}
 
-		public getAttributeView(attributeName: String): IObjectAttributeView {
+		public getAttributeView(attributeName: string): IObjectAttributeView {
 			for (var i = 0; i < this.blockViews.length; i++) {
 				var attributeView: IObjectAttributeView = this.blockViews[i].getAttributeView(attributeName);
 				if (attributeView != null) {

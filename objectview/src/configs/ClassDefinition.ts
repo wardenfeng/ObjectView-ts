@@ -102,7 +102,7 @@ module feng3d {
 			this.attributeDefinitionVec.length = 0;
 			this.blockDefinitionVec.length = 0;
 
-			var attributes: string[] = ClassUtils.getAttributeList(object);
+			var attributes: string[] = Object.keys(object);
 			attributes = attributes.sort(SortCompare.stringCompare);
 			for (var i = 0; i < attributes.length; i++) {
 				this.getAttributeDefinition(attributes[i]);

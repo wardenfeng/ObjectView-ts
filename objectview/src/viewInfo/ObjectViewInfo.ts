@@ -99,7 +99,7 @@ module feng3d {
 			var dic = {};
 			var objectBlockInfo: BlockViewInfo
 
-			var objectAttributeInfos: AttributeViewInfo[] = getObjectAttributeInfos();
+			var objectAttributeInfos: AttributeViewInfo[] = this.getObjectAttributeInfos();
 
 			//收集块信息
 			var i: number = 0;
@@ -172,7 +172,7 @@ module feng3d {
 		public getView(): DisplayObject {
 			this.initComponent();
 
-			var cls: Class = ClassUtils.getClass(component);
+			var cls = ClassUtils.getClass(this.component);
 			var view: DisplayObject = new cls(this)
 			return view;
 		}

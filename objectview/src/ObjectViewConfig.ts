@@ -48,7 +48,7 @@ module feng3d {
 		 * @return
 		 */
 		public getClassConfig(object: Object, autoCreate: Boolean = true): ClassDefinition {
-			var className: String = ClassUtils.getClassName(object);
+			var className = ClassUtils.getClassName(object);
 
 			var classConfig: ClassDefinition;
 			this.classConfigVec.forEach(element => {
@@ -73,7 +73,7 @@ module feng3d {
 		 * @return
 		 */
 		public getAttributeDefaultViewClass(attributeClass: Object, autoCreate: Boolean = true): AttributeTypeDefinition {
-			var type: String = ClassUtils.getClassName(attributeClass);
+			var type = ClassUtils.getClassName(attributeClass);
 			var obj: AttributeTypeDefinition;
 			this.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {

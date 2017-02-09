@@ -25,20 +25,13 @@ module feng3d {
 			this.addChild(this.label);
 
 			this.text = new TextField();
-			this.text.border = true;
+			this.text.bold = true;
 			this.text.x = 100;
 			this.text.height = 20;
 			this.text.width = 100;
-			this.text.type = TextFieldType.INPUT;
-			this.text.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);
-			this.text.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			this.addChild(this.text);
-			this.graphics.beginFill(0x999999);
-			this.graphics.drawRect(0, 0, 200, 24);
-
-			if (!attributeViewInfo.isEditable()) {
-				this.text.type = TextFieldType.DYNAMIC;
-			}
+			this.graphics.drawRect(0, 0, 200, 24, 0x999999);
+			this.text.mouseEnabled = attributeViewInfo.isEditable();
 
 			this.updateView();
 		}
@@ -52,7 +45,7 @@ module feng3d {
 			this.updateView();
 		}
 
-		public get attributeName(): String {
+		public get attributeName(): string {
 			return this._attributeName;
 		}
 
@@ -69,8 +62,7 @@ module feng3d {
 				objectViewEvent.space = this._space;
 				objectViewEvent.attributeName = this._attributeName;
 				objectViewEvent.attributeValue = this.attributeValue;
-				dispatchEvent(objectViewEvent);
-
+				this.dispatchEvent(objectViewEvent);
 			}
 			this.updateView();
 		}
@@ -78,7 +70,7 @@ module feng3d {
 		protected onFocusOut(event: FocusEvent): void {
 			if (this.textTemp != this.text.text) {
 				var cls = getDefinitionByName(this._attributeType);
-				this.attributeValue = cls(text.text);
+				this.attributeValue = cls(this.text.text);
 				if (cls == Boolean && (this.text.text == "0" || this.text.text == "false")) {
 					this.attributeValue = false;
 				}
