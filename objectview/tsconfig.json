@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "declaration": true,
+        "outFile": "out/objectview.js"
+    },
+    "files": [ //注：如果有继承关系的，父类必须排在子类前面
+        //
+        // "typings/index.d.ts",
+        //
+        "src/configs/AttributeDefinition.ts"
+    ]
+}

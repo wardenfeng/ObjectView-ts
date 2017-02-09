@@ -173,41 +173,41 @@ module feng3d {
 		 * @return
 		 */
 		private static getCanCopyAttributeList(obj: Object, value: Object): void {
-			var objAttributeList: Vector.<AttributeInfo> = getAttributeInfoList(obj);
-			var valueAttributeList: Vector.<AttributeInfo> = getAttributeInfoList(value);
-			var isDynamic: Boolean = describeTypeInstance(getClass(obj)).isDynamic;
+			var objAttributeList: AttributeInfo[] = this.getAttributeInfoList(obj);
+			var valueAttributeList: AttributeInfo[] = this.getAttributeInfoList(value);
+			var isDynamic: Boolean = describeTypeInstance(this.getClass(obj)).isDynamic;
 
 			var temp: Object;
-			var dic: Dictionary = new Dictionary();
-			var i: int = 0;
+			var dic = {};
+			var i = 0;
 			for (i = 0; i < objAttributeList.length; i++) {
 				dic[objAttributeList[i].name] = objAttributeList[i];
 			}
 			for (i = 0; i < valueAttributeList.length; i++) {
-				var valueAttributeInfo: AttributeInfo = valueAttributeList[i];
-				var attributeName: String = valueAttributeInfo.name;
+				var valueAttributeInfo = valueAttributeList[i];
+				var attributeName: string = valueAttributeInfo.name;
 				var objAttributeInfo: AttributeInfo = dic[attributeName];
 				if (valueAttributeInfo.access == AccessType.readwrite || valueAttributeInfo.access == AccessType.readonly) {
 					if (objAttributeInfo != null && objAttributeInfo.access == AccessType.writeonly) {
-						temp = getInstance(objAttributeInfo.type);
-						deepCopy(temp, value[attributeName]);
+						temp = this.getInstance(objAttributeInfo.type);
+						this.deepCopy(temp, value[attributeName]);
 						obj[attributeName] = temp;
 					}
 					else if (isDynamic || (objAttributeInfo != null && objAttributeInfo.access == AccessType.readwrite)) {
-						if (isBaseType(value[attributeName])) {
+						if (this.isBaseType(value[attributeName])) {
 							obj[attributeName] = value[attributeName];
 						}
 						else {
 							temp = obj[attributeName];
 							if (obj[attributeName] == null) {
 								if (objAttributeInfo != null) {
-									temp = getInstance(objAttributeInfo.type);
+									temp = this.getInstance(objAttributeInfo.type);
 								}
 								else {
-									temp = getInstance(valueAttributeInfo.type);
+									temp = this.getInstance(valueAttributeInfo.type);
 								}
 							}
-							deepCopy(temp, value[attributeName]);
+							this.deepCopy(temp, value[attributeName]);
 							obj[attributeName] = temp;
 						}
 					}
@@ -221,20 +221,20 @@ module feng3d {
 		 * @param value				拥有数据的对象
 		 * @param attributeName		属性名称
 		 */
-		private static copyVectorValue(obj: Object, value: Object): void {
+		private static copyVectorValue(obj: [], value: []): void {
 			obj.length = 0;
-			var lenght: int = obj.length = value.length;
+			var lenght = obj.length = value.length;
 			var objClassName: String = ClassUtils.getClassName(obj);
 			var itemClassName: String = objClassName.replace("__AS3__.vec::Vector.<", "").replace(">", "");
 
-			for (var i: int = 0; i < value.length; i++) {
+			for (var i = 0; i < value.length; i++) {
 				if (value[i] != null) {
-					if (isBaseType(value[i])) {
+					if (this.isBaseType(value[i])) {
 						obj[i] = value[i];
 					}
 					else {
 						obj[i] = ClassUtils.getInstance(itemClassName);
-						deepCopy(obj[i], value[i]);
+						this.deepCopy(obj[i], value[i]);
 					}
 				}
 			}
@@ -247,8 +247,8 @@ module feng3d {
 		 * @return 						属性类型
 		 */
 		private static getAttributeType(obj: Object, attributeName: String): String {
-			var objectAttributeInfos: Vector.<AttributeInfo> = getAttributeInfoList(obj);
-			for (var i: int = 0; i < objectAttributeInfos.length; i++) {
+			var objectAttributeInfos: AttributeInfo = this.getAttributeInfoList(obj);
+			for (var i = 0; i < objectAttributeInfos.length; i++) {
 				if (objectAttributeInfos[i].name == attributeName) {
 					return objectAttributeInfos[i].type;
 				}
@@ -267,8 +267,8 @@ module feng3d {
 			if (obj is Class)
 			return true;
 
-			var type: String = getQualifiedClassName(obj);
-			var index: int = BASETYPES.indexOf(type);
+			var type: string = getQualifiedClassName(obj);
+			var index = this.BASETYPES.indexOf(type);
 			return index != -1;
 		}
 
@@ -309,7 +309,7 @@ module feng3d {
 		 * @param obj2			对象2
 		 * @return
 		 */
-		public static isSameClass(obj1:*, obj2:*): Boolean {
+		public static isSameClass(obj1, obj2): Boolean {
 			var className1: String = getQualifiedClassName(obj1);
 			var className2: String = getQualifiedClassName(obj2);
 			return className1 == className2;
@@ -320,10 +320,10 @@ module feng3d {
 		 * @param object		指定对象（类）
 		 * @return 				属性列表
 		 */
-		public static getAttributeList(object: Object): Vector.<String> {
-			var objectAttributeInfos: Vector.<AttributeInfo> = getAttributeInfoList(object);
-			var attributes: Vector.<String> = new Vector.<String>();
-			for (var i: int = 0; i < objectAttributeInfos.length; i++) {
+		public static getAttributeList(object: Object): string[] {
+			var objectAttributeInfos: AttributeInfo[] = this.getAttributeInfoList(object);
+			var attributes: string[] = [];
+			for (var i = 0; i < objectAttributeInfos.length; i++) {
 				attributes.push(objectAttributeInfos[i].name);
 			}
 			return attributes;
@@ -334,18 +334,18 @@ module feng3d {
 		 * @param object		指定对象（类）
 		 * @return 				属性信息列表
 		 */
-		public static getAttributeInfoList(object: Object): Vector.<AttributeInfo> {
-			var objectAttributeInfos: Vector.<AttributeInfo> = new Vector.<AttributeInfo>();
+		public static getAttributeInfoList(object: Object): AttributeInfo[] {
+			var objectAttributeInfos: AttributeInfo[] = [];
 
 			var cls: Class = ClassUtils.getClass(object);
 			var describeInfo: Object = describeTypeInstance(cls);
-			var variables: Array = describeInfo.traits.variables;
-			var i: int = 0;
+			var variables: any[] = describeInfo.traits.variables;
+			var i = 0;
 			for (i = 0; variables != null && i < variables.length; i++) {
 				var variable: Object = variables[i];
 				objectAttributeInfos.push(new AttributeInfo(variable.name, variable.type, variable.access));
 			}
-			var accessors: Array = describeInfo.traits.accessors;
+			var accessors: any[] = describeInfo.traits.accessors;
 			for (i = 0; accessors != null && i < accessors.length; i++) {
 				var accessor: Object = accessors[i];
 				objectAttributeInfos.push(new AttributeInfo(accessor.name, accessor.type, accessor.access));
