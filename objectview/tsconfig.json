@@ -10,6 +10,32 @@
         //
         // "typings/index.d.ts",
         //
-        "src/configs/AttributeDefinition.ts"
+        "src/utils/AccessType.ts",
+        "src/utils/SortCompare.ts",
+        "src/utils/ClassUtils.ts",
+        "src/utils/AttributeInfo.ts",
+        //
+        "src/configs/AttributeDefinition.ts",
+        "src/configs/AttributeTypeDefinition.ts",
+        "src/configs/BlockDefinition.ts",
+        "src/configs/ClassDefinition.ts",
+        //
+        "src/events/ObjectViewEvent.ts",
+        //
+        "src/iview/IObjectAttributeView.ts",
+        "src/iview/IObjectBlockView.ts",
+        "src/iview/IObjectView.ts",
+        //
+        "src/viewInfo/AttributeViewInfo.ts",
+        "src/viewInfo/BlockViewInfo.ts",
+        "src/viewInfo/ObjectViewInfo.ts",
+        //
+        "src/view/DefaultBaseObjectView.ts",
+        "src/view/DefaultObjectAttributeView.ts",
+        "src/view/DefaultObjectBlockView.ts",
+        "src/view/DefaultObjectView.ts",
+        //
+        "src/ObjectViewConfig.ts",
+        "src/ObjectView.ts"
     ]
 }
