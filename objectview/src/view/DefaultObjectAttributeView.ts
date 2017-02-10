@@ -18,6 +18,7 @@ module feng3d {
 			this._attributeName = attributeViewInfo.name;
 			this._attributeType = attributeViewInfo.type;
 
+			this.height = 20;
 			this.label = new TextField();
 			//			label.height = 50;
 			this.label.width = 100;
@@ -30,7 +31,7 @@ module feng3d {
 			this.text.height = 20;
 			this.text.width = 100;
 			this.addChild(this.text);
-			this.graphics.drawRect(0, 0, 200, 24, 0x999999);
+			this.graphics.drawRect(0, 0, 200, 24, "#999999");
 			this.text.mouseEnabled = attributeViewInfo.isEditable();
 
 			this.updateView();

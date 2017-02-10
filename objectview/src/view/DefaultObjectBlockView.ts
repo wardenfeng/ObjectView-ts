@@ -48,7 +48,7 @@ module feng3d {
 				this.attributeViews.push(<any>displayObject);
 			}
 			this.graphics.clear();
-			this.graphics.drawRect(0, 0, 200, h, 0x666666, 0x00ff00);
+			this.graphics.drawRect(0, 0, 200, h, "#666666", "#00ff00");
 
 			this.isInitView = true;
 		}

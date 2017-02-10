@@ -45,7 +45,7 @@ module feng3d {
 
 				var keys = Object.keys(this.owner);
 				keys.forEach(element => {
-					attributes.push(new AttributeInfo(element, getClassName(element)));
+					attributes.push(new AttributeInfo(element, getClassName(element), AccessType.readwrite));
 				});
 				attributes.sort(AttributeInfo.compare);
 
@@ -171,11 +171,9 @@ module feng3d {
 		public getView(): DisplayObject {
 			this.initComponent();
 
-			// var cls = ClassUtils.getClass(this.component);
-			// var view: DisplayObject = new cls(this)
-			// return view;
-
-			return null;
+			var cls = ObjectView.getClass(this.component);
+			var view: DisplayObject = new cls(this)
+			return view;
 		}
 	}
 }

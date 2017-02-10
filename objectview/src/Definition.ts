@@ -8,4 +8,6 @@ module feng3d {
 
     export type TextField = laya.display.Text;
     export var TextField = laya.display.Text;
+    // export type TextField = laya.display.Input;
+    // export var TextField = laya.display.Input;
 }

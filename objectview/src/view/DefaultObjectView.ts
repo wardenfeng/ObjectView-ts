@@ -27,7 +27,7 @@ module feng3d {
 				this.blockViews.push(<any>displayObject);
 			}
 			this.graphics.clear();
-			this.graphics.drawRect(0, 0, 200, h, 0x666666);
+			this.graphics.drawRect(0, 0, 200, h, "#666666");
 
 			this.$updateView();
 		}
