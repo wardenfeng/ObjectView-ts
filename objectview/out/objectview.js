@@ -363,21 +363,20 @@ var feng3d;
         getObjectAttributeInfos() {
             if (this.objectAttributeInfos == null) {
                 //获取属性信息列表
-                var attributes;
-                if (this.owner != null) {
-                    attributes = ClassUtils.getAttributeInfoList(this.owner);
-                }
-                else {
-                    attributes = ClassUtils.getAttributeInfoList(name);
-                }
+                var attributes = [];
+                var keys = Object.keys(this.owner);
+                keys.forEach(element => {
+                    attributes.push(new feng3d.AttributeInfo(element, feng3d.getClassName(element)));
+                });
                 attributes.sort(feng3d.AttributeInfo.compare);
                 //收集对象属性信息
                 var dic = {};
                 var tempInfos = [];
                 var objectAttributeInfo;
+                var attributeInfo;
                 var i;
                 for (i = 0; i < attributes.length; i++) {
-                    var attributeInfo = attributes[i];
+                    attributeInfo = attributes[i];
                     objectAttributeInfo = new feng3d.AttributeViewInfo();
                     objectAttributeInfo.owner = this.owner;
                     feng3d.deepCopy(objectAttributeInfo, attributeInfo);

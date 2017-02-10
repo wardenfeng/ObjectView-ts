@@ -41,22 +41,22 @@ module feng3d {
 		public getObjectAttributeInfos(): AttributeViewInfo[] {
 			if (this.objectAttributeInfos == null) {
 				//获取属性信息列表
-				var attributes: AttributeInfo[];
-				if (this.owner != null) {
-					attributes = ClassUtils.getAttributeInfoList(this.owner);
-				}
-				else {
-					attributes = ClassUtils.getAttributeInfoList(name);
-				}
+				var attributes: AttributeInfo[] = [];
+
+				var keys = Object.keys(this.owner);
+				keys.forEach(element => {
+					attributes.push(new AttributeInfo(element, getClassName(element)));
+				});
 				attributes.sort(AttributeInfo.compare);
 
 				//收集对象属性信息
 				var dic = {};
 				var tempInfos: AttributeViewInfo[] = [];
 				var objectAttributeInfo: AttributeViewInfo;
+				var attributeInfo: AttributeInfo;
 				var i: number;
 				for (i = 0; i < attributes.length; i++) {
-					var attributeInfo: AttributeInfo = attributes[i];
+					attributeInfo = attributes[i];
 					objectAttributeInfo = new AttributeViewInfo();
 					objectAttributeInfo.owner = this.owner;
 					deepCopy(objectAttributeInfo, attributeInfo);
