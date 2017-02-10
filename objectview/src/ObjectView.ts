@@ -24,11 +24,32 @@ module feng3d {
 			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 
 			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(object, false);
-			deepCopy(objectInfo, classConfig);
+			if (classConfig) {
+				deepCopy(objectInfo, classConfig);
+			}
 
 			objectInfo.name = className;
 			objectInfo.owner = object;
 			return objectInfo;
+		}
+
+		public static getClass(className: string) {
+
+			return ObjectView.viewClass[className];
+		}
+
+		private static _viewClass: { [className: string]: any };
+		private static get viewClass() {
+
+			var viewClassList = [DefaultBaseObjectView, DefaultObjectAttributeView, DefaultObjectBlockView, DefaultObjectView];
+
+			if (!ObjectView._viewClass) {
+				ObjectView._viewClass = {};
+				viewClassList.forEach(element => {
+					ObjectView._viewClass[getClassName(element)] = element;
+				});
+			}
+			return ObjectView._viewClass;
 		}
 	}
 }

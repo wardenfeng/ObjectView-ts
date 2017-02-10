@@ -4,6 +4,8 @@ module feng3d {
 	 * @author feng 2016-3-11
 	 */
 	export class DefaultBaseObjectView extends TextField implements IObjectView {
+		public static KEY = "DefaultBaseObjectView";
+		//
 		private _space: Object;
 
 		constructor(objectViewInfo: ObjectViewInfo) {

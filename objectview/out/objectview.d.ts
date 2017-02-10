@@ -8,6 +8,78 @@ declare module feng3d {
 }
 declare module feng3d {
     /**
+     * 判断a对象是否为b类型
+     */
+    function is(a: any, b: Function): boolean;
+    /**
+     * 如果a为b类型则返回，否则返回null
+     */
+    function as(a: any, b: Function): any;
+    /**
+     * 获取对象的类名
+     * @author feng 2016-4-24
+     */
+    function getClassName(value: any): string;
+    /**
+     * 是否为基础类型
+     * @param object    对象
+     */
+    function isBaseType(object: any): boolean;
+    /**
+     * 深克隆
+     * @param source        源数据
+     * @returns             克隆数据
+     */
+    function deepClone<T>(source: T): T;
+    /**
+     * （浅）克隆
+     * @param source        源数据
+     * @returns             克隆数据
+     */
+    function clone<T>(source: T): T;
+    /**
+     * （浅）拷贝数据
+     */
+    function copy(target: Object, source: Object): void;
+    /**
+     * 深拷贝数据
+     */
+    function deepCopy(target: Object, source: Object): void;
+    /**
+     * 合并数据
+     * @param source        源数据
+     * @param mergeData     合并数据
+     * @param createNew     是否合并为新对象，默认为false
+     * @returns             如果createNew为true时返回新对象，否则返回源数据
+     */
+    function merge<T>(source: T, mergeData: Object, createNew?: boolean): T;
+    /**
+     * 观察对象
+     * @param object        被观察的对象
+     * @param onChanged     属性值变化回调函数
+     */
+    function watchObject(object: any, onChanged?: (object: any, attribute: string, oldValue: any, newValue: any) => void): void;
+    /**
+     * 观察对象中属性
+     * @param object        被观察的对象
+     * @param attribute     被观察的属性
+     * @param onChanged     属性值变化回调函数
+     */
+    function watch(object: any, attribute: string, onChanged?: (object: any, attribute: string, oldValue: any, newValue: any) => void): void;
+    /**
+     * 取消观察对象
+     * @param object        被观察的对象
+     */
+    function unwatchObject(object: any): void;
+    /**
+     * 取消观察对象中属性
+     * @param object        被观察的对象
+     * @param attribute     被观察的属性
+     */
+    function unwatch(object: any, attribute: string): void;
+}
+declare module feng3d {
+    /**
      * 访问类型
      * @author feng 2016-3-28
      */
@@ -435,6 +507,7 @@ declare module feng3d {
      * @author feng 2016-3-11
      */
     class DefaultBaseObjectView extends TextField implements IObjectView {
+        static KEY: string;
         private _space;
         constructor(objectViewInfo: ObjectViewInfo);
         space: Object;
@@ -585,5 +658,8 @@ declare module feng3d {
          * @return
          */
         private static getObjectInfo(object);
+        static getClass(className: string): any;
+        private static _viewClass;
+        private static readonly viewClass;
     }
 }

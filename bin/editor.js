@@ -83,8 +83,16 @@ var feng3d;
                 Laya.loader.load([{ url: "res/atlas/comp.json", type: laya.net.Loader.ATLAS }], laya.utils.Handler.create(null, onLoaded));
                 function onLoaded() {
                     //实例UI界面
-                    var testUI = new editor_1.MainUI();
-                    Laya.stage.addChild(testUI);
+                    // var testUI = new MainUI();
+                    // Laya.stage.addChild(testUI);
+                    var view = feng3d.ObjectView.getObjectView({ a: 1, b: { c: "c", d: true } });
+                    view.x = 20;
+                    view.y = 20;
+                    Laya.stage.addChild(view);
+                    // var s = new laya.display.Sprite();
+                    // s.graphics.clear();
+                    // s.graphics.drawRect(0, 0, 200, 100, "#666666");
+                    // Laya.stage.addChild(s);
                 }
             }
         }
