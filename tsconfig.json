@@ -8,7 +8,10 @@
     "files": [
         "typings/index.d.ts",
         //
-        ""
+        "src/ui/TestPageUI.ts",
+        "src/ui/MainUI.ts",
+        //
+        "src/Editor.ts"
     ],
     "exclude": [
         "node_modules"
