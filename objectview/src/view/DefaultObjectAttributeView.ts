@@ -56,31 +56,8 @@ module feng3d {
 		public set attributeValue(value: Object) {
 			if (this._space[this._attributeName] != value) {
 				this._space[this._attributeName] = value;
-
-				//派发属性值修改事件
-				var objectViewEvent: ObjectViewEvent = new ObjectViewEvent(ObjectViewEvent.VALUE_CHANGE, true);
-				objectViewEvent.space = this._space;
-				objectViewEvent.attributeName = this._attributeName;
-				objectViewEvent.attributeValue = this.attributeValue;
-				this.dispatchEvent(objectViewEvent);
 			}
 			this.updateView();
-		}
-
-		protected onFocusOut(event: FocusEvent): void {
-			if (this.textTemp != this.text.text) {
-				var cls = getDefinitionByName(this._attributeType);
-				this.attributeValue = cls(this.text.text);
-				if (cls == Boolean && (this.text.text == "0" || this.text.text == "false")) {
-					this.attributeValue = false;
-				}
-			}
-
-			this.textTemp = null;
-		}
-
-		protected onFocusIn(event: FocusEvent): void {
-			this.textTemp = this.text.text;
 		}
 
 		/**

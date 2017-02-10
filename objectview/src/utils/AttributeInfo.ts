@@ -30,15 +30,6 @@ module feng3d {
 		}
 
 		/**
-		 * 设置数据
-		 * @param data
-		 */
-		public setData(data: Object) {
-			ClassUtils.deepCopy(this, data);
-			return this;
-		}
-
-		/**
 		 * 比较字符串
 		 * @param a
 		 * @param b

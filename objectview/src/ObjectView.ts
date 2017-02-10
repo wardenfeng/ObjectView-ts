@@ -20,11 +20,11 @@ module feng3d {
 		 * @return
 		 */
 		private static getObjectInfo(object: Object): ObjectViewInfo {
-			var className = ClassUtils.getClassName(object);
+			var className = getClassName(object);
 			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 
 			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(object, false);
-			ClassUtils.deepCopy(objectInfo, classConfig);
+			deepCopy(objectInfo, classConfig);
 
 			objectInfo.name = className;
 			objectInfo.owner = object;

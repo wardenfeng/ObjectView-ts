@@ -69,14 +69,6 @@ var feng3d;
             this.access = access;
         }
         /**
-         * 设置数据
-         * @param data
-         */
-        setData(data) {
-            ClassUtils.deepCopy(this, data);
-            return this;
-        }
-        /**
          * 比较字符串
          * @param a
          * @param b
@@ -109,27 +101,6 @@ var feng3d;
              */
             this.component = "";
         }
-        /**
-         * 设置所在块名称
-         */
-        setBlock(block) {
-            this.block = block;
-            return this;
-        }
-        /**
-         * 设置属性组件
-         */
-        setComponent(component) {
-            this.component = ClassUtils.getClassName(component);
-            return this;
-        }
-        /**
-         * 设置属性组件
-         */
-        setComponentParam(param) {
-            this.componentParam = param;
-            return this;
-        }
     }
     feng3d.AttributeDefinition = AttributeDefinition;
 })(feng3d || (feng3d = {}));
@@ -140,20 +111,6 @@ var feng3d;
      * @author feng 2016-3-25
      */
     class AttributeTypeDefinition {
-        /**
-         * 设置组件
-         */
-        setComponent(component) {
-            this.component = ClassUtils.getClassName(component);
-            return this;
-        }
-        /**
-         * 设置属性组件
-         */
-        setComponentParam(param) {
-            this.componentParam = param;
-            return this;
-        }
     }
     feng3d.AttributeTypeDefinition = AttributeTypeDefinition;
 })(feng3d || (feng3d = {}));
@@ -173,21 +130,6 @@ var feng3d;
              * 组件
              */
             this.component = "";
-        }
-        /**
-         * 设置显示组件
-         * @param component					组件
-         */
-        setComponent(component) {
-            this.component = ClassUtils.getClassName(component);
-            return this;
-        }
-        /**
-         * 设置属性组件
-         */
-        setComponentParam(param) {
-            this.componentParam = param;
-            return this;
         }
     }
     feng3d.BlockDefinition = BlockDefinition;
@@ -283,21 +225,6 @@ var feng3d;
      * @author feng 2016-4-19
      */
     class ObjectViewEvent extends feng3d.Event {
-        /**
-         * 构建
-         */
-        constructor(type, bubbles = false, cancelable = false) {
-            super(type, bubbles, cancelable);
-        }
-        toString() {
-            return "[{0} type=\"{1}\" space=\"{2}\"  attributeName=\"{3}\" attributeValue={4}]" //
-                .replace("{0}", getQualifiedClassName(this).split("::").pop()) //
-                .replace("{1}", type) //
-                .replace("{2}", getQualifiedClassName(this).split("::").pop()) //
-                .replace("{3}", this.attributeName) //
-                .replace("{4}", JSON.stringify(this.attributeValue)) //
-            ;
-        }
     }
     /**
      * 属性值变化时间
@@ -356,9 +283,10 @@ var feng3d;
          */
         getView() {
             this.initComponent();
-            var cls = ClassUtils.getClass(this.component);
-            var view = new cls(this);
-            return view;
+            // var cls = ClassUtils.getClass(this.component);
+            // var view: DisplayObject = new cls(this);
+            // return view;
+            return null;
         }
     }
     feng3d.AttributeViewInfo = AttributeViewInfo;
@@ -404,9 +332,10 @@ var feng3d;
          */
         getView() {
             this.initComponent();
-            var cls = ClassUtils.getClass(this.component);
-            var view = new cls(this);
-            return view;
+            // var cls = ClassUtils.getClass(this.component);
+            // var view: DisplayObject = new cls(this);
+            // return view;
+            return null;
         }
     }
     feng3d.BlockViewInfo = BlockViewInfo;
@@ -451,7 +380,7 @@ var feng3d;
                     var attributeInfo = attributes[i];
                     objectAttributeInfo = new feng3d.AttributeViewInfo();
                     objectAttributeInfo.owner = this.owner;
-                    ClassUtils.deepCopy(objectAttributeInfo, attributeInfo);
+                    feng3d.deepCopy(objectAttributeInfo, attributeInfo);
                     dic[objectAttributeInfo.name] = objectAttributeInfo;
                     tempInfos.push(objectAttributeInfo);
                 }
@@ -467,7 +396,7 @@ var feng3d;
                     for (i = 0; i < attributeDefinitions.length; i++) {
                         objectAttributeInfo = dic[attributeDefinitions[i].name];
                         if (objectAttributeInfo != null) {
-                            ClassUtils.deepCopy(objectAttributeInfo, attributeDefinitions[i]);
+                            feng3d.deepCopy(objectAttributeInfo, attributeDefinitions[i]);
                             this.objectAttributeInfos.push(objectAttributeInfo);
                         }
                     }
@@ -515,7 +444,7 @@ var feng3d;
                         objectBlockInfo.name = blockDefinition.name;
                         objectBlockInfo.owner = this.owner;
                     }
-                    ClassUtils.deepCopy(objectBlockInfo, blockDefinition);
+                    feng3d.deepCopy(objectBlockInfo, blockDefinition);
                     this.objectBlockInfos.push(objectBlockInfo);
                     pushDic[objectBlockInfo.name] = true;
                 }
@@ -538,8 +467,7 @@ var feng3d;
             if (this.component != null && this.component != "")
                 return;
             //返回基础类型界面类定义
-            var isBaseType = ClassUtils.isBaseType(this.owner);
-            if (isBaseType) {
+            if (feng3d.isBaseType(this.owner)) {
                 this.component = feng3d.ObjectViewConfig.instance.defaultBaseObjectViewClass;
                 return;
             }
@@ -551,9 +479,10 @@ var feng3d;
          */
         getView() {
             this.initComponent();
-            var cls = ClassUtils.getClass(this.component);
-            var view = new cls(this);
-            return view;
+            // var cls = ClassUtils.getClass(this.component);
+            // var view: DisplayObject = new cls(this)
+            // return view;
+            return null;
         }
     }
     feng3d.ObjectViewInfo = ObjectViewInfo;
@@ -635,27 +564,8 @@ var feng3d;
         set attributeValue(value) {
             if (this._space[this._attributeName] != value) {
                 this._space[this._attributeName] = value;
-                //派发属性值修改事件
-                var objectViewEvent = new feng3d.ObjectViewEvent(feng3d.ObjectViewEvent.VALUE_CHANGE, true);
-                objectViewEvent.space = this._space;
-                objectViewEvent.attributeName = this._attributeName;
-                objectViewEvent.attributeValue = this.attributeValue;
-                this.dispatchEvent(objectViewEvent);
             }
             this.updateView();
-        }
-        onFocusOut(event) {
-            if (this.textTemp != this.text.text) {
-                var cls = getDefinitionByName(this._attributeType);
-                this.attributeValue = cls(this.text.text);
-                if (cls == Boolean && (this.text.text == "0" || this.text.text == "false")) {
-                    this.attributeValue = false;
-                }
-            }
-            this.textTemp = null;
-        }
-        onFocusIn(event) {
-            this.textTemp = this.text.text;
         }
         /**
          * 更新界面
@@ -929,10 +839,10 @@ var feng3d;
          * @return
          */
         static getObjectInfo(object) {
-            var className = ClassUtils.getClassName(object);
+            var className = feng3d.getClassName(object);
             var objectInfo = new feng3d.ObjectViewInfo();
             var classConfig = feng3d.ObjectViewConfig.instance.getClassConfig(object, false);
-            ClassUtils.deepCopy(objectInfo, classConfig);
+            feng3d.deepCopy(objectInfo, classConfig);
             objectInfo.name = className;
             objectInfo.owner = object;
             return objectInfo;

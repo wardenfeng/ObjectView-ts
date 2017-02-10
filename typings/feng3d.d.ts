@@ -1746,6 +1746,14 @@ declare module feng3d {
      */
     function clone<T>(source: T): T;
     /**
+     * （浅）拷贝数据
+     */
+    function copy(target: Object, source: Object): void;
+    /**
+     * 深拷贝数据
+     */
+    function deepCopy(target: Object, source: Object): void;
+    /**
      * 合并数据
      * @param source        源数据
      * @param mergeData     合并数据

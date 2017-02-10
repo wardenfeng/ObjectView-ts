@@ -64,11 +64,6 @@ declare module feng3d {
          */
         constructor(name?: string, type?: string, access?: string);
         /**
-         * 设置数据
-         * @param data
-         */
-        setData(data: Object): this;
-        /**
          * 比较字符串
          * @param a
          * @param b
@@ -99,18 +94,6 @@ declare module feng3d {
          * 组件参数
          */
         componentParam: Object;
-        /**
-         * 设置所在块名称
-         */
-        setBlock(block: string): AttributeDefinition;
-        /**
-         * 设置属性组件
-         */
-        setComponent(component: Object): AttributeDefinition;
-        /**
-         * 设置属性组件
-         */
-        setComponentParam(param: Object): AttributeDefinition;
     }
 }
 declare module feng3d {
@@ -131,14 +114,6 @@ declare module feng3d {
          * 组件参数
          */
         componentParam: Object;
-        /**
-         * 设置组件
-         */
-        setComponent(component: Object): AttributeTypeDefinition;
-        /**
-         * 设置属性组件
-         */
-        setComponentParam(param: Object): AttributeTypeDefinition;
     }
 }
 declare module feng3d {
@@ -159,15 +134,6 @@ declare module feng3d {
          * 组件参数
          */
         componentParam: Object;
-        /**
-         * 设置显示组件
-         * @param component					组件
-         */
-        setComponent(component: Object): BlockDefinition;
-        /**
-         * 设置属性组件
-         */
-        setComponentParam(param: Object): BlockDefinition;
     }
 }
 declare module feng3d {
@@ -240,11 +206,6 @@ declare module feng3d {
          * 属性值
          */
         attributeValue: Object;
-        /**
-         * 构建
-         */
-        constructor(type: string, bubbles?: Boolean, cancelable?: Boolean);
-        toString(): string;
     }
 }
 declare module feng3d {
@@ -501,8 +462,6 @@ declare module feng3d {
         space: Object;
         readonly attributeName: string;
         attributeValue: Object;
-        protected onFocusOut(event: FocusEvent): void;
-        protected onFocusIn(event: FocusEvent): void;
         /**
          * 更新界面
          */

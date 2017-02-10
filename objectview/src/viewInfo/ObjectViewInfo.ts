@@ -59,7 +59,7 @@ module feng3d {
 					var attributeInfo: AttributeInfo = attributes[i];
 					objectAttributeInfo = new AttributeViewInfo();
 					objectAttributeInfo.owner = this.owner;
-					ClassUtils.deepCopy(objectAttributeInfo, attributeInfo);
+					deepCopy(objectAttributeInfo, attributeInfo);
 					dic[objectAttributeInfo.name] = objectAttributeInfo;
 					tempInfos.push(objectAttributeInfo);
 				}
@@ -77,7 +77,7 @@ module feng3d {
 					for (i = 0; i < attributeDefinitions.length; i++) {
 						objectAttributeInfo = dic[attributeDefinitions[i].name];
 						if (objectAttributeInfo != null) {
-							ClassUtils.deepCopy(objectAttributeInfo, attributeDefinitions[i]);
+							deepCopy(objectAttributeInfo, attributeDefinitions[i]);
 							this.objectAttributeInfos.push(objectAttributeInfo);
 						}
 					}
@@ -130,7 +130,7 @@ module feng3d {
 						objectBlockInfo.name = blockDefinition.name;
 						objectBlockInfo.owner = this.owner;
 					}
-					ClassUtils.deepCopy(objectBlockInfo, blockDefinition);
+					deepCopy(objectBlockInfo, blockDefinition);
 					this.objectBlockInfos.push(objectBlockInfo);
 					pushDic[objectBlockInfo.name] = true;
 				}
@@ -156,8 +156,7 @@ module feng3d {
 				return;
 
 			//返回基础类型界面类定义
-			var isBaseType: Boolean = ClassUtils.isBaseType(this.owner);
-			if (isBaseType) {
+			if (isBaseType(this.owner)) {
 				this.component = ObjectViewConfig.instance.defaultBaseObjectViewClass;
 				return;
 			}
@@ -172,9 +171,11 @@ module feng3d {
 		public getView(): DisplayObject {
 			this.initComponent();
 
-			var cls = ClassUtils.getClass(this.component);
-			var view: DisplayObject = new cls(this)
-			return view;
+			// var cls = ClassUtils.getClass(this.component);
+			// var view: DisplayObject = new cls(this)
+			// return view;
+
+			return null;
 		}
 	}
 }

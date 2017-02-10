@@ -23,29 +23,5 @@ module feng3d {
 		 * 组件参数
 		 */
 		public componentParam: Object;
-
-		/**
-		 * 设置所在块名称
-		 */
-		public setBlock(block: string): AttributeDefinition {
-			this.block = block;
-			return this;
-		}
-
-		/**
-		 * 设置属性组件
-		 */
-		public setComponent(component: Object): AttributeDefinition {
-			this.component = ClassUtils.getClassName(component);
-			return this;
-		}
-
-		/**
-		 * 设置属性组件
-		 */
-		public setComponentParam(param: Object): AttributeDefinition {
-			this.componentParam = param;
-			return this;
-		}
 	}
 }

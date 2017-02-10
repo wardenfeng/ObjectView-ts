@@ -24,22 +24,5 @@ module feng3d {
 		 * 属性值
 		 */
 		public attributeValue: Object;
-
-		/**
-		 * 构建
-		 */
-		constructor(type: string, bubbles: Boolean = false, cancelable: Boolean = false) {
-			super(type, bubbles, cancelable);
-		}
-
-		public toString() {
-			return "[{0} type=\"{1}\" space=\"{2}\"  attributeName=\"{3}\" attributeValue={4}]" //
-				.replace("{0}", getQualifiedClassName(this).split("::").pop()) //
-				.replace("{1}", type) //
-				.replace("{2}", getQualifiedClassName(this).split("::").pop()) //
-				.replace("{3}", this.attributeName) //
-				.replace("{4}", JSON.stringify(this.attributeValue)) //
-				;
-		}
 	}
 }
