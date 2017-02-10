@@ -30,14 +30,6 @@ module feng3d {
 		public blockDefinitionVec: BlockDefinition[] = [];
 
 		/**
-		 * 设置自定义对象界面类定义
-		 * @param viewClass				自定义对象界面类定义（该类必须是实现IObjectView接口并且是DisplayObject的子类）
-		 */
-		public setCustomObjectViewClass(viewClass): void {
-			this.component = ClassUtils.getClassName(viewClass);
-		}
-
-		/**
 		 * 获取自定义对象属性定义
 		 * @param attributeName			属性名称
 		 * @param autoCreate			是否自动生成
@@ -80,17 +72,6 @@ module feng3d {
 				this.blockDefinitionVec.push(blockDefinition);
 			}
 			return blockDefinition;
-		}
-
-		/**
-		 * 设置类配置
-		 * @param config
-		 */
-		public setConfig(config: Object): void {
-			//清理数据
-			ClassUtils.deepCopy(this, ClassUtils.getInstance(this));
-			//设置数据
-			ClassUtils.deepCopy(this, config);
 		}
 
 		/**

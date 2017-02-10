@@ -8,19 +8,19 @@ module feng3d {
 		/**
 		 * 默认基础类型对象界面类定义
 		 */
-		public defaultBaseObjectViewClass = ClassUtils.getClassName(DefaultBaseObjectView);
+		public defaultBaseObjectViewClass = getClassName(DefaultBaseObjectView);
 		/**
 		 * 默认对象界面类定义
 		 */
-		public defaultObjectViewClass = ClassUtils.getClassName(DefaultObjectView);
+		public defaultObjectViewClass = getClassName(DefaultObjectView);
 		/**
 		 * 默认对象属性界面类定义
 		 */
-		public defaultObjectAttributeViewClass = ClassUtils.getClassName(DefaultObjectAttributeView);
+		public defaultObjectAttributeViewClass = getClassName(DefaultObjectAttributeView);
 		/**
 		 * 属性块默认界面
 		 */
-		public defaultObjectAttributeBlockView = ClassUtils.getClassName(DefaultObjectBlockView);
+		public defaultObjectAttributeBlockView = getClassName(DefaultObjectBlockView);
 
 		/**
 		 * 指定属性类型界面类定义字典（key:属性类名称,value:属性界面类定义）
@@ -48,7 +48,7 @@ module feng3d {
 		 * @return
 		 */
 		public getClassConfig(object: Object, autoCreate: Boolean = true): ClassDefinition {
-			var className = ClassUtils.getClassName(object);
+			var className = getClassName(object);
 
 			var classConfig: ClassDefinition;
 			this.classConfigVec.forEach(element => {
@@ -73,7 +73,7 @@ module feng3d {
 		 * @return
 		 */
 		public getAttributeDefaultViewClass(attributeClass: Object, autoCreate: Boolean = true): AttributeTypeDefinition {
-			var type = ClassUtils.getClassName(attributeClass);
+			var type = getClassName(attributeClass);
 			var obj: AttributeTypeDefinition;
 			this.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {
@@ -88,23 +88,6 @@ module feng3d {
 				return obj;
 			}
 			return null;
-		}
-
-		/**
-		 * 设置类配置
-		 * @param config
-		 */
-		public setConfig(config: Object): void {
-			this.clearConfig();
-			//设置数据
-			ClassUtils.deepCopy(this, config);
-		}
-
-		/**
-		 * 清理数据
-		 */
-		public clearConfig(): void {
-			ClassUtils.deepCopy(this, ClassUtils.getInstance(this));
 		}
 	}
 }
