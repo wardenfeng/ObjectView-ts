@@ -3,17 +3,39 @@
         "target": "es6",
         "noImplicitAny": false,
         "sourceMap": true,
-        "outFile": "bin/editor.js"
+        "declaration": true,
+        "outFile": "out/objectview.js"
     },
-    "files": [
+    "files": [ //注：如果有继承关系的，父类必须排在子类前面
+        //
         "typings/index.d.ts",
         //
-        "src/ui/TestPageUI.ts",
-        "src/ui/MainUI.ts",
+        "src/Definition.ts",
+        "src/ObjectExtension.ts",
         //
-        "src/Editor.ts"
-    ],
-    "exclude": [
-        "node_modules"
+        "src/utils/AccessType.ts",
+        "src/utils/SortCompare.ts",
+        "src/utils/AttributeInfo.ts",
+        //
+        "src/configs/AttributeDefinition.ts",
+        "src/configs/AttributeTypeDefinition.ts",
+        "src/configs/BlockDefinition.ts",
+        "src/configs/ClassDefinition.ts",
+        //
+        "src/iview/IObjectAttributeView.ts",
+        "src/iview/IObjectBlockView.ts",
+        "src/iview/IObjectView.ts",
+        //
+        "src/viewInfo/AttributeViewInfo.ts",
+        "src/viewInfo/BlockViewInfo.ts",
+        "src/viewInfo/ObjectViewInfo.ts",
+        //
+        "src/view/DefaultBaseObjectView.ts",
+        "src/view/DefaultObjectAttributeView.ts",
+        "src/view/DefaultObjectBlockView.ts",
+        "src/view/DefaultObjectView.ts",
+        //
+        "src/ObjectViewConfig.ts",
+        "src/ObjectView.ts"
     ]
 }
