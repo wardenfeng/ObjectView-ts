@@ -1,32 +1,6 @@
 module feng3d {
 
     /**
-     * 判断a对象是否为b类型
-     */
-    export function is(a, b: Function): boolean {
-
-        var prototype: any = a.prototype ? a.prototype : Object.getPrototypeOf(a);
-        while (prototype != null) {
-            //类型==自身原型的构造函数
-            if (prototype.constructor == b)
-                return true;
-            //父类就是原型的原型构造函数
-            prototype = Object.getPrototypeOf(prototype);
-        }
-
-        return false;
-    }
-
-    /**
-     * 如果a为b类型则返回，否则返回null
-     */
-    export function as(a, b: Function) {
-        if (!is(a, b))
-            return null;
-        return <any>a;
-    }
-
-    /**
      * 获取对象的类名
      * @author feng 2016-4-24
      */

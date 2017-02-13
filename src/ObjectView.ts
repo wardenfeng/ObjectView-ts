@@ -8,9 +8,9 @@ module feng3d {
 		 * 获取对象界面
 		 * @param object	用于生成界面的对象
 		 */
-		public static getObjectView(object: Object): DisplayObject {
+		public static getObjectView(object: Object): egret.DisplayObject {
 			var classConfig: ObjectViewInfo = ObjectView.getObjectInfo(object);
-			var view: DisplayObject = classConfig.getView();
+			var view = classConfig.getView();
 			return view;
 		}
 

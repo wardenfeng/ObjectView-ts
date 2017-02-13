@@ -58,11 +58,11 @@ module feng3d {
 		 * @param owner		所属对象
 		 * @return
 		 */
-		public getView(): DisplayObject {
+		public getView(): egret.DisplayObject {
 			this.initComponent();
 
 			var cls = ObjectView.getClass(this.component);
-			var view: DisplayObject = new cls(this);
+			var view = new cls(this);
 			return view;
 		}
 	}

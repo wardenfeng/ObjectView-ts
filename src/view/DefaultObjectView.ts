@@ -3,7 +3,7 @@ module feng3d {
 	 * 默认使用块的对象界面
 	 * @author feng 2016-3-22
 	 */
-	export class DefaultObjectView extends Sprite implements IObjectView {
+	export class DefaultObjectView extends egret.Sprite implements IObjectView {
 		private _space: Object;
 		private _objectViewInfo: ObjectViewInfo;
 		private blockViews: IObjectBlockView[];
@@ -20,14 +20,16 @@ module feng3d {
 			var h = 0;
 			var objectBlockInfos: BlockViewInfo[] = this._objectViewInfo.getObjectBlockInfos();
 			for (var i = 0; i < objectBlockInfos.length; i++) {
-				var displayObject: DisplayObject = objectBlockInfos[i].getView();
+				var displayObject = objectBlockInfos[i].getView();
 				displayObject.y = h;
 				this.addChild(displayObject);
 				h += displayObject.height + 2;
 				this.blockViews.push(<any>displayObject);
 			}
 			this.graphics.clear();
-			this.graphics.drawRect(0, 0, 200, h, "#666666");
+			this.graphics.beginFill(0x666666);
+			this.graphics.drawRect(0, 0, 200, h);
+			this.graphics.endFill();
 
 			this.$updateView();
 		}

@@ -3,7 +3,7 @@ module feng3d {
 	 * 默认对象属性块界面
 	 * @author feng 2016-3-22
 	 */
-	export class DefaultObjectBlockView extends Sprite implements IObjectBlockView {
+	export class DefaultObjectBlockView extends egret.Sprite implements IObjectBlockView {
 		private _space: Object;
 		private _blockName: string;
 
@@ -26,11 +26,11 @@ module feng3d {
 		private initView(): void {
 			var h = 0;
 			if (this._blockName != null && this._blockName.length > 0) {
-				var blockTitle: TextField = new TextField();
+				var blockTitle = new egret.TextField();
 				//			label.height = 50;
 				blockTitle.width = 100;
 				blockTitle.height = 20;
-				blockTitle.color = "#ff0000";
+				blockTitle.textColor = 0xff0000;
 				blockTitle.text = this._blockName;
 				this.addChild(blockTitle);
 				h = blockTitle.x + blockTitle.height + 2;
@@ -41,14 +41,21 @@ module feng3d {
 			for (var i = 0; i < objectAttributeInfos.length; i++) {
 				if (!objectAttributeInfos[i].canRead())
 					continue;
-				var displayObject: DisplayObject = objectAttributeInfos[i].getView();
+				var displayObject = objectAttributeInfos[i].getView();
 				displayObject.y = h;
 				this.addChild(displayObject);
 				h += displayObject.height + 2;
 				this.attributeViews.push(<any>displayObject);
 			}
 			this.graphics.clear();
-			this.graphics.drawRect(0, 0, 200, h, "#666666", "#00ff00");
+			this.graphics.beginFill(0x666666);
+			this.graphics.lineStyle(null, 0x00ff00);
+			this.graphics.moveTo(0, 0);
+			this.graphics.lineTo(200, 0);
+			this.graphics.lineTo(200, h);
+			this.graphics.lineTo(0, h);
+			this.graphics.lineTo(0, 0);
+			this.graphics.endFill();
 
 			this.isInitView = true;
 		}

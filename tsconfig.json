@@ -10,7 +10,6 @@
         //
         "typings/index.d.ts",
         //
-        "src/Definition.ts",
         "src/ObjectExtension.ts",
         //
         "src/utils/AccessType.ts",

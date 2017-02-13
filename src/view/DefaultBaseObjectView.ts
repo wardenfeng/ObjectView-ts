@@ -3,7 +3,7 @@ module feng3d {
 	 * 默认基础对象界面
 	 * @author feng 2016-3-11
 	 */
-	export class DefaultBaseObjectView extends TextField implements IObjectView {
+	export class DefaultBaseObjectView extends egret.TextField implements IObjectView {
 		public static KEY = "DefaultBaseObjectView";
 		//
 		private _space: Object;

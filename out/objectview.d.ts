@@ -1,20 +1,4 @@
 declare module feng3d {
-    type DisplayObject = laya.display.Sprite;
-    var DisplayObject: typeof laya.display.Sprite;
-    type Sprite = laya.display.Sprite;
-    var Sprite: typeof laya.display.Sprite;
-    type TextField = laya.display.Text;
-    var TextField: typeof laya.display.Text;
-}
-declare module feng3d {
-    /**
-     * 判断a对象是否为b类型
-     */
-    function is(a: any, b: Function): boolean;
-    /**
-     * 如果a为b类型则返回，否则返回null
-     */
-    function as(a: any, b: Function): any;
     /**
      * 获取对象的类名
      * @author feng 2016-4-24
@@ -380,7 +364,7 @@ declare module feng3d {
         /**
          * 获取界面
          */
-        getView(): DisplayObject;
+        getView(): egret.DisplayObject;
     }
 }
 declare module feng3d {
@@ -424,7 +408,7 @@ declare module feng3d {
          * @param owner		所属对象
          * @return
          */
-        getView(): DisplayObject;
+        getView(): egret.DisplayObject;
     }
 }
 declare module feng3d {
@@ -474,7 +458,7 @@ declare module feng3d {
         /**
          * 获取界面
          */
-        getView(): DisplayObject;
+        getView(): egret.DisplayObject;
     }
 }
 declare module feng3d {
@@ -482,7 +466,7 @@ declare module feng3d {
      * 默认基础对象界面
      * @author feng 2016-3-11
      */
-    class DefaultBaseObjectView extends TextField implements IObjectView {
+    class DefaultBaseObjectView extends egret.TextField implements IObjectView {
         static KEY: string;
         private _space;
         constructor(objectViewInfo: ObjectViewInfo);
@@ -500,7 +484,7 @@ declare module feng3d {
      * 默认对象属性界面
      * @author feng 2016-3-10
      */
-    class DefaultObjectAttributeView extends Sprite implements IObjectAttributeView {
+    class DefaultObjectAttributeView extends egret.Sprite implements IObjectAttributeView {
         private label;
         private text;
         private textTemp;
@@ -522,7 +506,7 @@ declare module feng3d {
      * 默认对象属性块界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectBlockView extends Sprite implements IObjectBlockView {
+    class DefaultObjectBlockView extends egret.Sprite implements IObjectBlockView {
         private _space;
         private _blockName;
         private attributeViews;
@@ -548,7 +532,7 @@ declare module feng3d {
      * 默认使用块的对象界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectView extends Sprite implements IObjectView {
+    class DefaultObjectView extends egret.Sprite implements IObjectView {
         private _space;
         private _objectViewInfo;
         private blockViews;
@@ -627,7 +611,7 @@ declare module feng3d {
          * 获取对象界面
          * @param object	用于生成界面的对象
          */
-        static getObjectView(object: Object): DisplayObject;
+        static getObjectView(object: Object): egret.DisplayObject;
         /**
          * 获取对象信息
          * @param object

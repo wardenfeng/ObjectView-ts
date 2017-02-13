@@ -76,11 +76,11 @@ module feng3d {
 		/**
 		 * 获取界面
 		 */
-		public getView(): DisplayObject {
+		public getView(): egret.DisplayObject {
 			this.initComponent();
 
 			var cls = ObjectView.getClass(this.component);
-			var view: DisplayObject = new cls(this);
+			var view = new cls(this);
 			return view;
 		}
 	}

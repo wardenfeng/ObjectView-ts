@@ -1,35 +1,5 @@
 var feng3d;
 (function (feng3d) {
-    feng3d.DisplayObject = laya.display.Sprite;
-    feng3d.Sprite = laya.display.Sprite;
-    feng3d.TextField = laya.display.Text;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 判断a对象是否为b类型
-     */
-    function is(a, b) {
-        var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
-        while (prototype != null) {
-            //类型==自身原型的构造函数
-            if (prototype.constructor == b)
-                return true;
-            //父类就是原型的原型构造函数
-            prototype = Object.getPrototypeOf(prototype);
-        }
-        return false;
-    }
-    feng3d.is = is;
-    /**
-     * 如果a为b类型则返回，否则返回null
-     */
-    function as(a, b) {
-        if (!is(a, b))
-            return null;
-        return a;
-    }
-    feng3d.as = as;
     /**
      * 获取对象的类名
      * @author feng 2016-4-24
@@ -671,7 +641,7 @@ var feng3d;
      * 默认基础对象界面
      * @author feng 2016-3-11
      */
-    class DefaultBaseObjectView extends feng3d.TextField {
+    class DefaultBaseObjectView extends egret.TextField {
         constructor(objectViewInfo) {
             super();
             this._space = objectViewInfo.owner;
@@ -706,26 +676,26 @@ var feng3d;
      * 默认对象属性界面
      * @author feng 2016-3-10
      */
-    class DefaultObjectAttributeView extends feng3d.Sprite {
+    class DefaultObjectAttributeView extends egret.Sprite {
         constructor(attributeViewInfo) {
             super();
             this._space = attributeViewInfo.owner;
             this._attributeName = attributeViewInfo.name;
             this._attributeType = attributeViewInfo.type;
-            this.height = 20;
-            this.label = new feng3d.TextField();
-            //			label.height = 50;
+            this.label = new egret.TextField();
             this.label.width = 100;
-            this.label.height = 20;
             this.addChild(this.label);
-            this.text = new feng3d.TextField();
+            this.text = new egret.TextField();
             this.text.bold = true;
             this.text.x = 100;
-            this.text.height = 20;
             this.text.width = 100;
             this.addChild(this.text);
-            this.graphics.drawRect(0, 0, 200, 24, "#999999");
-            this.text.mouseEnabled = attributeViewInfo.isEditable();
+            this.graphics.beginFill(0x999999);
+            this.graphics.drawRect(0, 0, 200, 30);
+            this.graphics.endFill();
+            if (!attributeViewInfo.isEditable()) {
+                this.text.type = egret.TextFieldType.INPUT;
+            }
             this.updateView();
         }
         get space() {
@@ -763,7 +733,7 @@ var feng3d;
      * 默认对象属性块界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectBlockView extends feng3d.Sprite {
+    class DefaultObjectBlockView extends egret.Sprite {
         /**
          * @inheritDoc
          */
@@ -777,11 +747,11 @@ var feng3d;
         initView() {
             var h = 0;
             if (this._blockName != null && this._blockName.length > 0) {
-                var blockTitle = new feng3d.TextField();
+                var blockTitle = new egret.TextField();
                 //			label.height = 50;
                 blockTitle.width = 100;
                 blockTitle.height = 20;
-                blockTitle.color = "#ff0000";
+                blockTitle.textColor = 0xff0000;
                 blockTitle.text = this._blockName;
                 this.addChild(blockTitle);
                 h = blockTitle.x + blockTitle.height + 2;
@@ -798,7 +768,14 @@ var feng3d;
                 this.attributeViews.push(displayObject);
             }
             this.graphics.clear();
-            this.graphics.drawRect(0, 0, 200, h, "#666666", "#00ff00");
+            this.graphics.beginFill(0x666666);
+            this.graphics.lineStyle(null, 0x00ff00);
+            this.graphics.moveTo(0, 0);
+            this.graphics.lineTo(200, 0);
+            this.graphics.lineTo(200, h);
+            this.graphics.lineTo(0, h);
+            this.graphics.lineTo(0, 0);
+            this.graphics.endFill();
             this.isInitView = true;
         }
         get space() {
@@ -845,7 +822,7 @@ var feng3d;
      * 默认使用块的对象界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectView extends feng3d.Sprite {
+    class DefaultObjectView extends egret.Sprite {
         /**
          * 对象界面数据
          */
@@ -864,7 +841,9 @@ var feng3d;
                 this.blockViews.push(displayObject);
             }
             this.graphics.clear();
-            this.graphics.drawRect(0, 0, 200, h, "#666666");
+            this.graphics.beginFill(0x666666);
+            this.graphics.drawRect(0, 0, 200, h);
+            this.graphics.endFill();
             this.$updateView();
         }
         get space() {
