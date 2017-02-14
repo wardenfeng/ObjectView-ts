@@ -3,7 +3,7 @@ module feng3d {
 	 * 默认对象属性块界面
 	 * @author feng 2016-3-22
 	 */
-	export class DefaultObjectBlockView extends egret.Sprite implements IObjectBlockView {
+	export class DefaultObjectBlockView extends eui.Group implements IObjectBlockView {
 		private _space: Object;
 		private _blockName: string;
 
@@ -16,6 +16,12 @@ module feng3d {
 		 */
 		constructor(blockViewInfo: BlockViewInfo) {
 			super();
+			var hLayout: eui.VerticalLayout = new eui.VerticalLayout();
+			hLayout.gap = 10;
+			hLayout.paddingTop = 30;
+			hLayout.horizontalAlign = egret.HorizontalAlign.CENTER;
+			this.layout = hLayout;
+
 			this._space = blockViewInfo.owner;
 			this._blockName = blockViewInfo.name;
 			this.itemList = blockViewInfo.itemList;
@@ -26,7 +32,7 @@ module feng3d {
 		private initView(): void {
 			var h = 0;
 			if (this._blockName != null && this._blockName.length > 0) {
-				var blockTitle = new egret.TextField();
+				var blockTitle = new eui.Label();
 				//			label.height = 50;
 				blockTitle.width = 100;
 				blockTitle.height = 20;
@@ -47,15 +53,6 @@ module feng3d {
 				h += displayObject.height + 2;
 				this.attributeViews.push(<any>displayObject);
 			}
-			this.graphics.clear();
-			this.graphics.beginFill(0x666666);
-			this.graphics.lineStyle(null, 0x00ff00);
-			this.graphics.moveTo(0, 0);
-			this.graphics.lineTo(200, 0);
-			this.graphics.lineTo(200, h);
-			this.graphics.lineTo(0, h);
-			this.graphics.lineTo(0, 0);
-			this.graphics.endFill();
 
 			this.isInitView = true;
 		}

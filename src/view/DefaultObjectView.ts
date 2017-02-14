@@ -3,7 +3,7 @@ module feng3d {
 	 * 默认使用块的对象界面
 	 * @author feng 2016-3-22
 	 */
-	export class DefaultObjectView extends egret.Sprite implements IObjectView {
+	export class DefaultObjectView extends eui.Group implements IObjectView {
 		private _space: Object;
 		private _objectViewInfo: ObjectViewInfo;
 		private blockViews: IObjectBlockView[];
@@ -13,6 +13,13 @@ module feng3d {
 		 */
 		constructor(objectViewInfo: ObjectViewInfo) {
 			super();
+
+			var hLayout: eui.VerticalLayout = new eui.VerticalLayout();
+			hLayout.gap = 10;
+			hLayout.paddingTop = 30;
+			hLayout.horizontalAlign = egret.HorizontalAlign.CENTER;
+			this.layout = hLayout;
+
 			this._objectViewInfo = objectViewInfo;
 			this._space = objectViewInfo.owner;
 
@@ -26,10 +33,6 @@ module feng3d {
 				h += displayObject.height + 2;
 				this.blockViews.push(<any>displayObject);
 			}
-			this.graphics.clear();
-			this.graphics.beginFill(0x666666);
-			this.graphics.drawRect(0, 0, 200, h);
-			this.graphics.endFill();
 
 			this.$updateView();
 		}

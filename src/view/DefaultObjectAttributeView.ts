@@ -4,9 +4,9 @@ module feng3d {
 	 * 默认对象属性界面
 	 * @author feng 2016-3-10
 	 */
-	export class DefaultObjectAttributeView extends egret.Sprite implements IObjectAttributeView {
-		private label: egret.TextField;
-		private text: egret.TextField;
+	export class DefaultObjectAttributeView extends eui.Group implements IObjectAttributeView {
+		private label: eui.Label;
+		private text: eui.TextInput;
 		private textTemp: string;
 		private _space: Object;
 		private _attributeName: string;
@@ -18,21 +18,16 @@ module feng3d {
 			this._attributeName = attributeViewInfo.name;
 			this._attributeType = attributeViewInfo.type;
 
-			this.label = new egret.TextField();
+			this.label = new eui.Label();
 			this.label.width = 100;
 			this.addChild(this.label);
 
-			this.text = new egret.TextField();
-			this.text.bold = true;
+			this.text = new eui.TextInput();
 			this.text.x = 100;
 			this.text.width = 100;
 			this.addChild(this.text);
-			this.graphics.beginFill(0x999999);
-			this.graphics.drawRect(0, 0, 200, 30);
-			this.graphics.endFill();
-			if (!attributeViewInfo.isEditable()) {
-				this.text.type = egret.TextFieldType.INPUT;
-			}
+
+			this.text.enabled = attributeViewInfo.isEditable();
 
 			this.updateView();
 		}

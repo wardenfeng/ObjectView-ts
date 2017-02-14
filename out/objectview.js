@@ -674,7 +674,7 @@ var feng3d;
      * 默认基础对象界面
      * @author feng 2016-3-11
      */
-    class DefaultBaseObjectView extends egret.TextField {
+    class DefaultBaseObjectView extends eui.Label {
         constructor(objectViewInfo) {
             super();
             this._space = objectViewInfo.owner;
@@ -700,7 +700,6 @@ var feng3d;
             this.text = String(this._space);
         }
     }
-    DefaultBaseObjectView.KEY = "DefaultBaseObjectView";
     feng3d.DefaultBaseObjectView = DefaultBaseObjectView;
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -709,26 +708,20 @@ var feng3d;
      * 默认对象属性界面
      * @author feng 2016-3-10
      */
-    class DefaultObjectAttributeView extends egret.Sprite {
+    class DefaultObjectAttributeView extends eui.Group {
         constructor(attributeViewInfo) {
             super();
             this._space = attributeViewInfo.owner;
             this._attributeName = attributeViewInfo.name;
             this._attributeType = attributeViewInfo.type;
-            this.label = new egret.TextField();
+            this.label = new eui.Label();
             this.label.width = 100;
             this.addChild(this.label);
-            this.text = new egret.TextField();
-            this.text.bold = true;
+            this.text = new eui.TextInput();
             this.text.x = 100;
             this.text.width = 100;
             this.addChild(this.text);
-            this.graphics.beginFill(0x999999);
-            this.graphics.drawRect(0, 0, 200, 30);
-            this.graphics.endFill();
-            if (!attributeViewInfo.isEditable()) {
-                this.text.type = egret.TextFieldType.INPUT;
-            }
+            this.text.enabled = attributeViewInfo.isEditable();
             this.updateView();
         }
         get space() {
@@ -766,12 +759,17 @@ var feng3d;
      * 默认对象属性块界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectBlockView extends egret.Sprite {
+    class DefaultObjectBlockView extends eui.Group {
         /**
          * @inheritDoc
          */
         constructor(blockViewInfo) {
             super();
+            var hLayout = new eui.VerticalLayout();
+            hLayout.gap = 10;
+            hLayout.paddingTop = 30;
+            hLayout.horizontalAlign = egret.HorizontalAlign.CENTER;
+            this.layout = hLayout;
             this._space = blockViewInfo.owner;
             this._blockName = blockViewInfo.name;
             this.itemList = blockViewInfo.itemList;
@@ -780,7 +778,7 @@ var feng3d;
         initView() {
             var h = 0;
             if (this._blockName != null && this._blockName.length > 0) {
-                var blockTitle = new egret.TextField();
+                var blockTitle = new eui.Label();
                 //			label.height = 50;
                 blockTitle.width = 100;
                 blockTitle.height = 20;
@@ -800,15 +798,6 @@ var feng3d;
                 h += displayObject.height + 2;
                 this.attributeViews.push(displayObject);
             }
-            this.graphics.clear();
-            this.graphics.beginFill(0x666666);
-            this.graphics.lineStyle(null, 0x00ff00);
-            this.graphics.moveTo(0, 0);
-            this.graphics.lineTo(200, 0);
-            this.graphics.lineTo(200, h);
-            this.graphics.lineTo(0, h);
-            this.graphics.lineTo(0, 0);
-            this.graphics.endFill();
             this.isInitView = true;
         }
         get space() {
@@ -855,12 +844,17 @@ var feng3d;
      * 默认使用块的对象界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectView extends egret.Sprite {
+    class DefaultObjectView extends eui.Group {
         /**
          * 对象界面数据
          */
         constructor(objectViewInfo) {
             super();
+            var hLayout = new eui.VerticalLayout();
+            hLayout.gap = 10;
+            hLayout.paddingTop = 30;
+            hLayout.horizontalAlign = egret.HorizontalAlign.CENTER;
+            this.layout = hLayout;
             this._objectViewInfo = objectViewInfo;
             this._space = objectViewInfo.owner;
             this.blockViews = [];
@@ -873,10 +867,6 @@ var feng3d;
                 h += displayObject.height + 2;
                 this.blockViews.push(displayObject);
             }
-            this.graphics.clear();
-            this.graphics.beginFill(0x666666);
-            this.graphics.drawRect(0, 0, 200, h);
-            this.graphics.endFill();
             this.$updateView();
         }
         get space() {
@@ -1060,6 +1050,9 @@ var feng3d;
         }
         static getClass(className) {
             return ObjectView.viewClass[className];
+        }
+        static setClass(classD) {
+            ObjectView.viewClass[feng3d.getClassName(classD)] = classD;
         }
         static get viewClass() {
             var viewClassList = [feng3d.DefaultBaseObjectView, feng3d.DefaultObjectAttributeView, feng3d.DefaultObjectBlockView, feng3d.DefaultObjectView];

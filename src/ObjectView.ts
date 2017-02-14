@@ -38,6 +38,11 @@ module feng3d {
 			return ObjectView.viewClass[className];
 		}
 
+		public static setClass(classD: any) {
+
+			ObjectView.viewClass[getClassName(classD)] = classD;
+		}
+
 		private static _viewClass: { [className: string]: any };
 		private static get viewClass() {
 
