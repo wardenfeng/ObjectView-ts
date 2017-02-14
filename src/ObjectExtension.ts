@@ -5,6 +5,8 @@ module feng3d {
      * @author feng 2016-4-24
      */
     export function getClassName(value: any): string {
+        if (typeof value == "string")
+            return value;
         var prototype: any = value.prototype ? value.prototype : Object.getPrototypeOf(value);
         var className: string = prototype.constructor.name;
         return className;

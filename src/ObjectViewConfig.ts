@@ -53,17 +53,16 @@ module feng3d {
 			var classConfig: ClassDefinition;
 			this.classConfigVec.forEach(element => {
 				if (element.name == className) {
-					return element;
+					classConfig = element;
 				}
 			});
 
-			if (autoCreate) {
+			if (classConfig == null && autoCreate) {
 				classConfig = new ClassDefinition();
 				classConfig.name = className;
 				this.classConfigVec.push(classConfig);
-				return classConfig;
 			}
-			return null;
+			return classConfig;
 		}
 
 		/**
@@ -77,17 +76,25 @@ module feng3d {
 			var obj: AttributeTypeDefinition;
 			this.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {
-					return element;
+					obj = element;
 				}
 			});
 
-			if (autoCreate) {
+			if (obj == null && autoCreate) {
 				obj = new AttributeTypeDefinition();
 				obj.type = type;
 				this.attributeDefaultViewClassByTypeVec.push(obj);
-				return obj;
 			}
-			return null;
+			return obj;
+		}
+
+		public setConfig(config: any) {
+			this.clearConfig();
+			deepCopy(this, config);
+		}
+
+		public clearConfig() {
+			deepCopy(this, new ObjectViewConfig());
 		}
 	}
 }

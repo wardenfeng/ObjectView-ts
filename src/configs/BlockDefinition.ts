@@ -18,5 +18,15 @@ module feng3d {
 		 * 组件参数
 		 */
 		public componentParam: Object;
+
+		public setComponent(component: any): BlockDefinition {
+			this.component = getClassName(component);
+			return this;
+		}
+
+		public setComponentParam(param: any): BlockDefinition {
+			this.componentParam = param;
+			return this;
+		}
 	}
 }

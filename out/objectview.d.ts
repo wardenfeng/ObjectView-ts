@@ -150,6 +150,9 @@ declare module feng3d {
          * 组件参数
          */
         componentParam: Object;
+        setBlock(block: string): AttributeDefinition;
+        setComponent(component: any): AttributeDefinition;
+        setComponentParam(param: any): AttributeDefinition;
     }
 }
 declare module feng3d {
@@ -170,6 +173,8 @@ declare module feng3d {
          * 组件参数
          */
         componentParam: Object;
+        setComponent(component: any): AttributeTypeDefinition;
+        setComponentParam(param: any): AttributeTypeDefinition;
     }
 }
 declare module feng3d {
@@ -190,6 +195,8 @@ declare module feng3d {
          * 组件参数
          */
         componentParam: Object;
+        setComponent(component: any): BlockDefinition;
+        setComponentParam(param: any): BlockDefinition;
     }
 }
 declare module feng3d {
@@ -218,6 +225,7 @@ declare module feng3d {
          * 自定义对象属性块界面类定义字典（key:属性块名称,value:自定义对象属性块界面类定义）
          */
         blockDefinitionVec: BlockDefinition[];
+        setCustomObjectViewClass(viewClass: any): void;
         /**
          * 获取自定义对象属性定义
          * @param attributeName			属性名称
@@ -554,6 +562,16 @@ declare module feng3d {
     }
 }
 declare module feng3d {
+    class ObjectViewEvent extends egret.Event {
+        static VALUE_CHANGE: string;
+        space: any;
+        attributeName: string;
+        attributeValue: any;
+        constructor(type: string, bubbles?: boolean, cancelable?: boolean);
+        toString(): string;
+    }
+}
+declare module feng3d {
     /**
      * ObjectView总配置数据
      * @author feng 2016-3-23
@@ -599,6 +617,8 @@ declare module feng3d {
          * @return
          */
         getAttributeDefaultViewClass(attributeClass: Object, autoCreate?: Boolean): AttributeTypeDefinition;
+        setConfig(config: any): void;
+        clearConfig(): void;
     }
 }
 declare module feng3d {

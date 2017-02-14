@@ -17,5 +17,15 @@ module feng3d {
 		 * 组件参数
 		 */
 		public componentParam: Object;
+
+		public setComponent(component: any): AttributeTypeDefinition {
+			this.component = getClassName(component);
+			return this;
+		}
+
+		public setComponentParam(param: any): AttributeTypeDefinition {
+			this.componentParam = param;
+			return this;
+		}
 	}
 }

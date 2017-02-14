@@ -23,5 +23,20 @@ module feng3d {
 		 * 组件参数
 		 */
 		public componentParam: Object;
+
+		public setBlock(block: string): AttributeDefinition {
+			this.block = block;
+			return this;
+		}
+
+		public setComponent(component: any): AttributeDefinition {
+			this.component = getClassName(component);
+			return this;
+		}
+
+		public setComponentParam(param: any): AttributeDefinition {
+			this.componentParam = param;
+			return this;
+		}
 	}
 }

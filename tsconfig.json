@@ -34,6 +34,8 @@
         "src/view/DefaultObjectBlockView.ts",
         "src/view/DefaultObjectView.ts",
         //
+        "src/events/ObjectViewEvent.ts",
+        //
         "src/ObjectViewConfig.ts",
         "src/ObjectView.ts"
     ]

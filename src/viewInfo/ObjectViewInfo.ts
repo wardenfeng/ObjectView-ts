@@ -64,7 +64,7 @@ module feng3d {
 					tempInfos.push(objectAttributeInfo);
 				}
 
-				var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(name, false);
+				var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(this.name, false);
 				//				if(classConfig == null)
 				//				{
 				//					classConfig = ObjectViewConfig.instance.createDefaultClassConfig(name);

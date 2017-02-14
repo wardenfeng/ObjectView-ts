@@ -29,6 +29,10 @@ module feng3d {
 		 */
 		public blockDefinitionVec: BlockDefinition[] = [];
 
+		public setCustomObjectViewClass(viewClass: any) {
+			this.component = getClassName(viewClass);
+		}
+
 		/**
 		 * 获取自定义对象属性定义
 		 * @param attributeName			属性名称
