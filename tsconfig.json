@@ -10,8 +10,6 @@
         //
         "typings/index.d.ts",
         //
-        "src/ObjectExtension.ts",
-        //
         "src/utils/AccessType.ts",
         "src/utils/SortCompare.ts",
         "src/utils/AttributeInfo.ts",

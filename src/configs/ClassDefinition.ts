@@ -30,7 +30,7 @@ module feng3d {
 		public blockDefinitionVec: BlockDefinition[] = [];
 
 		public setCustomObjectViewClass(viewClass: any) {
-			this.component = getClassName(viewClass);
+			this.component = getQualifiedClassName(viewClass);
 		}
 
 		/**

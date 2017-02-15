@@ -1,178 +1,6 @@
 var feng3d;
 (function (feng3d) {
     /**
-     * 获取对象的类名
-     * @author feng 2016-4-24
-     */
-    function getClassName(value) {
-        var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
-        var className = prototype.constructor.name;
-        return className;
-    }
-    feng3d.getClassName = getClassName;
-    /**
-     * 是否为基础类型
-     * @param object    对象
-     */
-    function isBaseType(object) {
-        return typeof object == "number" || typeof object == "boolean" || typeof object == "string";
-    }
-    feng3d.isBaseType = isBaseType;
-    /**
-     * 深克隆
-     * @param source        源数据
-     * @returns             克隆数据
-     */
-    function deepClone(source) {
-        if (isBaseType(source))
-            return source;
-        var prototype = source["prototype"] ? source["prototype"] : Object.getPrototypeOf(source);
-        var target = new prototype.constructor();
-        for (var attribute in source) {
-            target[attribute] = deepClone(source[attribute]);
-        }
-        return target;
-    }
-    feng3d.deepClone = deepClone;
-    /**
-     * （浅）克隆
-     * @param source        源数据
-     * @returns             克隆数据
-     */
-    function clone(source) {
-        if (isBaseType(source))
-            return source;
-        var prototype = source["prototype"] ? source["prototype"] : Object.getPrototypeOf(source);
-        var target = new prototype.constructor();
-        for (var attribute in source) {
-            target[attribute] = source[attribute];
-        }
-        return target;
-    }
-    feng3d.clone = clone;
-    /**
-     * （浅）拷贝数据
-     */
-    function copy(target, source) {
-        var keys = Object.keys(source);
-        keys.forEach(element => {
-            target[element] = source[element];
-        });
-    }
-    feng3d.copy = copy;
-    /**
-     * 深拷贝数据
-     */
-    function deepCopy(target, source) {
-        var keys = Object.keys(source);
-        keys.forEach(element => {
-            if (!source[element] || isBaseType(source[element])) {
-                target[element] = source[element];
-            }
-            else if (!target[element]) {
-                target[element] = deepClone(source[element]);
-            }
-            else {
-                copy(target[element], source[element]);
-            }
-        });
-    }
-    feng3d.deepCopy = deepCopy;
-    /**
-     * 合并数据
-     * @param source        源数据
-     * @param mergeData     合并数据
-     * @param createNew     是否合并为新对象，默认为false
-     * @returns             如果createNew为true时返回新对象，否则返回源数据
-     */
-    function merge(source, mergeData, createNew = false) {
-        if (isBaseType(mergeData))
-            return mergeData;
-        var target = createNew ? clone(source) : source;
-        for (var mergeAttribute in mergeData) {
-            target[mergeAttribute] = merge(source[mergeAttribute], mergeData[mergeAttribute], createNew);
-        }
-        return target;
-    }
-    feng3d.merge = merge;
-    /**
-     * 观察对象
-     * @param object        被观察的对象
-     * @param onChanged     属性值变化回调函数
-     */
-    function watchObject(object, onChanged = null) {
-        if (isBaseType(object))
-            return;
-        for (var key in object) {
-            watch(object, key, onChanged);
-        }
-    }
-    feng3d.watchObject = watchObject;
-    /**
-     * 观察对象中属性
-     * @param object        被观察的对象
-     * @param attribute     被观察的属性
-     * @param onChanged     属性值变化回调函数
-     */
-    function watch(object, attribute, onChanged = null) {
-        if (isBaseType(object))
-            return;
-        if (!object.orig) {
-            Object.defineProperty(object, "orig", {
-                value: {},
-                enumerable: false,
-                writable: false,
-                configurable: true
-            });
-        }
-        object.orig[attribute] = object[attribute];
-        Object.defineProperty(object, attribute, {
-            get: function () {
-                return this.orig[attribute];
-            },
-            set: function (value) {
-                if (onChanged) {
-                    onChanged(this, attribute, this.orig[attribute], value);
-                }
-                this.orig[attribute] = value;
-            }
-        });
-    }
-    feng3d.watch = watch;
-    /**
-     * 取消观察对象
-     * @param object        被观察的对象
-     */
-    function unwatchObject(object) {
-        if (isBaseType(object))
-            return;
-        if (!object.orig)
-            return;
-        for (var key in object.orig) {
-            unwatch(object, key);
-        }
-        delete object.orig;
-    }
-    feng3d.unwatchObject = unwatchObject;
-    /**
-     * 取消观察对象中属性
-     * @param object        被观察的对象
-     * @param attribute     被观察的属性
-     */
-    function unwatch(object, attribute) {
-        if (isBaseType(object))
-            return;
-        Object.defineProperty(object, attribute, {
-            value: object.orig[attribute],
-            enumerable: true,
-            writable: true
-        });
-    }
-    feng3d.unwatch = unwatch;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 访问类型
      * @author feng 2016-3-28
      */
@@ -272,7 +100,7 @@ var feng3d;
             return this;
         }
         setComponent(component) {
-            this.component = feng3d.getClassName(component);
+            this.component = feng3d.getQualifiedClassName(component);
             return this;
         }
         setComponentParam(param) {
@@ -290,7 +118,7 @@ var feng3d;
      */
     class AttributeTypeDefinition {
         setComponent(component) {
-            this.component = feng3d.getClassName(component);
+            this.component = feng3d.getQualifiedClassName(component);
             return this;
         }
         setComponentParam(param) {
@@ -318,7 +146,7 @@ var feng3d;
             this.component = "";
         }
         setComponent(component) {
-            this.component = feng3d.getClassName(component);
+            this.component = feng3d.getQualifiedClassName(component);
             return this;
         }
         setComponentParam(param) {
@@ -354,7 +182,7 @@ var feng3d;
             this.blockDefinitionVec = [];
         }
         setCustomObjectViewClass(viewClass) {
-            this.component = feng3d.getClassName(viewClass);
+            this.component = feng3d.getQualifiedClassName(viewClass);
         }
         /**
          * 获取自定义对象属性定义
@@ -918,19 +746,19 @@ var feng3d;
             /**
              * 默认基础类型对象界面类定义
              */
-            this.defaultBaseObjectViewClass = feng3d.getClassName(feng3d.DefaultBaseObjectView);
+            this.defaultBaseObjectViewClass = feng3d.getQualifiedClassName(feng3d.DefaultBaseObjectView);
             /**
              * 默认对象界面类定义
              */
-            this.defaultObjectViewClass = feng3d.getClassName(feng3d.DefaultObjectView);
+            this.defaultObjectViewClass = feng3d.getQualifiedClassName(feng3d.DefaultObjectView);
             /**
              * 默认对象属性界面类定义
              */
-            this.defaultObjectAttributeViewClass = feng3d.getClassName(feng3d.DefaultObjectAttributeView);
+            this.defaultObjectAttributeViewClass = feng3d.getQualifiedClassName(feng3d.DefaultObjectAttributeView);
             /**
              * 属性块默认界面
              */
-            this.defaultObjectAttributeBlockView = feng3d.getClassName(feng3d.DefaultObjectBlockView);
+            this.defaultObjectAttributeBlockView = feng3d.getQualifiedClassName(feng3d.DefaultObjectBlockView);
             /**
              * 指定属性类型界面类定义字典（key:属性类名称,value:属性界面类定义）
              */
@@ -953,7 +781,7 @@ var feng3d;
          * @return
          */
         getClassConfig(object, autoCreate = true) {
-            var className = feng3d.getClassName(object);
+            var className = feng3d.getQualifiedClassName(object);
             var classConfig;
             this.classConfigVec.forEach(element => {
                 if (element.name == className) {
@@ -974,7 +802,7 @@ var feng3d;
          * @return
          */
         getAttributeDefaultViewClass(attributeClass, autoCreate = true) {
-            var type = feng3d.getClassName(attributeClass);
+            var type = feng3d.getQualifiedClassName(attributeClass);
             var obj;
             this.attributeDefaultViewClassByTypeVec.forEach(element => {
                 if (element.type == type) {
@@ -1020,7 +848,7 @@ var feng3d;
          * @return
          */
         static getObjectInfo(object) {
-            var className = feng3d.getClassName(object);
+            var className = feng3d.getQualifiedClassName(object);
             var objectInfo = new feng3d.ObjectViewInfo();
             var classConfig = feng3d.ObjectViewConfig.instance.getClassConfig(object, false);
             if (classConfig) {
@@ -1030,27 +858,11 @@ var feng3d;
             objectInfo.owner = object;
             return objectInfo;
         }
-        static getClass(className) {
-            return ObjectView.viewClass[className];
-        }
-        static setClass(classD) {
-            ObjectView.viewClass[feng3d.getClassName(classD)] = classD;
-        }
-        static get viewClass() {
-            var viewClassList = [feng3d.DefaultBaseObjectView, feng3d.DefaultObjectAttributeView, feng3d.DefaultObjectBlockView, feng3d.DefaultObjectView];
-            if (!ObjectView._viewClass) {
-                ObjectView._viewClass = {};
-                viewClassList.forEach(element => {
-                    ObjectView._viewClass[feng3d.getClassName(element)] = element;
-                });
-            }
-            return ObjectView._viewClass;
-        }
         static getAttributeInfoList(object) {
             var objectAttributeInfos = [];
             for (var attribute in object) {
                 var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attribute);
-                objectAttributeInfos.push(new feng3d.AttributeInfo(attribute, feng3d.getClassName(object[attribute]), propertyDescriptor.writable));
+                objectAttributeInfos.push(new feng3d.AttributeInfo(attribute, feng3d.getQualifiedClassName(object[attribute]), propertyDescriptor.writable));
             }
             return objectAttributeInfos;
         }

@@ -30,7 +30,7 @@ module feng3d {
 		}
 
 		public setComponent(component: any): AttributeDefinition {
-			this.component = getClassName(component);
+			this.component = getQualifiedClassName(component);
 			return this;
 		}
 

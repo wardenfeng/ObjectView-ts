@@ -20,7 +20,7 @@ module feng3d {
 		 * @return
 		 */
 		private static getObjectInfo(object: Object): ObjectViewInfo {
-			var className = getClassName(object);
+			var className = getQualifiedClassName(object);
 			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 
 			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(object, false);
@@ -33,35 +33,11 @@ module feng3d {
 			return objectInfo;
 		}
 
-		public static getClass(className: string) {
-
-			return ObjectView.viewClass[className];
-		}
-
-		public static setClass(classD: any) {
-
-			ObjectView.viewClass[getClassName(classD)] = classD;
-		}
-
-		private static _viewClass: { [className: string]: any };
-		private static get viewClass() {
-
-			var viewClassList = [DefaultBaseObjectView, DefaultObjectAttributeView, DefaultObjectBlockView, DefaultObjectView];
-
-			if (!ObjectView._viewClass) {
-				ObjectView._viewClass = {};
-				viewClassList.forEach(element => {
-					ObjectView._viewClass[getClassName(element)] = element;
-				});
-			}
-			return ObjectView._viewClass;
-		}
-
 		public static getAttributeInfoList(object: Object): AttributeInfo[] {
 			var objectAttributeInfos: AttributeInfo[] = [];
 			for (var attribute in object) {
 				var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attribute);
-				objectAttributeInfos.push(new AttributeInfo(attribute, getClassName(object[attribute]), propertyDescriptor.writable));
+				objectAttributeInfos.push(new AttributeInfo(attribute, getQualifiedClassName(object[attribute]), propertyDescriptor.writable));
 			}
 			return objectAttributeInfos;
 		}

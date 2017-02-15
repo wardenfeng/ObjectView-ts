@@ -8,19 +8,19 @@ module feng3d {
 		/**
 		 * 默认基础类型对象界面类定义
 		 */
-		public defaultBaseObjectViewClass = getClassName(DefaultBaseObjectView);
+		public defaultBaseObjectViewClass = getQualifiedClassName(DefaultBaseObjectView);
 		/**
 		 * 默认对象界面类定义
 		 */
-		public defaultObjectViewClass = getClassName(DefaultObjectView);
+		public defaultObjectViewClass = getQualifiedClassName(DefaultObjectView);
 		/**
 		 * 默认对象属性界面类定义
 		 */
-		public defaultObjectAttributeViewClass = getClassName(DefaultObjectAttributeView);
+		public defaultObjectAttributeViewClass = getQualifiedClassName(DefaultObjectAttributeView);
 		/**
 		 * 属性块默认界面
 		 */
-		public defaultObjectAttributeBlockView = getClassName(DefaultObjectBlockView);
+		public defaultObjectAttributeBlockView = getQualifiedClassName(DefaultObjectBlockView);
 
 		/**
 		 * 指定属性类型界面类定义字典（key:属性类名称,value:属性界面类定义）
@@ -48,7 +48,7 @@ module feng3d {
 		 * @return
 		 */
 		public getClassConfig(object: Object, autoCreate: Boolean = true): ClassDefinition {
-			var className = getClassName(object);
+			var className = getQualifiedClassName(object);
 
 			var classConfig: ClassDefinition;
 			this.classConfigVec.forEach(element => {
@@ -72,7 +72,7 @@ module feng3d {
 		 * @return
 		 */
 		public getAttributeDefaultViewClass(attributeClass: string, autoCreate: Boolean = true): AttributeTypeDefinition {
-			var type:string = getClassName(attributeClass);
+			var type: string = getQualifiedClassName(attributeClass);
 			var obj: AttributeTypeDefinition;
 			this.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {
