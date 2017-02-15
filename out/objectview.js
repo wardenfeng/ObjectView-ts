@@ -5,8 +5,6 @@ var feng3d;
      * @author feng 2016-4-24
      */
     function getClassName(value) {
-        if (typeof value == "string")
-            return value;
         var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
         var className = prototype.constructor.name;
         return className;
@@ -231,10 +229,10 @@ var feng3d;
         /**
          * 构建
          */
-        constructor(name = "", type = "", access = "") {
+        constructor(name = "", type = "", writable = true) {
             this.name = name;
             this.type = type;
-            this.access = access;
+            this.writable = writable;
         }
         /**
          * 比较字符串
@@ -435,18 +433,6 @@ var feng3d;
             this.component = "";
         }
         /**
-         * 是否可编辑
-         */
-        isEditable() {
-            return this.access != feng3d.AccessType.readonly;
-        }
-        /**
-         * 是否可读
-         */
-        canRead() {
-            return this.access == feng3d.AccessType.readonly || this.access == feng3d.AccessType.readwrite;
-        }
-        /**
          * 初始化组件
          */
         initComponent() {
@@ -548,9 +534,7 @@ var feng3d;
                 //获取属性信息列表
                 var attributes = [];
                 var keys = Object.keys(this.owner);
-                keys.forEach(element => {
-                    attributes.push(new feng3d.AttributeInfo(element, feng3d.getClassName(element), feng3d.AccessType.readwrite));
-                });
+                attributes = feng3d.ObjectView.getAttributeInfoList(this.owner);
                 attributes.sort(feng3d.AttributeInfo.compare);
                 //收集对象属性信息
                 var dic = {};
@@ -721,7 +705,7 @@ var feng3d;
             this.text.x = 100;
             this.text.width = 100;
             this.addChild(this.text);
-            this.text.enabled = attributeViewInfo.isEditable();
+            this.text.enabled = attributeViewInfo.writable;
             this.updateView();
         }
         get space() {
@@ -790,8 +774,6 @@ var feng3d;
             this.attributeViews = [];
             var objectAttributeInfos = this.itemList;
             for (var i = 0; i < objectAttributeInfos.length; i++) {
-                if (!objectAttributeInfos[i].canRead())
-                    continue;
                 var displayObject = objectAttributeInfos[i].getView();
                 displayObject.y = h;
                 this.addChild(displayObject);
@@ -1063,6 +1045,14 @@ var feng3d;
                 });
             }
             return ObjectView._viewClass;
+        }
+        static getAttributeInfoList(object) {
+            var objectAttributeInfos = [];
+            for (var attribute in object) {
+                var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attribute);
+                objectAttributeInfos.push(new feng3d.AttributeInfo(attribute, feng3d.getClassName(object[attribute]), propertyDescriptor.writable));
+            }
+            return objectAttributeInfos;
         }
     }
     feng3d.ObjectView = ObjectView;

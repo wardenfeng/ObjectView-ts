@@ -27,7 +27,7 @@ module feng3d {
 			this.text.width = 100;
 			this.addChild(this.text);
 
-			this.text.enabled = attributeViewInfo.isEditable();
+			this.text.enabled = attributeViewInfo.writable;
 
 			this.updateView();
 		}

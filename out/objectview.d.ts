@@ -112,13 +112,13 @@ declare module feng3d {
          */
         type: string;
         /**
-         * 访问类型
+         * 是否可写
          */
-        access: string;
+        writable: boolean;
         /**
          * 构建
          */
-        constructor(name?: string, type?: string, access?: string);
+        constructor(name?: string, type?: string, writable?: boolean);
         /**
          * 比较字符串
          * @param a
@@ -338,9 +338,9 @@ declare module feng3d {
          */
         type: string;
         /**
-         * 访问类型
+         * 是否可写
          */
-        access: string;
+        writable: boolean;
         /**
          * 所属块名称
          */
@@ -357,14 +357,6 @@ declare module feng3d {
          * 属性所属对象
          */
         owner: Object;
-        /**
-         * 是否可编辑
-         */
-        isEditable(): boolean;
-        /**
-         * 是否可读
-         */
-        canRead(): boolean;
         /**
          * 初始化组件
          */
@@ -615,7 +607,7 @@ declare module feng3d {
          * @param autoCreate			是否自动创建
          * @return
          */
-        getAttributeDefaultViewClass(attributeClass: Object, autoCreate?: Boolean): AttributeTypeDefinition;
+        getAttributeDefaultViewClass(attributeClass: string, autoCreate?: Boolean): AttributeTypeDefinition;
         setConfig(config: any): void;
         clearConfig(): void;
     }
@@ -641,5 +633,6 @@ declare module feng3d {
         static setClass(classD: any): void;
         private static _viewClass;
         private static readonly viewClass;
+        static getAttributeInfoList(object: Object): AttributeInfo[];
     }
 }

@@ -44,9 +44,7 @@ module feng3d {
 				var attributes: AttributeInfo[] = [];
 
 				var keys = Object.keys(this.owner);
-				keys.forEach(element => {
-					attributes.push(new AttributeInfo(element, getClassName(element), AccessType.readwrite));
-				});
+				attributes = ObjectView.getAttributeInfoList(this.owner);
 				attributes.sort(AttributeInfo.compare);
 
 				//收集对象属性信息

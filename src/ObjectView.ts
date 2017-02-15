@@ -56,5 +56,14 @@ module feng3d {
 			}
 			return ObjectView._viewClass;
 		}
+
+		public static getAttributeInfoList(object: Object): AttributeInfo[] {
+			var objectAttributeInfos: AttributeInfo[] = [];
+			for (var attribute in object) {
+				var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attribute);
+				objectAttributeInfos.push(new AttributeInfo(attribute, getClassName(object[attribute]), propertyDescriptor.writable));
+			}
+			return objectAttributeInfos;
+		}
 	}
 }

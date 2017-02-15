@@ -16,17 +16,17 @@ module feng3d {
 		public type: string;
 
 		/**
-		 * 访问类型
+		 * 是否可写
 		 */
-		public access: string;
+		public writable: boolean;
 
 		/**
 		 * 构建
 		 */
-		constructor(name = "", type = "", access = "") {
+		constructor(name = "", type = "", writable = true) {
 			this.name = name;
 			this.type = type;
-			this.access = access;
+			this.writable = writable;
 		}
 
 		/**

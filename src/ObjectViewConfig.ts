@@ -71,8 +71,8 @@ module feng3d {
 		 * @param autoCreate			是否自动创建
 		 * @return
 		 */
-		public getAttributeDefaultViewClass(attributeClass: Object, autoCreate: Boolean = true): AttributeTypeDefinition {
-			var type = getClassName(attributeClass);
+		public getAttributeDefaultViewClass(attributeClass: string, autoCreate: Boolean = true): AttributeTypeDefinition {
+			var type:string = getClassName(attributeClass);
 			var obj: AttributeTypeDefinition;
 			this.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {

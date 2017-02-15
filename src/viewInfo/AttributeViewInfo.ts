@@ -15,9 +15,9 @@ module feng3d {
 		public type: string;
 
 		/**
-		 * 访问类型
+		 * 是否可写
 		 */
-		public access: string;
+		public writable: boolean;
 
 		/**
 		 * 所属块名称
@@ -38,20 +38,6 @@ module feng3d {
 		 * 属性所属对象
 		 */
 		public owner: Object;
-
-		/**
-		 * 是否可编辑
-		 */
-		public isEditable(): boolean {
-			return this.access != AccessType.readonly;
-		}
-
-		/**
-		 * 是否可读
-		 */
-		public canRead(): boolean {
-			return this.access == AccessType.readonly || this.access == AccessType.readwrite;
-		}
 
 		/**
 		 * 初始化组件
