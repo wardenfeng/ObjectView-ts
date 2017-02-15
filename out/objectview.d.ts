@@ -536,14 +536,14 @@ declare module feng3d {
          * @param autoCreate			是否自动创建
          * @return
          */
-        getClassConfig(object: Object, autoCreate?: Boolean): ClassDefinition;
+        getClassConfig(object: any, autoCreate?: Boolean): ClassDefinition;
         /**
          * 获取特定类型的默认属性界面定义
          * @param attributeClass		属性类型
          * @param autoCreate			是否自动创建
          * @return
          */
-        getAttributeDefaultViewClass(attributeClass: string, autoCreate?: Boolean): AttributeTypeDefinition;
+        getAttributeDefaultViewClass(attributeClass: any, autoCreate?: Boolean): AttributeTypeDefinition;
         setConfig(config: any): void;
         clearConfig(): void;
     }
@@ -565,6 +565,7 @@ declare module feng3d {
          * @return
          */
         private static getObjectInfo(object);
-        static getAttributeInfoList(object: Object): AttributeInfo[];
+        static getAttributeViewInfo(owner: Object, attributeName: string): AttributeViewInfo;
+        static getAttributeDefinition(owner: Object, attributeName: string): AttributeDefinition;
     }
 }

@@ -40,48 +40,26 @@ module feng3d {
 		 */
 		public getObjectAttributeInfos(): AttributeViewInfo[] {
 			if (this.objectAttributeInfos == null) {
-				//获取属性信息列表
-				var attributes: AttributeInfo[] = [];
 
-				var keys = Object.keys(this.owner);
-				attributes = ObjectView.getAttributeInfoList(this.owner);
-				attributes.sort(AttributeInfo.compare);
-
-				//收集对象属性信息
-				var dic = {};
-				var tempInfos: AttributeViewInfo[] = [];
 				var objectAttributeInfo: AttributeViewInfo;
-				var attributeInfo: AttributeInfo;
 				var i: number;
-				for (i = 0; i < attributes.length; i++) {
-					attributeInfo = attributes[i];
-					objectAttributeInfo = new AttributeViewInfo();
-					objectAttributeInfo.owner = this.owner;
-					deepCopy(objectAttributeInfo, attributeInfo);
-					dic[objectAttributeInfo.name] = objectAttributeInfo;
-					tempInfos.push(objectAttributeInfo);
-				}
-
+				this.objectAttributeInfos = [];
 				var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(this.name, false);
-				//				if(classConfig == null)
-				//				{
-				//					classConfig = ObjectViewConfig.instance.createDefaultClassConfig(name);
-				//				}
-
 				if (classConfig != null) {
 					//根据配置中默认顺序生产对象属性信息列表
-					this.objectAttributeInfos = [];
 					var attributeDefinitions: AttributeDefinition[] = classConfig.attributeDefinitionVec;
 					for (i = 0; i < attributeDefinitions.length; i++) {
-						objectAttributeInfo = dic[attributeDefinitions[i].name];
-						if (objectAttributeInfo != null) {
-							deepCopy(objectAttributeInfo, attributeDefinitions[i]);
-							this.objectAttributeInfos.push(objectAttributeInfo);
-						}
+						objectAttributeInfo = ObjectView.getAttributeViewInfo(this.owner, attributeDefinitions[i].name);
+						this.objectAttributeInfos.push(objectAttributeInfo);
 					}
 				}
 				else {
-					this.objectAttributeInfos = tempInfos.concat();
+					var attributeNames = Object.keys(this.owner);
+					attributeNames = attributeNames.sort();
+					for (i = 0; i < attributeNames.length; i++) {
+						objectAttributeInfo = ObjectView.getAttributeViewInfo(this.owner, attributeNames[i]);
+						this.objectAttributeInfos.push(objectAttributeInfo);
+					}
 				}
 			}
 			return this.objectAttributeInfos;
@@ -118,7 +96,7 @@ module feng3d {
 			var blockDefinition: BlockDefinition;
 			this.objectBlockInfos = [];
 			var pushDic = {};
-			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(name, false);
+			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(this.name, false);
 			if (classConfig != null) {
 				for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
 					blockDefinition = classConfig.blockDefinitionVec[i];
@@ -128,7 +106,7 @@ module feng3d {
 						objectBlockInfo.name = blockDefinition.name;
 						objectBlockInfo.owner = this.owner;
 					}
-					deepCopy(objectBlockInfo, blockDefinition);
+					ObjectUtils.deepCopy(objectBlockInfo, blockDefinition);
 					this.objectBlockInfos.push(objectBlockInfo);
 					pushDic[objectBlockInfo.name] = true;
 				}
@@ -154,7 +132,7 @@ module feng3d {
 				return;
 
 			//返回基础类型界面类定义
-			if (isBaseType(this.owner)) {
+			if (ClassUtils.isBaseType(this.owner)) {
 				this.component = ObjectViewConfig.instance.defaultBaseObjectViewClass;
 				return;
 			}
@@ -169,7 +147,7 @@ module feng3d {
 		public getView(): egret.DisplayObject {
 			this.initComponent();
 
-			var cls = ObjectView.getClass(this.component);
+			var cls = ClassUtils.getDefinitionByName(this.component);
 			var view = new cls(this)
 			return view;
 		}

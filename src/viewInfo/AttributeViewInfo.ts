@@ -65,7 +65,7 @@ module feng3d {
 		public getView(): egret.DisplayObject {
 			this.initComponent();
 
-			var cls = ObjectView.getClass(this.component);
+			var cls = ClassUtils.getDefinitionByName(this.component);
 			var view = new cls(this);
 			return view;
 		}

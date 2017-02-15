@@ -19,7 +19,7 @@ module feng3d {
 		public componentParam: Object;
 
 		public setComponent(component: any): AttributeTypeDefinition {
-			this.component = getQualifiedClassName(component);
+			this.component = ClassUtils.getQualifiedClassName(component);
 			return this;
 		}
 

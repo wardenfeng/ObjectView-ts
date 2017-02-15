@@ -17,7 +17,7 @@ module feng3d {
 			var hLayout: eui.VerticalLayout = new eui.VerticalLayout();
 			hLayout.gap = 10;
 			hLayout.paddingTop = 30;
-			hLayout.horizontalAlign = egret.HorizontalAlign.CENTER;
+			hLayout.horizontalAlign = egret.HorizontalAlign.LEFT;
 			this.layout = hLayout;
 
 			this._objectViewInfo = objectViewInfo;

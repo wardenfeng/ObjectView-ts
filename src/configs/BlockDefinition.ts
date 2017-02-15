@@ -20,7 +20,7 @@ module feng3d {
 		public componentParam: Object;
 
 		public setComponent(component: any): BlockDefinition {
-			this.component = getQualifiedClassName(component);
+			this.component = ClassUtils.getQualifiedClassName(component);
 			return this;
 		}
 

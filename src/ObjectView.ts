@@ -20,12 +20,12 @@ module feng3d {
 		 * @return
 		 */
 		private static getObjectInfo(object: Object): ObjectViewInfo {
-			var className = getQualifiedClassName(object);
+			var className = ClassUtils.getQualifiedClassName(object);
 			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 
 			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(object, false);
 			if (classConfig) {
-				deepCopy(objectInfo, classConfig);
+				ObjectUtils.deepCopy(objectInfo, classConfig);
 			}
 
 			objectInfo.name = className;
@@ -33,13 +33,37 @@ module feng3d {
 			return objectInfo;
 		}
 
-		public static getAttributeInfoList(object: Object): AttributeInfo[] {
-			var objectAttributeInfos: AttributeInfo[] = [];
-			for (var attribute in object) {
-				var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attribute);
-				objectAttributeInfos.push(new AttributeInfo(attribute, getQualifiedClassName(object[attribute]), propertyDescriptor.writable));
+		public static getAttributeViewInfo(owner: Object, attributeName: string) {
+
+			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(owner, attributeName);
+			var objectAttributeInfo = new AttributeViewInfo();
+			objectAttributeInfo.name = attributeName;
+			objectAttributeInfo.block = attributeDefinition ? attributeDefinition.block : "";
+			objectAttributeInfo.component = attributeDefinition ? attributeDefinition.component : "";
+			objectAttributeInfo.componentParam = attributeDefinition ? attributeDefinition.componentParam : null;
+			objectAttributeInfo.owner = owner;
+			var propertyDescriptor = Object.getOwnPropertyDescriptor(owner, objectAttributeInfo.name);
+			if (propertyDescriptor != null) {
+				objectAttributeInfo.writable = propertyDescriptor.writable;
+			} else {
+				objectAttributeInfo.writable = true;
 			}
-			return objectAttributeInfos;
+			objectAttributeInfo.type = ClassUtils.getQualifiedClassName(owner[objectAttributeInfo.name]);
+			return objectAttributeInfo;
+
+		}
+
+		public static getAttributeDefinition(owner: Object, attributeName: string) {
+
+			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(owner);
+			if (!classConfig)
+				return null;
+			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++) {
+				var attributeDefinition: AttributeDefinition = classConfig.attributeDefinitionVec[i];
+				if (attributeDefinition.name == attributeName)
+					return attributeDefinition;
+			}
+			return null;
 		}
 	}
 }

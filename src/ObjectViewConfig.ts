@@ -8,19 +8,19 @@ module feng3d {
 		/**
 		 * 默认基础类型对象界面类定义
 		 */
-		public defaultBaseObjectViewClass = getQualifiedClassName(DefaultBaseObjectView);
+		public defaultBaseObjectViewClass = ClassUtils.getQualifiedClassName(DefaultBaseObjectView);
 		/**
 		 * 默认对象界面类定义
 		 */
-		public defaultObjectViewClass = getQualifiedClassName(DefaultObjectView);
+		public defaultObjectViewClass = ClassUtils.getQualifiedClassName(DefaultObjectView);
 		/**
 		 * 默认对象属性界面类定义
 		 */
-		public defaultObjectAttributeViewClass = getQualifiedClassName(DefaultObjectAttributeView);
+		public defaultObjectAttributeViewClass = ClassUtils.getQualifiedClassName(DefaultObjectAttributeView);
 		/**
 		 * 属性块默认界面
 		 */
-		public defaultObjectAttributeBlockView = getQualifiedClassName(DefaultObjectBlockView);
+		public defaultObjectAttributeBlockView = ClassUtils.getQualifiedClassName(DefaultObjectBlockView);
 
 		/**
 		 * 指定属性类型界面类定义字典（key:属性类名称,value:属性界面类定义）
@@ -47,8 +47,11 @@ module feng3d {
 		 * @param autoCreate			是否自动创建
 		 * @return
 		 */
-		public getClassConfig(object: Object, autoCreate: Boolean = true): ClassDefinition {
-			var className = getQualifiedClassName(object);
+		public getClassConfig(object: any, autoCreate: Boolean = true): ClassDefinition {
+			var className: string = object;
+			if (typeof object != "string") {
+				className = ClassUtils.getQualifiedClassName(object);
+			}
 
 			var classConfig: ClassDefinition;
 			this.classConfigVec.forEach(element => {
@@ -71,8 +74,11 @@ module feng3d {
 		 * @param autoCreate			是否自动创建
 		 * @return
 		 */
-		public getAttributeDefaultViewClass(attributeClass: string, autoCreate: Boolean = true): AttributeTypeDefinition {
-			var type: string = getQualifiedClassName(attributeClass);
+		public getAttributeDefaultViewClass(attributeClass: any, autoCreate: Boolean = true): AttributeTypeDefinition {
+			var type: string = attributeClass;
+			if (typeof attributeClass != "string") {
+				type = ClassUtils.getQualifiedClassName(attributeClass);
+			}
 			var obj: AttributeTypeDefinition;
 			this.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {
@@ -90,11 +96,11 @@ module feng3d {
 
 		public setConfig(config: any) {
 			this.clearConfig();
-			deepCopy(this, config);
+			ObjectUtils.deepCopy(this, config);
 		}
 
 		public clearConfig() {
-			deepCopy(this, new ObjectViewConfig());
+			ObjectUtils.deepCopy(this, new ObjectViewConfig());
 		}
 	}
 }

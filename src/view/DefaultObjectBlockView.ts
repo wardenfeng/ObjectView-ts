@@ -19,7 +19,7 @@ module feng3d {
 			var hLayout: eui.VerticalLayout = new eui.VerticalLayout();
 			hLayout.gap = 10;
 			hLayout.paddingTop = 30;
-			hLayout.horizontalAlign = egret.HorizontalAlign.CENTER;
+			hLayout.horizontalAlign = egret.HorizontalAlign.LEFT;
 			this.layout = hLayout;
 
 			this._space = blockViewInfo.owner;
@@ -35,7 +35,6 @@ module feng3d {
 				var blockTitle = new eui.Label();
 				//			label.height = 50;
 				blockTitle.width = 100;
-				blockTitle.height = 20;
 				blockTitle.textColor = 0xff0000;
 				blockTitle.text = this._blockName;
 				this.addChild(blockTitle);
