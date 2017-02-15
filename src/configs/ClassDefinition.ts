@@ -42,15 +42,14 @@ module feng3d {
 		public getAttributeDefinition(attributeName: string, autoCreate: Boolean = true): AttributeDefinition {
 			var attributeDefinition: AttributeDefinition;
 			this.attributeDefinitionVec.forEach(element => {
-
 				if (element.name == attributeName) {
-					return element;
+					attributeDefinition = element;
 				}
 			});
 
-			attributeDefinition = new AttributeDefinition();
-			attributeDefinition.name = attributeName;
-			if (autoCreate) {
+			if (!attributeDefinition && autoCreate) {
+				attributeDefinition = new AttributeDefinition();
+				attributeDefinition.name = attributeName;
 				this.attributeDefinitionVec.push(attributeDefinition);
 			}
 			return attributeDefinition;
@@ -66,13 +65,13 @@ module feng3d {
 			var blockDefinition: BlockDefinition;
 			this.blockDefinitionVec.forEach(element => {
 				if (element.name == blockName) {
-					return element;
+					blockDefinition = element;
 				}
 			});
 
-			blockDefinition = new BlockDefinition();
-			blockDefinition.name = blockName;
-			if (autoCreate) {
+			if (!blockDefinition && autoCreate) {
+				blockDefinition = new BlockDefinition();
+				blockDefinition.name = blockName;
 				this.blockDefinitionVec.push(blockDefinition);
 			}
 			return blockDefinition;

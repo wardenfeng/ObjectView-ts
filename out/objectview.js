@@ -194,12 +194,12 @@ var feng3d;
             var attributeDefinition;
             this.attributeDefinitionVec.forEach(element => {
                 if (element.name == attributeName) {
-                    return element;
+                    attributeDefinition = element;
                 }
             });
-            attributeDefinition = new feng3d.AttributeDefinition();
-            attributeDefinition.name = attributeName;
-            if (autoCreate) {
+            if (!attributeDefinition && autoCreate) {
+                attributeDefinition = new feng3d.AttributeDefinition();
+                attributeDefinition.name = attributeName;
                 this.attributeDefinitionVec.push(attributeDefinition);
             }
             return attributeDefinition;
@@ -214,12 +214,12 @@ var feng3d;
             var blockDefinition;
             this.blockDefinitionVec.forEach(element => {
                 if (element.name == blockName) {
-                    return element;
+                    blockDefinition = element;
                 }
             });
-            blockDefinition = new feng3d.BlockDefinition();
-            blockDefinition.name = blockName;
-            if (autoCreate) {
+            if (!blockDefinition && autoCreate) {
+                blockDefinition = new feng3d.BlockDefinition();
+                blockDefinition.name = blockName;
                 this.blockDefinitionVec.push(blockDefinition);
             }
             return blockDefinition;
