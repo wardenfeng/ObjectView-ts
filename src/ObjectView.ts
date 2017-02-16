@@ -4,9 +4,15 @@ module feng3d {
 	 * @author feng 2016-3-10
 	 */
 	export class ObjectView {
+
 		/**
 		 * 获取对象界面
-		 * @param object	用于生成界面的对象
+		 * 
+		 * @static
+		 * @param {Object} object				用于生成界面的对象
+		 * @returns {egret.DisplayObject}		对象界面
+		 * 
+		 * @memberOf ObjectView
 		 */
 		public static getObjectView(object: Object): egret.DisplayObject {
 
@@ -32,12 +38,18 @@ module feng3d {
 
 		/**
 		 * 获取属性界面
+		 * 
+		 * @static
+		 * @param {AttributeViewInfo} attributeViewInfo			属性界面信息
+		 * @returns {egret.DisplayObject}						属性界面
+		 * 
+		 * @memberOf ObjectView
 		 */
 		public static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject {
 
 			if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
 
-				var defaultViewClass: AttributeTypeDefinition = ObjectView.getAttributeDefaultViewClass(attributeViewInfo.type);
+				var defaultViewClass: AttributeTypeDefinition = $objectViewConfig.attributeDefaultViewClassByTypeVec[attributeViewInfo.type];
 				var tempComponent = defaultViewClass ? defaultViewClass.component : "";
 				if (tempComponent != null && tempComponent != "") {
 					attributeViewInfo.component = defaultViewClass.component;
@@ -59,7 +71,12 @@ module feng3d {
 
 		/**
 		 * 获取块界面
-		 * @param owner		所属对象
+		 * 
+		 * @static
+		 * @param {BlockViewInfo} blockViewInfo			块界面信息
+		 * @returns {egret.DisplayObject}				块界面
+		 * 
+		 * @memberOf ObjectView
 		 */
 		public static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject {
 
@@ -81,41 +98,156 @@ module feng3d {
 		 * @return
 		 */
 		private static getObjectInfo(object: Object): ObjectViewInfo {
-			var className = ClassUtils.getQualifiedClassName(object);
-			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 
-			var classConfig: ClassDefinition = ObjectView.getClassConfig(object);
+			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
+			var className = ClassUtils.getQualifiedClassName(object);
+			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
 			if (classConfig) {
 				ObjectUtils.deepCopy(objectInfo, classConfig);
 			}
-
+			objectInfo.objectAttributeInfos = ObjectView.getObjectAttributeInfos(object);
+			objectInfo.objectBlockInfos = ObjectView.getObjectBlockInfos(object);
 			objectInfo.name = className;
 			objectInfo.owner = object;
 			return objectInfo;
 		}
 
-		public static getAttributeViewInfo(owner: Object, attributeName: string) {
+		/**
+		 * 获取对象属性列表
+		 */
+		private static getObjectAttributeInfos(object: Object): AttributeViewInfo[] {
 
-			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(owner, attributeName);
+			var attributeNames: string[] = [];
+			var className = ClassUtils.getQualifiedClassName(object);
+			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
+			if (classConfig != null) {
+				//根据配置中默认顺序生产对象属性信息列表
+				var attributeDefinitions: AttributeDefinition[] = classConfig.attributeDefinitionVec;
+				for (var i = 0; i < attributeDefinitions.length; i++) {
+					if (attributeNames.indexOf(attributeDefinitions[i].name) == -1)
+						attributeNames.push(attributeDefinitions[i].name);
+				}
+			}
+			else {
+				attributeNames = Object.keys(object);
+				attributeNames = attributeNames.sort();
+			}
+
+			var objectAttributeInfos: AttributeViewInfo[] = [];
+			for (var i = 0; i < attributeNames.length; i++) {
+				var objectAttributeInfo = ObjectView.getAttributeViewInfo(object, attributeNames[i]);
+				objectAttributeInfos.push(objectAttributeInfo);
+			}
+			return objectAttributeInfos;
+		}
+
+		/**
+		 * 获取对象块信息列表
+		 * 
+		 * @private
+		 * @static
+		 * @param {Object} object			对象
+		 * @returns {BlockViewInfo[]}		对象块信息列表
+		 * 
+		 * @memberOf ObjectView
+		 */
+		private static getObjectBlockInfos(object: Object): BlockViewInfo[] {
+
+			var objectBlockInfos: BlockViewInfo[] = [];
+			var dic: { [blockName: string]: BlockViewInfo } = {};
+			var objectBlockInfo: BlockViewInfo
+			var objectAttributeInfos: AttributeViewInfo[] = ObjectView.getObjectAttributeInfos(object);
+
+			//收集块信息
+			var i: number = 0;
+			var tempVec: BlockViewInfo[] = [];
+			for (i = 0; i < objectAttributeInfos.length; i++) {
+				var blockName: string = objectAttributeInfos[i].block;
+				objectBlockInfo = dic[blockName];
+				if (objectBlockInfo == null) {
+					objectBlockInfo = dic[blockName] = new BlockViewInfo();
+					objectBlockInfo.name = blockName
+					objectBlockInfo.owner = object;
+					tempVec.push(objectBlockInfo);
+				}
+				objectBlockInfo.itemList.push(objectAttributeInfos[i]);
+			}
+
+			//按快的默认顺序生成 块信息列表
+			var blockDefinition: BlockDefinition;
+			var pushDic = {};
+
+			var className = ClassUtils.getQualifiedClassName(object);
+			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
+			if (classConfig != null) {
+				for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
+					blockDefinition = classConfig.blockDefinitionVec[i];
+					objectBlockInfo = dic[blockDefinition.name];
+					if (objectBlockInfo == null) {
+						objectBlockInfo = new BlockViewInfo();
+						objectBlockInfo.name = blockDefinition.name;
+						objectBlockInfo.owner = object;
+					}
+					ObjectUtils.deepCopy(objectBlockInfo, blockDefinition);
+					objectBlockInfos.push(objectBlockInfo);
+					pushDic[objectBlockInfo.name] = true;
+				}
+			}
+			//添加剩余的块信息
+			for (i = 0; i < tempVec.length; i++) {
+				if (Boolean(pushDic[tempVec[i].name]) == false) {
+					objectBlockInfos.push(tempVec[i]);
+				}
+			}
+
+			return objectBlockInfos;
+		}
+
+		/**
+		 * 获取属性界面信息
+		 * 
+		 * @private
+		 * @static
+		 * @param {Object} object				属性所属对象
+		 * @param {string} attributeName		属性名称
+		 * @returns {AttributeViewInfo}			属性界面信息
+		 * 
+		 * @memberOf ObjectView
+		 */
+		private static getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo {
+
+			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
 			var objectAttributeInfo = new AttributeViewInfo();
 			objectAttributeInfo.name = attributeName;
 			objectAttributeInfo.block = attributeDefinition ? attributeDefinition.block : "";
 			objectAttributeInfo.component = attributeDefinition ? attributeDefinition.component : "";
 			objectAttributeInfo.componentParam = attributeDefinition ? attributeDefinition.componentParam : null;
-			objectAttributeInfo.owner = owner;
-			var propertyDescriptor = Object.getOwnPropertyDescriptor(owner, objectAttributeInfo.name);
+			objectAttributeInfo.owner = object;
+			var propertyDescriptor = Object.getOwnPropertyDescriptor(object, objectAttributeInfo.name);
 			if (propertyDescriptor != null) {
 				objectAttributeInfo.writable = propertyDescriptor.writable;
 			} else {
 				objectAttributeInfo.writable = true;
 			}
-			objectAttributeInfo.type = ClassUtils.getQualifiedClassName(owner[objectAttributeInfo.name]);
+			objectAttributeInfo.type = ClassUtils.getQualifiedClassName(object[objectAttributeInfo.name]);
 			return objectAttributeInfo;
 		}
 
-		public static getAttributeDefinition(owner: Object, attributeName: string) {
+		/**
+		 * 获取属性定义
+		 * 
+		 * @private
+		 * @static
+		 * @param {Object} object					属性所属对象
+		 * @param {string} attributeName			属性名称
+		 * @returns {AttributeDefinition}			属性定义信息
+		 * 
+		 * @memberOf ObjectView
+		 */
+		private static getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition {
 
-			var classConfig: ClassDefinition = ObjectView.getClassConfig(owner);
+			var className = ClassUtils.getQualifiedClassName(object);
+			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
 			if (!classConfig)
 				return null;
 			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++) {
@@ -125,97 +257,5 @@ module feng3d {
 			}
 			return null;
 		}
-
-		public static setCustomObjectViewClass(owner: Object, viewClass: any) {
-
-			var classConfig: ClassDefinition = ObjectView.getClassConfig(owner);
-			classConfig.component = ClassUtils.getQualifiedClassName(viewClass);
-		}
-
-		/**
-		 * 获取对象属性块定义
-		 * @param blockName		属性名称
-		 * @param autoCreate	是否自动生成
-		 * @return
-		 */
-		public static getBlockDefinition(owner: Object, blockName: string): BlockDefinition {
-
-			var classConfig: ClassDefinition = ObjectView.getClassConfig(owner);
-			if (!classConfig)
-				return null;
-
-			var blockDefinition: BlockDefinition;
-			classConfig.blockDefinitionVec.forEach(element => {
-				if (element.name == blockName) {
-					blockDefinition = element;
-				}
-			});
-			return blockDefinition;
-		}
-
-		/**
-		 * 获取ObjectView类配置
-		 * @param object				对象
-		 * @param autoCreate			是否自动创建
-		 * @return
-		 */
-		public static getClassConfig(object: any): ClassDefinition {
-			var className: string = object;
-			if (typeof object != "string") {
-				className = ClassUtils.getQualifiedClassName(object);
-			}
-
-			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
-			return classConfig;
-		}
-
-		/**
-		 * 获取特定类型的默认属性界面定义
-		 * @param attributeClass		属性类型
-		 * @param autoCreate			是否自动创建
-		 * @return
-		 */
-		public static getAttributeDefaultViewClass(attributeClass: any): AttributeTypeDefinition {
-			var type: string = attributeClass;
-			if (typeof attributeClass != "string") {
-				type = ClassUtils.getQualifiedClassName(attributeClass);
-			}
-			var obj: AttributeTypeDefinition = $objectViewConfig.attributeDefaultViewClassByTypeVec[type];
-			return obj;
-		}
-
-		public static init() {
-
-			objectViewConfigData = <any>{};
-			objectViewConfigData.defaultBaseObjectViewClass = $objectViewConfig.defaultBaseObjectViewClass || ClassUtils.getQualifiedClassName(DefaultBaseObjectView);
-			objectViewConfigData.defaultObjectViewClass = $objectViewConfig.defaultObjectViewClass || ClassUtils.getQualifiedClassName(DefaultObjectView);
-			objectViewConfigData.defaultObjectAttributeViewClass = $objectViewConfig.defaultObjectAttributeViewClass || ClassUtils.getQualifiedClassName(DefaultObjectAttributeView);
-			objectViewConfigData.defaultObjectAttributeBlockView = $objectViewConfig.defaultObjectAttributeBlockView || ClassUtils.getQualifiedClassName(DefaultObjectBlockView);
-			$objectViewConfig.classConfigVec
-		}
-	}
-
-	var objectViewConfigData: ObjectViewConfigData;
-
-	interface ObjectViewConfigData {
-		/**
-		 * 默认基础类型对象界面类定义
-		 */
-		defaultBaseObjectViewClass: string;
-
-		/**
-		 * 默认对象界面类定义
-		 */
-		defaultObjectViewClass: string;
-
-		/**
-		 * 默认对象属性界面类定义
-		 */
-		defaultObjectAttributeViewClass: string;
-
-		/**
-		 * 属性块默认界面
-		 */
-		defaultObjectAttributeBlockView: string;
 	}
 }

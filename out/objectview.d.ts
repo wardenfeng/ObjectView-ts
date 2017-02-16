@@ -316,23 +316,15 @@ declare module feng3d {
         /**
          * 对象属性列表
          */
-        private objectAttributeInfos;
+        objectAttributeInfos: AttributeViewInfo[];
         /**
          * 对象块信息列表
          */
-        private objectBlockInfos;
+        objectBlockInfos: BlockViewInfo[];
         /**
          * 保存类的一个实例，为了能够获取动态属性信息
          */
         owner: Object;
-        /**
-         * 获取对象属性列表
-         */
-        getObjectAttributeInfos(): AttributeViewInfo[];
-        /**
-         * 获取对象块信息列表
-         */
-        getObjectBlockInfos(): BlockViewInfo[];
     }
 }
 declare module feng3d {
@@ -481,16 +473,32 @@ declare module feng3d {
     class ObjectView {
         /**
          * 获取对象界面
-         * @param object	用于生成界面的对象
+         *
+         * @static
+         * @param {Object} object				用于生成界面的对象
+         * @returns {egret.DisplayObject}		对象界面
+         *
+         * @memberOf ObjectView
          */
         static getObjectView(object: Object): egret.DisplayObject;
         /**
          * 获取属性界面
+         *
+         * @static
+         * @param {AttributeViewInfo} attributeViewInfo			属性界面信息
+         * @returns {egret.DisplayObject}						属性界面
+         *
+         * @memberOf ObjectView
          */
         static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject;
         /**
          * 获取块界面
-         * @param owner		所属对象
+         *
+         * @static
+         * @param {BlockViewInfo} blockViewInfo			块界面信息
+         * @returns {egret.DisplayObject}				块界面
+         *
+         * @memberOf ObjectView
          */
         static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject;
         /**
@@ -499,30 +507,44 @@ declare module feng3d {
          * @return
          */
         private static getObjectInfo(object);
-        static getAttributeViewInfo(owner: Object, attributeName: string): AttributeViewInfo;
-        static getAttributeDefinition(owner: Object, attributeName: string): AttributeDefinition;
-        static setCustomObjectViewClass(owner: Object, viewClass: any): void;
         /**
-         * 获取对象属性块定义
-         * @param blockName		属性名称
-         * @param autoCreate	是否自动生成
-         * @return
+         * 获取对象属性列表
          */
-        static getBlockDefinition(owner: Object, blockName: string): BlockDefinition;
+        private static getObjectAttributeInfos(object);
         /**
-         * 获取ObjectView类配置
-         * @param object				对象
-         * @param autoCreate			是否自动创建
-         * @return
+         * 获取对象块信息列表
+         *
+         * @private
+         * @static
+         * @param {Object} object			对象
+         * @returns {BlockViewInfo[]}		对象块信息列表
+         *
+         * @memberOf ObjectView
          */
-        static getClassConfig(object: any): ClassDefinition;
+        private static getObjectBlockInfos(object);
         /**
-         * 获取特定类型的默认属性界面定义
-         * @param attributeClass		属性类型
-         * @param autoCreate			是否自动创建
-         * @return
+         * 获取属性界面信息
+         *
+         * @private
+         * @static
+         * @param {Object} object				属性所属对象
+         * @param {string} attributeName		属性名称
+         * @returns {AttributeViewInfo}			属性界面信息
+         *
+         * @memberOf ObjectView
          */
-        static getAttributeDefaultViewClass(attributeClass: any): AttributeTypeDefinition;
-        static init(): void;
+        private static getAttributeViewInfo(object, attributeName);
+        /**
+         * 获取属性定义
+         *
+         * @private
+         * @static
+         * @param {Object} object					属性所属对象
+         * @param {string} attributeName			属性名称
+         * @returns {AttributeDefinition}			属性定义信息
+         *
+         * @memberOf ObjectView
+         */
+        private static getAttributeDefinition(object, attributeName);
     }
 }

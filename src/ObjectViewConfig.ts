@@ -38,6 +38,7 @@ module feng3d {
 	}
 
 	export var $objectViewConfig: ObjectViewConfig = {
+
 		defaultBaseObjectViewClass: ClassUtils.getQualifiedClassName(DefaultBaseObjectView),
 		defaultObjectViewClass: ClassUtils.getQualifiedClassName(DefaultObjectView),
 		defaultObjectAttributeViewClass: ClassUtils.getQualifiedClassName(DefaultObjectAttributeView),

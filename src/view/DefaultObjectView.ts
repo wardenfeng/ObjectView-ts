@@ -25,7 +25,7 @@ module feng3d {
 
 			this.blockViews = [];
 			var h = 0;
-			var objectBlockInfos: BlockViewInfo[] = this._objectViewInfo.getObjectBlockInfos();
+			var objectBlockInfos: BlockViewInfo[] = objectViewInfo.objectBlockInfos;
 			for (var i = 0; i < objectBlockInfos.length; i++) {
 				var displayObject = ObjectView.getBlockView(objectBlockInfos[i]);
 				displayObject.y = h;

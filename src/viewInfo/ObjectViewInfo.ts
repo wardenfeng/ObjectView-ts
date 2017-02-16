@@ -1,6 +1,5 @@
 module feng3d {
 
-
 	/**
 	 * 对象信息
 	 * @author feng 2016-3-29
@@ -24,101 +23,15 @@ module feng3d {
 		/**
 		 * 对象属性列表
 		 */
-		private objectAttributeInfos: AttributeViewInfo[];
+		public objectAttributeInfos: AttributeViewInfo[];
 		/**
 		 * 对象块信息列表
 		 */
-		private objectBlockInfos: BlockViewInfo[];
+		public objectBlockInfos: BlockViewInfo[];
 
 		/**
 		 * 保存类的一个实例，为了能够获取动态属性信息
 		 */
 		public owner: Object;
-
-		/**
-		 * 获取对象属性列表
-		 */
-		public getObjectAttributeInfos(): AttributeViewInfo[] {
-
-			if (this.objectAttributeInfos == null) {
-				var objectAttributeInfo: AttributeViewInfo;
-				var i: number;
-				this.objectAttributeInfos = [];
-				var classConfig: ClassDefinition = ObjectView.getClassConfig(this.name);
-				if (classConfig != null) {
-					//根据配置中默认顺序生产对象属性信息列表
-					var attributeDefinitions: AttributeDefinition[] = classConfig.attributeDefinitionVec;
-					for (i = 0; i < attributeDefinitions.length; i++) {
-						objectAttributeInfo = ObjectView.getAttributeViewInfo(this.owner, attributeDefinitions[i].name);
-						this.objectAttributeInfos.push(objectAttributeInfo);
-					}
-				}
-				else {
-					var attributeNames = Object.keys(this.owner);
-					attributeNames = attributeNames.sort();
-					for (i = 0; i < attributeNames.length; i++) {
-						objectAttributeInfo = ObjectView.getAttributeViewInfo(this.owner, attributeNames[i]);
-						this.objectAttributeInfos.push(objectAttributeInfo);
-					}
-				}
-			}
-			return this.objectAttributeInfos;
-		}
-
-		/**
-		 * 获取对象块信息列表
-		 */
-		public getObjectBlockInfos(): BlockViewInfo[] {
-			if (this.objectBlockInfos != null)
-				return this.objectBlockInfos;
-
-			var dic = {};
-			var objectBlockInfo: BlockViewInfo
-
-			var objectAttributeInfos: AttributeViewInfo[] = this.getObjectAttributeInfos();
-
-			//收集块信息
-			var i: number = 0;
-			var tempVec: BlockViewInfo[] = [];
-			for (i = 0; i < objectAttributeInfos.length; i++) {
-				var blockName: string = objectAttributeInfos[i].block;
-				objectBlockInfo = dic[blockName];
-				if (objectBlockInfo == null) {
-					objectBlockInfo = dic[blockName] = new BlockViewInfo();
-					objectBlockInfo.name = blockName
-					objectBlockInfo.owner = this.owner;
-					tempVec.push(objectBlockInfo);
-				}
-				objectBlockInfo.itemList.push(objectAttributeInfos[i]);
-			}
-
-			//按快的默认顺序生成 块信息列表
-			var blockDefinition: BlockDefinition;
-			this.objectBlockInfos = [];
-			var pushDic = {};
-			var classConfig: ClassDefinition = ObjectView.getClassConfig(this.name);
-			if (classConfig != null) {
-				for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
-					blockDefinition = classConfig.blockDefinitionVec[i];
-					objectBlockInfo = dic[blockDefinition.name];
-					if (objectBlockInfo == null) {
-						objectBlockInfo = new BlockViewInfo();
-						objectBlockInfo.name = blockDefinition.name;
-						objectBlockInfo.owner = this.owner;
-					}
-					ObjectUtils.deepCopy(objectBlockInfo, blockDefinition);
-					this.objectBlockInfos.push(objectBlockInfo);
-					pushDic[objectBlockInfo.name] = true;
-				}
-			}
-			//添加剩余的块信息
-			for (i = 0; i < tempVec.length; i++) {
-				if (Boolean(pushDic[tempVec[i].name]) == false) {
-					this.objectBlockInfos.push(tempVec[i]);
-				}
-			}
-
-			return this.objectBlockInfos;
-		}
 	}
 }
