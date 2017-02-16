@@ -46,7 +46,7 @@ module feng3d {
 			if (this.component != null && this.component != "")
 				return;
 
-			var defaultViewClass: AttributeTypeDefinition = ObjectViewConfig.instance.getAttributeDefaultViewClass(this.type, false);
+			var defaultViewClass: AttributeTypeDefinition = ObjectView.getAttributeDefaultViewClass(this.type);
 			var tempComponent = defaultViewClass ? defaultViewClass.component : "";
 			if (tempComponent != null && tempComponent != "") {
 				this.component = defaultViewClass.component;

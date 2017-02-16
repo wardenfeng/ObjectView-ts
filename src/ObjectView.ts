@@ -23,7 +23,7 @@ module feng3d {
 			var className = ClassUtils.getQualifiedClassName(object);
 			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 
-			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(object, false);
+			var classConfig: ClassDefinition = ObjectView.getClassConfig(object);
 			if (classConfig) {
 				ObjectUtils.deepCopy(objectInfo, classConfig);
 			}
@@ -50,12 +50,11 @@ module feng3d {
 			}
 			objectAttributeInfo.type = ClassUtils.getQualifiedClassName(owner[objectAttributeInfo.name]);
 			return objectAttributeInfo;
-
 		}
 
 		public static getAttributeDefinition(owner: Object, attributeName: string) {
 
-			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(owner);
+			var classConfig: ClassDefinition = ObjectView.getClassConfig(owner);
 			if (!classConfig)
 				return null;
 			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++) {
@@ -64,6 +63,74 @@ module feng3d {
 					return attributeDefinition;
 			}
 			return null;
+		}
+
+		public static setCustomObjectViewClass(owner: Object, viewClass: any) {
+
+			var classConfig: ClassDefinition = ObjectView.getClassConfig(owner);
+			classConfig.component = ClassUtils.getQualifiedClassName(viewClass);
+		}
+
+		/**
+		 * 获取对象属性块定义
+		 * @param blockName		属性名称
+		 * @param autoCreate	是否自动生成
+		 * @return
+		 */
+		public static getBlockDefinition(owner: Object, blockName: string): BlockDefinition {
+
+			var classConfig: ClassDefinition = ObjectView.getClassConfig(owner);
+			if (!classConfig)
+				return null;
+
+			var blockDefinition: BlockDefinition;
+			classConfig.blockDefinitionVec.forEach(element => {
+				if (element.name == blockName) {
+					blockDefinition = element;
+				}
+			});
+			return blockDefinition;
+		}
+
+		/**
+		 * 获取ObjectView类配置
+		 * @param object				对象
+		 * @param autoCreate			是否自动创建
+		 * @return
+		 */
+		public static getClassConfig(object: any): ClassDefinition {
+			var className: string = object;
+			if (typeof object != "string") {
+				className = ClassUtils.getQualifiedClassName(object);
+			}
+
+			var classConfig: ClassDefinition;
+			ObjectViewConfig.instance.classConfigVec.forEach(element => {
+				if (element.name == className) {
+					classConfig = element;
+				}
+			});
+			return classConfig;
+		}
+
+		/**
+		 * 获取特定类型的默认属性界面定义
+		 * @param attributeClass		属性类型
+		 * @param autoCreate			是否自动创建
+		 * @return
+		 */
+		public static getAttributeDefaultViewClass(attributeClass: any): AttributeTypeDefinition {
+			var type: string = attributeClass;
+			if (typeof attributeClass != "string") {
+				type = ClassUtils.getQualifiedClassName(attributeClass);
+			}
+			var obj: AttributeTypeDefinition;
+			ObjectViewConfig.instance.attributeDefaultViewClassByTypeVec.forEach(element => {
+				if (element.type == type) {
+					obj = element;
+				}
+			});
+			return obj;
 		}
 	}
 }

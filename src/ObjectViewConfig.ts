@@ -41,59 +41,6 @@ module feng3d {
 			return ObjectViewConfig._instance;
 		}
 
-		/**
-		 * 获取ObjectView类配置
-		 * @param object				对象
-		 * @param autoCreate			是否自动创建
-		 * @return
-		 */
-		public getClassConfig(object: any, autoCreate: Boolean = true): ClassDefinition {
-			var className: string = object;
-			if (typeof object != "string") {
-				className = ClassUtils.getQualifiedClassName(object);
-			}
-
-			var classConfig: ClassDefinition;
-			this.classConfigVec.forEach(element => {
-				if (element.name == className) {
-					classConfig = element;
-				}
-			});
-
-			if (classConfig == null && autoCreate) {
-				classConfig = new ClassDefinition();
-				classConfig.name = className;
-				this.classConfigVec.push(classConfig);
-			}
-			return classConfig;
-		}
-
-		/**
-		 * 获取特定类型的默认属性界面定义
-		 * @param attributeClass		属性类型
-		 * @param autoCreate			是否自动创建
-		 * @return
-		 */
-		public getAttributeDefaultViewClass(attributeClass: any, autoCreate: Boolean = true): AttributeTypeDefinition {
-			var type: string = attributeClass;
-			if (typeof attributeClass != "string") {
-				type = ClassUtils.getQualifiedClassName(attributeClass);
-			}
-			var obj: AttributeTypeDefinition;
-			this.attributeDefaultViewClassByTypeVec.forEach(element => {
-				if (element.type == type) {
-					obj = element;
-				}
-			});
-
-			if (obj == null && autoCreate) {
-				obj = new AttributeTypeDefinition();
-				obj.type = type;
-				this.attributeDefaultViewClassByTypeVec.push(obj);
-			}
-			return obj;
-		}
-
 		public setConfig(config: any) {
 			this.clearConfig();
 			ObjectUtils.deepCopy(this, config);

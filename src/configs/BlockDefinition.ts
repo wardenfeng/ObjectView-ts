@@ -3,30 +3,20 @@ module feng3d {
 	 * 块定义
 	 * @author feng 2016-3-23
 	 */
-	export class BlockDefinition {
+	export interface BlockDefinition {
 		/**
 		 * 块名称
 		 */
-		public name = "";
+		name: string;
 
 		/**
 		 * 组件
 		 */
-		public component = "";
+		component?: string;
 
 		/**
 		 * 组件参数
 		 */
-		public componentParam: Object;
-
-		public setComponent(component: any): BlockDefinition {
-			this.component = ClassUtils.getQualifiedClassName(component);
-			return this;
-		}
-
-		public setComponentParam(param: any): BlockDefinition {
-			this.componentParam = param;
-			return this;
-		}
+		componentParam?: Object;
 	}
 }

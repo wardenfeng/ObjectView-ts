@@ -69,7 +69,7 @@ declare module feng3d {
      * 定义属性
      * @author feng 2016-3-23
      */
-    class AttributeDefinition {
+    interface AttributeDefinition {
         /**
          * 属性名称
          */
@@ -77,18 +77,15 @@ declare module feng3d {
         /**
          * 所属块名称
          */
-        block: string;
+        block?: string;
         /**
          * 组件
          */
-        component: string;
+        component?: string;
         /**
          * 组件参数
          */
-        componentParam: Object;
-        setBlock(block: string): AttributeDefinition;
-        setComponent(component: any): AttributeDefinition;
-        setComponentParam(param: any): AttributeDefinition;
+        componentParam?: Object;
     }
 }
 declare module feng3d {
@@ -96,7 +93,7 @@ declare module feng3d {
      * 定义特定属性类型默认界面
      * @author feng 2016-3-25
      */
-    class AttributeTypeDefinition {
+    interface AttributeTypeDefinition {
         /**
          * 属性类型
          */
@@ -108,9 +105,7 @@ declare module feng3d {
         /**
          * 组件参数
          */
-        componentParam: Object;
-        setComponent(component: any): AttributeTypeDefinition;
-        setComponentParam(param: any): AttributeTypeDefinition;
+        componentParam?: Object;
     }
 }
 declare module feng3d {
@@ -118,7 +113,7 @@ declare module feng3d {
      * 块定义
      * @author feng 2016-3-23
      */
-    class BlockDefinition {
+    interface BlockDefinition {
         /**
          * 块名称
          */
@@ -126,13 +121,11 @@ declare module feng3d {
         /**
          * 组件
          */
-        component: string;
+        component?: string;
         /**
          * 组件参数
          */
-        componentParam: Object;
-        setComponent(component: any): BlockDefinition;
-        setComponentParam(param: any): BlockDefinition;
+        componentParam?: Object;
     }
 }
 declare module feng3d {
@@ -140,7 +133,7 @@ declare module feng3d {
      * ObjectView类配置
      * @author feng 2016-3-23
      */
-    class ClassDefinition {
+    interface ClassDefinition {
         /**
          * 类名
          */
@@ -161,27 +154,6 @@ declare module feng3d {
          * 自定义对象属性块界面类定义字典（key:属性块名称,value:自定义对象属性块界面类定义）
          */
         blockDefinitionVec: BlockDefinition[];
-        setCustomObjectViewClass(viewClass: any): void;
-        /**
-         * 获取自定义对象属性定义
-         * @param attributeName			属性名称
-         * @param autoCreate			是否自动生成
-         * @return
-         */
-        getAttributeDefinition(attributeName: string, autoCreate?: Boolean): AttributeDefinition;
-        /**
-         * 获取对象属性块定义
-         * @param blockName		属性名称
-         * @param autoCreate	是否自动生成
-         * @return
-         */
-        getBlockDefinition(blockName: string, autoCreate?: Boolean): BlockDefinition;
-        /**
-         * 初始化默认定义
-         * @param object
-         * @return
-         */
-        initDefault(object: Object): ClassDefinition;
     }
 }
 declare module feng3d {
@@ -530,20 +502,6 @@ declare module feng3d {
         classConfigVec: ClassDefinition[];
         private static _instance;
         static readonly instance: ObjectViewConfig;
-        /**
-         * 获取ObjectView类配置
-         * @param object				对象
-         * @param autoCreate			是否自动创建
-         * @return
-         */
-        getClassConfig(object: any, autoCreate?: Boolean): ClassDefinition;
-        /**
-         * 获取特定类型的默认属性界面定义
-         * @param attributeClass		属性类型
-         * @param autoCreate			是否自动创建
-         * @return
-         */
-        getAttributeDefaultViewClass(attributeClass: any, autoCreate?: Boolean): AttributeTypeDefinition;
         setConfig(config: any): void;
         clearConfig(): void;
     }
@@ -567,5 +525,27 @@ declare module feng3d {
         private static getObjectInfo(object);
         static getAttributeViewInfo(owner: Object, attributeName: string): AttributeViewInfo;
         static getAttributeDefinition(owner: Object, attributeName: string): AttributeDefinition;
+        static setCustomObjectViewClass(owner: Object, viewClass: any): void;
+        /**
+         * 获取对象属性块定义
+         * @param blockName		属性名称
+         * @param autoCreate	是否自动生成
+         * @return
+         */
+        static getBlockDefinition(owner: Object, blockName: string): BlockDefinition;
+        /**
+         * 获取ObjectView类配置
+         * @param object				对象
+         * @param autoCreate			是否自动创建
+         * @return
+         */
+        static getClassConfig(object: any): ClassDefinition;
+        /**
+         * 获取特定类型的默认属性界面定义
+         * @param attributeClass		属性类型
+         * @param autoCreate			是否自动创建
+         * @return
+         */
+        static getAttributeDefaultViewClass(attributeClass: any): AttributeTypeDefinition;
     }
 }

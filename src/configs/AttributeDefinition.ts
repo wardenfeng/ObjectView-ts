@@ -3,40 +3,25 @@ module feng3d {
 	 * 定义属性
 	 * @author feng 2016-3-23
 	 */
-	export class AttributeDefinition {
+	export interface AttributeDefinition {
 		/**
 		 * 属性名称
 		 */
-		public name = "";
+		name: string;
 
 		/**
 		 * 所属块名称
 		 */
-		public block = "";
+		block?: string;
 
 		/**
 		 * 组件
 		 */
-		public component = "";
+		component?: string;
 
 		/**
 		 * 组件参数
 		 */
-		public componentParam: Object;
-
-		public setBlock(block: string): AttributeDefinition {
-			this.block = block;
-			return this;
-		}
-
-		public setComponent(component: any): AttributeDefinition {
-			this.component = ClassUtils.getQualifiedClassName(component);
-			return this;
-		}
-
-		public setComponentParam(param: any): AttributeDefinition {
-			this.componentParam = param;
-			return this;
-		}
+		componentParam?: Object;
 	}
 }

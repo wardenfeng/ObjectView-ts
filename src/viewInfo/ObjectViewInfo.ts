@@ -39,12 +39,12 @@ module feng3d {
 		 * 获取对象属性列表
 		 */
 		public getObjectAttributeInfos(): AttributeViewInfo[] {
-			if (this.objectAttributeInfos == null) {
 
+			if (this.objectAttributeInfos == null) {
 				var objectAttributeInfo: AttributeViewInfo;
 				var i: number;
 				this.objectAttributeInfos = [];
-				var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(this.name, false);
+				var classConfig: ClassDefinition = ObjectView.getClassConfig(this.name);
 				if (classConfig != null) {
 					//根据配置中默认顺序生产对象属性信息列表
 					var attributeDefinitions: AttributeDefinition[] = classConfig.attributeDefinitionVec;
@@ -96,7 +96,7 @@ module feng3d {
 			var blockDefinition: BlockDefinition;
 			this.objectBlockInfos = [];
 			var pushDic = {};
-			var classConfig: ClassDefinition = ObjectViewConfig.instance.getClassConfig(this.name, false);
+			var classConfig: ClassDefinition = ObjectView.getClassConfig(this.name);
 			if (classConfig != null) {
 				for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
 					blockDefinition = classConfig.blockDefinitionVec[i];
