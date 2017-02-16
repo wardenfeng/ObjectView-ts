@@ -1,34 +1,33 @@
 module feng3d {
 
-
 	/**
 	 * 对象属性块
 	 * @author feng 2016-3-22
 	 */
-	export class BlockViewInfo {
+	export interface BlockViewInfo {
 		/**
 		 * 块名称
 		 */
-		public name = "";
+		name: string;
 
 		/**
 		 * 组件
 		 */
-		public component = "";
+		component?: string;
 
 		/**
 		 * 组件参数
 		 */
-		public componentParam: Object;
+		componentParam?: Object;
 
 		/**
 		 * 属性信息列表
 		 */
-		public itemList: AttributeViewInfo[] = [];
+		itemList: AttributeViewInfo[];
 
 		/**
 		 * 属性拥有者
 		 */
-		public owner: Object;
+		owner: Object;
 	}
 }

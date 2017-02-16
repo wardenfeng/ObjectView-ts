@@ -4,39 +4,40 @@ module feng3d {
 	 * @author feng 2016-3-10
 	 */
 	export class AttributeViewInfo {
+
 		/**
 		 * 属性名称
 		 */
-		public name: string;
+		name: string;
 
 		/**
 		 * 属性类型
 		 */
-		public type: string;
+		type: string;
 
 		/**
 		 * 是否可写
 		 */
-		public writable: boolean;
+		writable: boolean;
 
 		/**
 		 * 所属块名称
 		 */
-		public block = "";
+		block: string;
 
 		/**
 		 * 组件
 		 */
-		public component = "";
+		component: string;
 
 		/**
 		 * 组件参数
 		 */
-		public componentParam: Object;
+		componentParam: Object;
 
 		/**
 		 * 属性所属对象
 		 */
-		public owner: Object;
+		owner: Object;
 	}
 }

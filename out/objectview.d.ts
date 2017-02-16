@@ -1,25 +1,5 @@
 declare module feng3d {
     /**
-     * 访问类型
-     * @author feng 2016-3-28
-     */
-    class AccessType {
-        /**
-         * 可读写
-         */
-        static readwrite: string;
-        /**
-         * 只写
-         */
-        static writeonly: string;
-        /**
-         * 只读
-         */
-        static readonly: string;
-    }
-}
-declare module feng3d {
-    /**
      * 排序比较函数
      * @author feng 2016-3-29
      */
@@ -272,7 +252,7 @@ declare module feng3d {
      * 对象属性块
      * @author feng 2016-3-22
      */
-    class BlockViewInfo {
+    interface BlockViewInfo {
         /**
          * 块名称
          */
@@ -280,11 +260,11 @@ declare module feng3d {
         /**
          * 组件
          */
-        component: string;
+        component?: string;
         /**
          * 组件参数
          */
-        componentParam: Object;
+        componentParam?: Object;
         /**
          * 属性信息列表
          */
@@ -300,7 +280,7 @@ declare module feng3d {
      * 对象信息
      * @author feng 2016-3-29
      */
-    class ObjectViewInfo {
+    interface ObjectViewInfo {
         /**
          * 类名
          */

@@ -99,16 +99,17 @@ module feng3d {
 		 */
 		private static getObjectInfo(object: Object): ObjectViewInfo {
 
-			var objectInfo: ObjectViewInfo = new ObjectViewInfo();
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
-			if (classConfig) {
-				ObjectUtils.deepCopy(objectInfo, classConfig);
-			}
-			objectInfo.objectAttributeInfos = ObjectView.getObjectAttributeInfos(object);
-			objectInfo.objectBlockInfos = ObjectView.getObjectBlockInfos(object);
-			objectInfo.name = className;
-			objectInfo.owner = object;
+
+			var objectInfo: ObjectViewInfo = {
+				objectAttributeInfos: ObjectView.getObjectAttributeInfos(object),
+				objectBlockInfos: ObjectView.getObjectBlockInfos(object),
+				name: className,
+				owner: object,
+				component: classConfig ? classConfig.component : "",
+				componentParam: classConfig ? classConfig.componentParam : null
+			};
 			return objectInfo;
 		}
 
@@ -165,9 +166,7 @@ module feng3d {
 				var blockName: string = objectAttributeInfos[i].block;
 				objectBlockInfo = dic[blockName];
 				if (objectBlockInfo == null) {
-					objectBlockInfo = dic[blockName] = new BlockViewInfo();
-					objectBlockInfo.name = blockName
-					objectBlockInfo.owner = object;
+					objectBlockInfo = dic[blockName] = { name: blockName, owner: object, itemList: [] };
 					tempVec.push(objectBlockInfo);
 				}
 				objectBlockInfo.itemList.push(objectAttributeInfos[i]);
@@ -184,11 +183,14 @@ module feng3d {
 					blockDefinition = classConfig.blockDefinitionVec[i];
 					objectBlockInfo = dic[blockDefinition.name];
 					if (objectBlockInfo == null) {
-						objectBlockInfo = new BlockViewInfo();
-						objectBlockInfo.name = blockDefinition.name;
-						objectBlockInfo.owner = object;
+						objectBlockInfo = {
+							name: blockDefinition.name,
+							owner: object,
+							itemList: []
+						};
 					}
-					ObjectUtils.deepCopy(objectBlockInfo, blockDefinition);
+					objectBlockInfo.component = blockDefinition.component;
+					objectBlockInfo.componentParam = blockDefinition.componentParam;
 					objectBlockInfos.push(objectBlockInfo);
 					pushDic[objectBlockInfo.name] = true;
 				}
@@ -217,19 +219,16 @@ module feng3d {
 		private static getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo {
 
 			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-			var objectAttributeInfo = new AttributeViewInfo();
-			objectAttributeInfo.name = attributeName;
-			objectAttributeInfo.block = attributeDefinition ? attributeDefinition.block : "";
-			objectAttributeInfo.component = attributeDefinition ? attributeDefinition.component : "";
-			objectAttributeInfo.componentParam = attributeDefinition ? attributeDefinition.componentParam : null;
-			objectAttributeInfo.owner = object;
 			var propertyDescriptor = Object.getOwnPropertyDescriptor(object, objectAttributeInfo.name);
-			if (propertyDescriptor != null) {
-				objectAttributeInfo.writable = propertyDescriptor.writable;
-			} else {
-				objectAttributeInfo.writable = true;
-			}
-			objectAttributeInfo.type = ClassUtils.getQualifiedClassName(object[objectAttributeInfo.name]);
+			var objectAttributeInfo: AttributeViewInfo = {
+				name: attributeName,
+				block: attributeDefinition ? attributeDefinition.block : "",
+				component: attributeDefinition ? attributeDefinition.component : "",
+				componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
+				owner: object,
+				writable: propertyDescriptor ? propertyDescriptor.writable : true,
+				type: ClassUtils.getQualifiedClassName(object[objectAttributeInfo.name])
+			};
 			return objectAttributeInfo;
 		}
 

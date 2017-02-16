@@ -1,28 +1,6 @@
 var feng3d;
 (function (feng3d) {
     /**
-     * 访问类型
-     * @author feng 2016-3-28
-     */
-    class AccessType {
-    }
-    /**
-     * 可读写
-     */
-    AccessType.readwrite = "readwrite";
-    /**
-     * 只写
-     */
-    AccessType.writeonly = "writeonly";
-    /**
-     * 只读
-     */
-    AccessType.readonly = "readonly";
-    feng3d.AccessType = AccessType;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
      * 排序比较函数
      * @author feng 2016-3-29
      */
@@ -81,62 +59,8 @@ var feng3d;
      * @author feng 2016-3-10
      */
     class AttributeViewInfo {
-        constructor() {
-            /**
-             * 所属块名称
-             */
-            this.block = "";
-            /**
-             * 组件
-             */
-            this.component = "";
-        }
     }
     feng3d.AttributeViewInfo = AttributeViewInfo;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 对象属性块
-     * @author feng 2016-3-22
-     */
-    class BlockViewInfo {
-        constructor() {
-            /**
-             * 块名称
-             */
-            this.name = "";
-            /**
-             * 组件
-             */
-            this.component = "";
-            /**
-             * 属性信息列表
-             */
-            this.itemList = [];
-        }
-    }
-    feng3d.BlockViewInfo = BlockViewInfo;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 对象信息
-     * @author feng 2016-3-29
-     */
-    class ObjectViewInfo {
-        constructor() {
-            /**
-             * 类名
-             */
-            this.name = "";
-            /**
-             * 组件
-             */
-            this.component = "";
-        }
-    }
-    feng3d.ObjectViewInfo = ObjectViewInfo;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -487,16 +411,16 @@ var feng3d;
          * @return
          */
         static getObjectInfo(object) {
-            var objectInfo = new feng3d.ObjectViewInfo();
             var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
-            if (classConfig) {
-                feng3d.ObjectUtils.deepCopy(objectInfo, classConfig);
-            }
-            objectInfo.objectAttributeInfos = ObjectView.getObjectAttributeInfos(object);
-            objectInfo.objectBlockInfos = ObjectView.getObjectBlockInfos(object);
-            objectInfo.name = className;
-            objectInfo.owner = object;
+            var objectInfo = {
+                objectAttributeInfos: ObjectView.getObjectAttributeInfos(object),
+                objectBlockInfos: ObjectView.getObjectBlockInfos(object),
+                name: className,
+                owner: object,
+                component: classConfig ? classConfig.component : "",
+                componentParam: classConfig ? classConfig.componentParam : null
+            };
             return objectInfo;
         }
         /**
@@ -547,9 +471,7 @@ var feng3d;
                 var blockName = objectAttributeInfos[i].block;
                 objectBlockInfo = dic[blockName];
                 if (objectBlockInfo == null) {
-                    objectBlockInfo = dic[blockName] = new feng3d.BlockViewInfo();
-                    objectBlockInfo.name = blockName;
-                    objectBlockInfo.owner = object;
+                    objectBlockInfo = dic[blockName] = { name: blockName, owner: object, itemList: [] };
                     tempVec.push(objectBlockInfo);
                 }
                 objectBlockInfo.itemList.push(objectAttributeInfos[i]);
@@ -564,11 +486,14 @@ var feng3d;
                     blockDefinition = classConfig.blockDefinitionVec[i];
                     objectBlockInfo = dic[blockDefinition.name];
                     if (objectBlockInfo == null) {
-                        objectBlockInfo = new feng3d.BlockViewInfo();
-                        objectBlockInfo.name = blockDefinition.name;
-                        objectBlockInfo.owner = object;
+                        objectBlockInfo = {
+                            name: blockDefinition.name,
+                            owner: object,
+                            itemList: []
+                        };
                     }
-                    feng3d.ObjectUtils.deepCopy(objectBlockInfo, blockDefinition);
+                    objectBlockInfo.component = blockDefinition.component;
+                    objectBlockInfo.componentParam = blockDefinition.componentParam;
                     objectBlockInfos.push(objectBlockInfo);
                     pushDic[objectBlockInfo.name] = true;
                 }
@@ -594,20 +519,16 @@ var feng3d;
          */
         static getAttributeViewInfo(object, attributeName) {
             var attributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-            var objectAttributeInfo = new feng3d.AttributeViewInfo();
-            objectAttributeInfo.name = attributeName;
-            objectAttributeInfo.block = attributeDefinition ? attributeDefinition.block : "";
-            objectAttributeInfo.component = attributeDefinition ? attributeDefinition.component : "";
-            objectAttributeInfo.componentParam = attributeDefinition ? attributeDefinition.componentParam : null;
-            objectAttributeInfo.owner = object;
             var propertyDescriptor = Object.getOwnPropertyDescriptor(object, objectAttributeInfo.name);
-            if (propertyDescriptor != null) {
-                objectAttributeInfo.writable = propertyDescriptor.writable;
-            }
-            else {
-                objectAttributeInfo.writable = true;
-            }
-            objectAttributeInfo.type = feng3d.ClassUtils.getQualifiedClassName(object[objectAttributeInfo.name]);
+            var objectAttributeInfo = {
+                name: attributeName,
+                block: attributeDefinition ? attributeDefinition.block : "",
+                component: attributeDefinition ? attributeDefinition.component : "",
+                componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
+                owner: object,
+                writable: propertyDescriptor ? propertyDescriptor.writable : true,
+                type: feng3d.ClassUtils.getQualifiedClassName(object[objectAttributeInfo.name])
+            };
             return objectAttributeInfo;
         }
         /**
