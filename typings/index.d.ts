@@ -1,4 +1,5 @@
-/// <reference path="../../feng3d-common/out/feng3d-common.d.ts" />
+/// <reference path="../../feng3d/typings/webgl2.d.ts" />
+/// <reference path="../../feng3d/out/feng3d.d.ts" />
 
 /// <reference path="../../libs/modules/egret/egret.d.ts" />
 /// <reference path="../../libs/modules/eui/eui.d.ts" />

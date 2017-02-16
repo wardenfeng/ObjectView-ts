@@ -219,7 +219,7 @@ module feng3d {
 		private static getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo {
 
 			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-			var propertyDescriptor = Object.getOwnPropertyDescriptor(object, objectAttributeInfo.name);
+			var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attributeName);
 			var objectAttributeInfo: AttributeViewInfo = {
 				name: attributeName,
 				block: attributeDefinition ? attributeDefinition.block : "",
@@ -227,7 +227,7 @@ module feng3d {
 				componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
 				owner: object,
 				writable: propertyDescriptor ? propertyDescriptor.writable : true,
-				type: ClassUtils.getQualifiedClassName(object[objectAttributeInfo.name])
+				type: ClassUtils.getQualifiedClassName(object[attributeName])
 			};
 			return objectAttributeInfo;
 		}
