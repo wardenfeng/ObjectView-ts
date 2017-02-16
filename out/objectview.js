@@ -477,8 +477,8 @@ var feng3d;
         defaultObjectViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectView),
         defaultObjectAttributeViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectAttributeView),
         defaultObjectAttributeBlockView: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectBlockView),
-        attributeDefaultViewClassByTypeVec: [],
-        classConfigVec: []
+        attributeDefaultViewClassByTypeVec: {},
+        classConfigVec: {}
     };
 })(feng3d || (feng3d = {}));
 var feng3d;
@@ -621,12 +621,7 @@ var feng3d;
             if (typeof object != "string") {
                 className = feng3d.ClassUtils.getQualifiedClassName(object);
             }
-            var classConfig;
-            feng3d.$objectViewConfig.classConfigVec.forEach(element => {
-                if (element.name == className) {
-                    classConfig = element;
-                }
-            });
+            var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
             return classConfig;
         }
         /**
@@ -640,15 +635,19 @@ var feng3d;
             if (typeof attributeClass != "string") {
                 type = feng3d.ClassUtils.getQualifiedClassName(attributeClass);
             }
-            var obj;
-            feng3d.$objectViewConfig.attributeDefaultViewClassByTypeVec.forEach(element => {
-                if (element.type == type) {
-                    obj = element;
-                }
-            });
+            var obj = feng3d.$objectViewConfig.attributeDefaultViewClassByTypeVec[type];
             return obj;
+        }
+        static init() {
+            objectViewConfigData = {};
+            objectViewConfigData.defaultBaseObjectViewClass = feng3d.$objectViewConfig.defaultBaseObjectViewClass || feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultBaseObjectView);
+            objectViewConfigData.defaultObjectViewClass = feng3d.$objectViewConfig.defaultObjectViewClass || feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectView);
+            objectViewConfigData.defaultObjectAttributeViewClass = feng3d.$objectViewConfig.defaultObjectAttributeViewClass || feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectAttributeView);
+            objectViewConfigData.defaultObjectAttributeBlockView = feng3d.$objectViewConfig.defaultObjectAttributeBlockView || feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectBlockView);
+            feng3d.$objectViewConfig.classConfigVec;
         }
     }
     feng3d.ObjectView = ObjectView;
+    var objectViewConfigData;
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=objectview.js.map

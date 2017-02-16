@@ -165,12 +165,7 @@ module feng3d {
 				className = ClassUtils.getQualifiedClassName(object);
 			}
 
-			var classConfig: ClassDefinition;
-			$objectViewConfig.classConfigVec.forEach(element => {
-				if (element.name == className) {
-					classConfig = element;
-				}
-			});
+			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
 			return classConfig;
 		}
 
@@ -185,13 +180,42 @@ module feng3d {
 			if (typeof attributeClass != "string") {
 				type = ClassUtils.getQualifiedClassName(attributeClass);
 			}
-			var obj: AttributeTypeDefinition;
-			$objectViewConfig.attributeDefaultViewClassByTypeVec.forEach(element => {
-				if (element.type == type) {
-					obj = element;
-				}
-			});
+			var obj: AttributeTypeDefinition = $objectViewConfig.attributeDefaultViewClassByTypeVec[type];
 			return obj;
 		}
+
+		public static init() {
+
+			objectViewConfigData = <any>{};
+			objectViewConfigData.defaultBaseObjectViewClass = $objectViewConfig.defaultBaseObjectViewClass || ClassUtils.getQualifiedClassName(DefaultBaseObjectView);
+			objectViewConfigData.defaultObjectViewClass = $objectViewConfig.defaultObjectViewClass || ClassUtils.getQualifiedClassName(DefaultObjectView);
+			objectViewConfigData.defaultObjectAttributeViewClass = $objectViewConfig.defaultObjectAttributeViewClass || ClassUtils.getQualifiedClassName(DefaultObjectAttributeView);
+			objectViewConfigData.defaultObjectAttributeBlockView = $objectViewConfig.defaultObjectAttributeBlockView || ClassUtils.getQualifiedClassName(DefaultObjectBlockView);
+			$objectViewConfig.classConfigVec
+		}
+	}
+
+	var objectViewConfigData: ObjectViewConfigData;
+
+	interface ObjectViewConfigData {
+		/**
+		 * 默认基础类型对象界面类定义
+		 */
+		defaultBaseObjectViewClass: string;
+
+		/**
+		 * 默认对象界面类定义
+		 */
+		defaultObjectViewClass: string;
+
+		/**
+		 * 默认对象属性界面类定义
+		 */
+		defaultObjectAttributeViewClass: string;
+
+		/**
+		 * 属性块默认界面
+		 */
+		defaultObjectAttributeBlockView: string;
 	}
 }
