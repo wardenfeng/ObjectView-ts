@@ -265,14 +265,6 @@ declare module feng3d {
          * 属性所属对象
          */
         owner: Object;
-        /**
-         * 初始化组件
-         */
-        private initComponent();
-        /**
-         * 获取界面
-         */
-        getView(): egret.DisplayObject;
     }
 }
 declare module feng3d {
@@ -301,22 +293,6 @@ declare module feng3d {
          * 属性拥有者
          */
         owner: Object;
-        /**
-         * 构建一个对象属性块
-         */
-        constructor();
-        /**
-         * 获取对象属性块界面类定义
-         * @param objectAttributeBlock		对象属性快信息
-         * @return							对象属性块界面类定义
-         */
-        private initComponent();
-        /**
-         * 获取界面
-         * @param owner		所属对象
-         * @return
-         */
-        getView(): egret.DisplayObject;
     }
 }
 declare module feng3d {
@@ -357,16 +333,6 @@ declare module feng3d {
          * 获取对象块信息列表
          */
         getObjectBlockInfos(): BlockViewInfo[];
-        /**
-         * 获取对象界面类定义
-         * @param object		用于生成界面的对象
-         * @return				对象界面类定义
-         */
-        private initComponent();
-        /**
-         * 获取界面
-         */
-        getView(): egret.DisplayObject;
     }
 }
 declare module feng3d {
@@ -475,7 +441,7 @@ declare module feng3d {
      * ObjectView总配置数据
      * @author feng 2016-3-23
      */
-    class ObjectViewConfig {
+    interface ObjectViewConfig {
         /**
          * 默认基础类型对象界面类定义
          */
@@ -500,11 +466,8 @@ declare module feng3d {
          * ObjectView类配置字典 （key：类名称，value：ObjectView类配置）
          */
         classConfigVec: ClassDefinition[];
-        private static _instance;
-        static readonly instance: ObjectViewConfig;
-        setConfig(config: any): void;
-        clearConfig(): void;
     }
+    var $objectViewConfig: ObjectViewConfig;
 }
 declare module feng3d {
     /**
@@ -517,6 +480,15 @@ declare module feng3d {
          * @param object	用于生成界面的对象
          */
         static getObjectView(object: Object): egret.DisplayObject;
+        /**
+         * 获取属性界面
+         */
+        static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject;
+        /**
+         * 获取块界面
+         * @param owner		所属对象
+         */
+        static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject;
         /**
          * 获取对象信息
          * @param object

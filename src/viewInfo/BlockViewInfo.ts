@@ -24,46 +24,11 @@ module feng3d {
 		/**
 		 * 属性信息列表
 		 */
-		public itemList: AttributeViewInfo[];
+		public itemList: AttributeViewInfo[] = [];
 
 		/**
 		 * 属性拥有者
 		 */
 		public owner: Object;
-
-		/**
-		 * 构建一个对象属性块
-		 */
-		constructor() {
-			this.name = "";
-			this.itemList = [];
-		}
-
-		/**
-		 * 获取对象属性块界面类定义
-		 * @param objectAttributeBlock		对象属性快信息
-		 * @return							对象属性块界面类定义
-		 */
-		private initComponent(): void {
-			if (this.component != null && this.component != "")
-				return;
-
-			//返回默认对象属性界面类定义
-			this.component = ObjectViewConfig.instance.defaultObjectAttributeBlockView;
-			this.componentParam = null;
-		}
-
-		/**
-		 * 获取界面
-		 * @param owner		所属对象
-		 * @return
-		 */
-		public getView(): egret.DisplayObject {
-			this.initComponent();
-
-			var cls = ClassUtils.getDefinitionByName(this.component);
-			var view = new cls(this);
-			return view;
-		}
 	}
 }

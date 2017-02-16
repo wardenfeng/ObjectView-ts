@@ -9,8 +9,69 @@ module feng3d {
 		 * @param object	用于生成界面的对象
 		 */
 		public static getObjectView(object: Object): egret.DisplayObject {
+
 			var classConfig: ObjectViewInfo = ObjectView.getObjectInfo(object);
-			var view = classConfig.getView();
+
+			if (classConfig.component == null || classConfig.component == "") {
+
+				//返回基础类型界面类定义
+				if (ClassUtils.isBaseType(classConfig.owner)) {
+					classConfig.component = $objectViewConfig.defaultBaseObjectViewClass;
+				}
+			}
+			if (classConfig.component == null || classConfig.component == "") {
+
+				//使用默认类型界面类定义
+				classConfig.component = $objectViewConfig.defaultObjectViewClass;
+			}
+
+			var cls = ClassUtils.getDefinitionByName(classConfig.component);
+			var view = new cls(classConfig)
+			return view;
+		}
+
+		/**
+		 * 获取属性界面
+		 */
+		public static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject {
+
+			if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
+
+				var defaultViewClass: AttributeTypeDefinition = ObjectView.getAttributeDefaultViewClass(attributeViewInfo.type);
+				var tempComponent = defaultViewClass ? defaultViewClass.component : "";
+				if (tempComponent != null && tempComponent != "") {
+					attributeViewInfo.component = defaultViewClass.component;
+					attributeViewInfo.componentParam = defaultViewClass.componentParam;
+				}
+			}
+
+			if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
+
+				//使用默认对象属性界面类定义
+				attributeViewInfo.component = $objectViewConfig.defaultObjectAttributeViewClass;
+				attributeViewInfo.componentParam = null;
+			}
+
+			var cls = ClassUtils.getDefinitionByName(attributeViewInfo.component);
+			var view = new cls(attributeViewInfo);
+			return view;
+		}
+
+		/**
+		 * 获取块界面
+		 * @param owner		所属对象
+		 */
+		public static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject {
+
+			if (blockViewInfo.component == null || blockViewInfo.component == "") {
+
+				//返回默认对象属性界面类定义
+				blockViewInfo.component = $objectViewConfig.defaultObjectAttributeBlockView;
+				blockViewInfo.componentParam = null;
+			}
+
+			var cls = ClassUtils.getDefinitionByName(blockViewInfo.component);
+			var view = new cls(blockViewInfo);
 			return view;
 		}
 
@@ -105,7 +166,7 @@ module feng3d {
 			}
 
 			var classConfig: ClassDefinition;
-			ObjectViewConfig.instance.classConfigVec.forEach(element => {
+			$objectViewConfig.classConfigVec.forEach(element => {
 				if (element.name == className) {
 					classConfig = element;
 				}
@@ -125,7 +186,7 @@ module feng3d {
 				type = ClassUtils.getQualifiedClassName(attributeClass);
 			}
 			var obj: AttributeTypeDefinition;
-			ObjectViewConfig.instance.attributeDefaultViewClassByTypeVec.forEach(element => {
+			$objectViewConfig.attributeDefaultViewClassByTypeVec.forEach(element => {
 				if (element.type == type) {
 					obj = element;
 				}

@@ -44,7 +44,7 @@ module feng3d {
 			this.attributeViews = [];
 			var objectAttributeInfos = this.itemList;
 			for (var i = 0; i < objectAttributeInfos.length; i++) {
-				var displayObject = objectAttributeInfos[i].getView();
+				var displayObject = ObjectView.getAttributeView(objectAttributeInfos[i]);
 				displayObject.y = h;
 				this.addChild(displayObject);
 				h += displayObject.height + 2;

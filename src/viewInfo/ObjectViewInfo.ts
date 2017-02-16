@@ -120,36 +120,5 @@ module feng3d {
 
 			return this.objectBlockInfos;
 		}
-
-		/**
-		 * 获取对象界面类定义
-		 * @param object		用于生成界面的对象
-		 * @return				对象界面类定义
-		 */
-		private initComponent(): void {
-			//获取自定义类型界面类定义
-			if (this.component != null && this.component != "")
-				return;
-
-			//返回基础类型界面类定义
-			if (ClassUtils.isBaseType(this.owner)) {
-				this.component = ObjectViewConfig.instance.defaultBaseObjectViewClass;
-				return;
-			}
-
-			//返回默认类型界面类定义
-			this.component = ObjectViewConfig.instance.defaultObjectViewClass;
-		}
-
-		/**
-		 * 获取界面
-		 */
-		public getView(): egret.DisplayObject {
-			this.initComponent();
-
-			var cls = ClassUtils.getDefinitionByName(this.component);
-			var view = new cls(this)
-			return view;
-		}
 	}
 }

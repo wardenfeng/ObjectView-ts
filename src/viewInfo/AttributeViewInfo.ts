@@ -38,36 +38,5 @@ module feng3d {
 		 * 属性所属对象
 		 */
 		public owner: Object;
-
-		/**
-		 * 初始化组件
-		 */
-		private initComponent(): void {
-			if (this.component != null && this.component != "")
-				return;
-
-			var defaultViewClass: AttributeTypeDefinition = ObjectView.getAttributeDefaultViewClass(this.type);
-			var tempComponent = defaultViewClass ? defaultViewClass.component : "";
-			if (tempComponent != null && tempComponent != "") {
-				this.component = defaultViewClass.component;
-				this.componentParam = defaultViewClass.componentParam;
-				return;
-			}
-
-			//返回默认对象属性界面类定义
-			this.component = ObjectViewConfig.instance.defaultObjectAttributeViewClass;
-			this.componentParam = null;
-		}
-
-		/**
-		 * 获取界面
-		 */
-		public getView(): egret.DisplayObject {
-			this.initComponent();
-
-			var cls = ClassUtils.getDefinitionByName(this.component);
-			var view = new cls(this);
-			return view;
-		}
 	}
 }

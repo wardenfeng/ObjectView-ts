@@ -91,32 +91,6 @@ var feng3d;
              */
             this.component = "";
         }
-        /**
-         * 初始化组件
-         */
-        initComponent() {
-            if (this.component != null && this.component != "")
-                return;
-            var defaultViewClass = feng3d.ObjectView.getAttributeDefaultViewClass(this.type);
-            var tempComponent = defaultViewClass ? defaultViewClass.component : "";
-            if (tempComponent != null && tempComponent != "") {
-                this.component = defaultViewClass.component;
-                this.componentParam = defaultViewClass.componentParam;
-                return;
-            }
-            //返回默认对象属性界面类定义
-            this.component = feng3d.ObjectViewConfig.instance.defaultObjectAttributeViewClass;
-            this.componentParam = null;
-        }
-        /**
-         * 获取界面
-         */
-        getView() {
-            this.initComponent();
-            var cls = feng3d.ClassUtils.getDefinitionByName(this.component);
-            var view = new cls(this);
-            return view;
-        }
     }
     feng3d.AttributeViewInfo = AttributeViewInfo;
 })(feng3d || (feng3d = {}));
@@ -127,9 +101,6 @@ var feng3d;
      * @author feng 2016-3-22
      */
     class BlockViewInfo {
-        /**
-         * 构建一个对象属性块
-         */
         constructor() {
             /**
              * 块名称
@@ -139,31 +110,10 @@ var feng3d;
              * 组件
              */
             this.component = "";
-            this.name = "";
+            /**
+             * 属性信息列表
+             */
             this.itemList = [];
-        }
-        /**
-         * 获取对象属性块界面类定义
-         * @param objectAttributeBlock		对象属性快信息
-         * @return							对象属性块界面类定义
-         */
-        initComponent() {
-            if (this.component != null && this.component != "")
-                return;
-            //返回默认对象属性界面类定义
-            this.component = feng3d.ObjectViewConfig.instance.defaultObjectAttributeBlockView;
-            this.componentParam = null;
-        }
-        /**
-         * 获取界面
-         * @param owner		所属对象
-         * @return
-         */
-        getView() {
-            this.initComponent();
-            var cls = feng3d.ClassUtils.getDefinitionByName(this.component);
-            var view = new cls(this);
-            return view;
         }
     }
     feng3d.BlockViewInfo = BlockViewInfo;
@@ -262,32 +212,6 @@ var feng3d;
                 }
             }
             return this.objectBlockInfos;
-        }
-        /**
-         * 获取对象界面类定义
-         * @param object		用于生成界面的对象
-         * @return				对象界面类定义
-         */
-        initComponent() {
-            //获取自定义类型界面类定义
-            if (this.component != null && this.component != "")
-                return;
-            //返回基础类型界面类定义
-            if (feng3d.ClassUtils.isBaseType(this.owner)) {
-                this.component = feng3d.ObjectViewConfig.instance.defaultBaseObjectViewClass;
-                return;
-            }
-            //返回默认类型界面类定义
-            this.component = feng3d.ObjectViewConfig.instance.defaultObjectViewClass;
-        }
-        /**
-         * 获取界面
-         */
-        getView() {
-            this.initComponent();
-            var cls = feng3d.ClassUtils.getDefinitionByName(this.component);
-            var view = new cls(this);
-            return view;
         }
     }
     feng3d.ObjectViewInfo = ObjectViewInfo;
@@ -413,7 +337,7 @@ var feng3d;
             this.attributeViews = [];
             var objectAttributeInfos = this.itemList;
             for (var i = 0; i < objectAttributeInfos.length; i++) {
-                var displayObject = objectAttributeInfos[i].getView();
+                var displayObject = feng3d.ObjectView.getAttributeView(objectAttributeInfos[i]);
                 displayObject.y = h;
                 this.addChild(displayObject);
                 h += displayObject.height + 2;
@@ -482,7 +406,7 @@ var feng3d;
             var h = 0;
             var objectBlockInfos = this._objectViewInfo.getObjectBlockInfos();
             for (var i = 0; i < objectBlockInfos.length; i++) {
-                var displayObject = objectBlockInfos[i].getView();
+                var displayObject = feng3d.ObjectView.getBlockView(objectBlockInfos[i]);
                 displayObject.y = h;
                 this.addChild(displayObject);
                 h += displayObject.height + 2;
@@ -548,52 +472,14 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    /**
-     * ObjectView总配置数据
-     * @author feng 2016-3-23
-     */
-    class ObjectViewConfig {
-        constructor() {
-            /**
-             * 默认基础类型对象界面类定义
-             */
-            this.defaultBaseObjectViewClass = feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultBaseObjectView);
-            /**
-             * 默认对象界面类定义
-             */
-            this.defaultObjectViewClass = feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectView);
-            /**
-             * 默认对象属性界面类定义
-             */
-            this.defaultObjectAttributeViewClass = feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectAttributeView);
-            /**
-             * 属性块默认界面
-             */
-            this.defaultObjectAttributeBlockView = feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectBlockView);
-            /**
-             * 指定属性类型界面类定义字典（key:属性类名称,value:属性界面类定义）
-             */
-            this.attributeDefaultViewClassByTypeVec = [];
-            /**
-             * ObjectView类配置字典 （key：类名称，value：ObjectView类配置）
-             */
-            this.classConfigVec = [];
-        }
-        static get instance() {
-            if (ObjectViewConfig._instance == null) {
-                ObjectViewConfig._instance = new ObjectViewConfig();
-            }
-            return ObjectViewConfig._instance;
-        }
-        setConfig(config) {
-            this.clearConfig();
-            feng3d.ObjectUtils.deepCopy(this, config);
-        }
-        clearConfig() {
-            feng3d.ObjectUtils.deepCopy(this, new ObjectViewConfig());
-        }
-    }
-    feng3d.ObjectViewConfig = ObjectViewConfig;
+    feng3d.$objectViewConfig = {
+        defaultBaseObjectViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultBaseObjectView),
+        defaultObjectViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectView),
+        defaultObjectAttributeViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectAttributeView),
+        defaultObjectAttributeBlockView: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectBlockView),
+        attributeDefaultViewClassByTypeVec: [],
+        classConfigVec: []
+    };
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
@@ -608,7 +494,53 @@ var feng3d;
          */
         static getObjectView(object) {
             var classConfig = ObjectView.getObjectInfo(object);
-            var view = classConfig.getView();
+            if (classConfig.component == null || classConfig.component == "") {
+                //返回基础类型界面类定义
+                if (feng3d.ClassUtils.isBaseType(classConfig.owner)) {
+                    classConfig.component = feng3d.$objectViewConfig.defaultBaseObjectViewClass;
+                }
+            }
+            if (classConfig.component == null || classConfig.component == "") {
+                //使用默认类型界面类定义
+                classConfig.component = feng3d.$objectViewConfig.defaultObjectViewClass;
+            }
+            var cls = feng3d.ClassUtils.getDefinitionByName(classConfig.component);
+            var view = new cls(classConfig);
+            return view;
+        }
+        /**
+         * 获取属性界面
+         */
+        static getAttributeView(attributeViewInfo) {
+            if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
+                var defaultViewClass = ObjectView.getAttributeDefaultViewClass(attributeViewInfo.type);
+                var tempComponent = defaultViewClass ? defaultViewClass.component : "";
+                if (tempComponent != null && tempComponent != "") {
+                    attributeViewInfo.component = defaultViewClass.component;
+                    attributeViewInfo.componentParam = defaultViewClass.componentParam;
+                }
+            }
+            if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
+                //使用默认对象属性界面类定义
+                attributeViewInfo.component = feng3d.$objectViewConfig.defaultObjectAttributeViewClass;
+                attributeViewInfo.componentParam = null;
+            }
+            var cls = feng3d.ClassUtils.getDefinitionByName(attributeViewInfo.component);
+            var view = new cls(attributeViewInfo);
+            return view;
+        }
+        /**
+         * 获取块界面
+         * @param owner		所属对象
+         */
+        static getBlockView(blockViewInfo) {
+            if (blockViewInfo.component == null || blockViewInfo.component == "") {
+                //返回默认对象属性界面类定义
+                blockViewInfo.component = feng3d.$objectViewConfig.defaultObjectAttributeBlockView;
+                blockViewInfo.componentParam = null;
+            }
+            var cls = feng3d.ClassUtils.getDefinitionByName(blockViewInfo.component);
+            var view = new cls(blockViewInfo);
             return view;
         }
         /**
@@ -690,7 +622,7 @@ var feng3d;
                 className = feng3d.ClassUtils.getQualifiedClassName(object);
             }
             var classConfig;
-            feng3d.ObjectViewConfig.instance.classConfigVec.forEach(element => {
+            feng3d.$objectViewConfig.classConfigVec.forEach(element => {
                 if (element.name == className) {
                     classConfig = element;
                 }
@@ -709,7 +641,7 @@ var feng3d;
                 type = feng3d.ClassUtils.getQualifiedClassName(attributeClass);
             }
             var obj;
-            feng3d.ObjectViewConfig.instance.attributeDefaultViewClassByTypeVec.forEach(element => {
+            feng3d.$objectViewConfig.attributeDefaultViewClassByTypeVec.forEach(element => {
                 if (element.type == type) {
                     obj = element;
                 }
