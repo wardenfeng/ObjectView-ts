@@ -1,10 +1,12 @@
-module feng3d {
+module feng3d
+{
 
 	/**
 	 * ObjectView总配置数据
 	 * @author feng 2016-3-23
 	 */
-	export interface ObjectViewConfig {
+	export interface ObjectViewConfig
+	{
 
 		/**
 		 * 默认基础类型对象界面类定义
@@ -39,10 +41,10 @@ module feng3d {
 
 	export var $objectViewConfig: ObjectViewConfig = {
 
-		defaultBaseObjectViewClass: ClassUtils.getQualifiedClassName(DefaultBaseObjectView),
-		defaultObjectViewClass: ClassUtils.getQualifiedClassName(DefaultObjectView),
-		defaultObjectAttributeViewClass: ClassUtils.getQualifiedClassName(DefaultObjectAttributeView),
-		defaultObjectAttributeBlockView: ClassUtils.getQualifiedClassName(DefaultObjectBlockView),
+		defaultBaseObjectViewClass: "",
+		defaultObjectViewClass: "",
+		defaultObjectAttributeViewClass: "",
+		defaultObjectAttributeBlockView: "",
 		attributeDefaultViewClassByTypeVec: {},
 		classConfigVec: {}
 	};

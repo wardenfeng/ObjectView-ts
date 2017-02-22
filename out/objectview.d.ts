@@ -309,116 +309,6 @@ declare module feng3d {
 }
 declare module feng3d {
     /**
-     * 默认基础对象界面
-     * @author feng 2016-3-11
-     */
-    class DefaultBaseObjectView extends eui.Component implements IObjectView {
-        private _space;
-        label: eui.Label;
-        constructor(objectViewInfo: ObjectViewInfo);
-        private onComplete();
-        space: Object;
-        getAttributeView(attributeName: String): IObjectAttributeView;
-        getblockView(blockName: String): IObjectBlockView;
-        /**
-         * 更新界面
-         */
-        updateView(): void;
-    }
-}
-declare module feng3d {
-    /**
-     * 默认对象属性界面
-     * @author feng 2016-3-10
-     */
-    class DefaultObjectAttributeView extends eui.Component implements IObjectAttributeView {
-        private textTemp;
-        private _space;
-        private _attributeName;
-        private _attributeType;
-        private attributeViewInfo;
-        label: eui.Label;
-        text: eui.TextInput;
-        constructor(attributeViewInfo: AttributeViewInfo);
-        private onComplete();
-        space: Object;
-        readonly attributeName: string;
-        attributeValue: Object;
-        /**
-         * 更新界面
-         */
-        updateView(): void;
-    }
-}
-declare module feng3d {
-    /**
-     * 默认对象属性块界面
-     * @author feng 2016-3-22
-     */
-    class DefaultObjectBlockView extends eui.Component implements IObjectBlockView {
-        private _space;
-        private _blockName;
-        private attributeViews;
-        private itemList;
-        private isInitView;
-        blockTitle: eui.Label;
-        group: eui.Group;
-        /**
-         * @inheritDoc
-         */
-        constructor(blockViewInfo: BlockViewInfo);
-        private onComplete();
-        private initView();
-        space: Object;
-        readonly blockName: string;
-        /**
-         * 更新自身界面
-         */
-        private $updateView();
-        updateView(): void;
-        getAttributeView(attributeName: String): IObjectAttributeView;
-    }
-}
-declare module feng3d {
-    /**
-     * 默认使用块的对象界面
-     * @author feng 2016-3-22
-     */
-    class DefaultObjectView extends eui.Component implements IObjectView {
-        private _space;
-        private _objectViewInfo;
-        private blockViews;
-        group: eui.Group;
-        /**
-         * 对象界面数据
-         */
-        constructor(objectViewInfo: ObjectViewInfo);
-        private onComplete();
-        space: Object;
-        /**
-         * 更新界面
-         */
-        updateView(): void;
-        /**
-         * 更新自身界面
-         */
-        private $updateView();
-        getblockView(blockName: string): IObjectBlockView;
-        getAttributeView(attributeName: string): IObjectAttributeView;
-    }
-}
-declare module feng3d {
-    class ObjectViewEvent extends egret.Event {
-        static VALUE_CHANGE: string;
-        space: any;
-        attributeName: string;
-        attributeValue: any;
-        constructor(type: string, bubbles?: boolean, cancelable?: boolean);
-        toString(): string;
-    }
-}
-declare module feng3d {
-    /**
      * ObjectView总配置数据
      * @author feng 2016-3-23
      */
@@ -469,7 +359,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getObjectView(object: Object): egret.DisplayObject;
+        static getObjectView(object: Object): any;
         /**
          * 获取属性界面
          *
@@ -479,7 +369,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject;
+        static getAttributeView(attributeViewInfo: AttributeViewInfo): any;
         /**
          * 获取块界面
          *
@@ -489,7 +379,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject;
+        static getBlockView(blockViewInfo: BlockViewInfo): any;
         /**
          * 获取对象信息
          * @param object

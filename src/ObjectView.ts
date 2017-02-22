@@ -1,9 +1,11 @@
-module feng3d {
+module feng3d
+{
 	/**
 	 * 对象界面
 	 * @author feng 2016-3-10
 	 */
-	export class ObjectView {
+	export class ObjectView
+	{
 
 		/**
 		 * 获取对象界面
@@ -14,18 +16,22 @@ module feng3d {
 		 * 
 		 * @memberOf ObjectView
 		 */
-		public static getObjectView(object: Object): egret.DisplayObject {
+		public static getObjectView(object: Object)
+		{
 
 			var classConfig: ObjectViewInfo = ObjectView.getObjectInfo(object);
 
-			if (classConfig.component == null || classConfig.component == "") {
+			if (classConfig.component == null || classConfig.component == "")
+			{
 
 				//返回基础类型界面类定义
-				if (ClassUtils.isBaseType(classConfig.owner)) {
+				if (ClassUtils.isBaseType(classConfig.owner))
+				{
 					classConfig.component = $objectViewConfig.defaultBaseObjectViewClass;
 				}
 			}
-			if (classConfig.component == null || classConfig.component == "") {
+			if (classConfig.component == null || classConfig.component == "")
+			{
 
 				//使用默认类型界面类定义
 				classConfig.component = $objectViewConfig.defaultObjectViewClass;
@@ -45,19 +51,23 @@ module feng3d {
 		 * 
 		 * @memberOf ObjectView
 		 */
-		public static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject {
+		public static getAttributeView(attributeViewInfo: AttributeViewInfo)
+		{
 
-			if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
+			if (attributeViewInfo.component == null || attributeViewInfo.component == "")
+			{
 
 				var defaultViewClass: AttributeTypeDefinition = $objectViewConfig.attributeDefaultViewClassByTypeVec[attributeViewInfo.type];
 				var tempComponent = defaultViewClass ? defaultViewClass.component : "";
-				if (tempComponent != null && tempComponent != "") {
+				if (tempComponent != null && tempComponent != "")
+				{
 					attributeViewInfo.component = defaultViewClass.component;
 					attributeViewInfo.componentParam = defaultViewClass.componentParam;
 				}
 			}
 
-			if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
+			if (attributeViewInfo.component == null || attributeViewInfo.component == "")
+			{
 
 				//使用默认对象属性界面类定义
 				attributeViewInfo.component = $objectViewConfig.defaultObjectAttributeViewClass;
@@ -78,9 +88,11 @@ module feng3d {
 		 * 
 		 * @memberOf ObjectView
 		 */
-		public static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject {
+		public static getBlockView(blockViewInfo: BlockViewInfo)
+		{
 
-			if (blockViewInfo.component == null || blockViewInfo.component == "") {
+			if (blockViewInfo.component == null || blockViewInfo.component == "")
+			{
 
 				//返回默认对象属性界面类定义
 				blockViewInfo.component = $objectViewConfig.defaultObjectAttributeBlockView;
@@ -97,7 +109,8 @@ module feng3d {
 		 * @param object
 		 * @return
 		 */
-		private static getObjectInfo(object: Object): ObjectViewInfo {
+		private static getObjectInfo(object: Object): ObjectViewInfo
+		{
 
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
@@ -116,26 +129,31 @@ module feng3d {
 		/**
 		 * 获取对象属性列表
 		 */
-		private static getObjectAttributeInfos(object: Object): AttributeViewInfo[] {
+		private static getObjectAttributeInfos(object: Object): AttributeViewInfo[]
+		{
 
 			var attributeNames: string[] = [];
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
-			if (classConfig != null) {
+			if (classConfig != null)
+			{
 				//根据配置中默认顺序生产对象属性信息列表
 				var attributeDefinitions: AttributeDefinition[] = classConfig.attributeDefinitionVec;
-				for (var i = 0; i < attributeDefinitions.length; i++) {
+				for (var i = 0; i < attributeDefinitions.length; i++)
+				{
 					if (attributeNames.indexOf(attributeDefinitions[i].name) == -1)
 						attributeNames.push(attributeDefinitions[i].name);
 				}
 			}
-			else {
+			else
+			{
 				attributeNames = Object.keys(object);
 				attributeNames = attributeNames.sort();
 			}
 
 			var objectAttributeInfos: AttributeViewInfo[] = [];
-			for (var i = 0; i < attributeNames.length; i++) {
+			for (var i = 0; i < attributeNames.length; i++)
+			{
 				var objectAttributeInfo = ObjectView.getAttributeViewInfo(object, attributeNames[i]);
 				objectAttributeInfos.push(objectAttributeInfo);
 			}
@@ -152,7 +170,8 @@ module feng3d {
 		 * 
 		 * @memberOf ObjectView
 		 */
-		private static getObjectBlockInfos(object: Object): BlockViewInfo[] {
+		private static getObjectBlockInfos(object: Object): BlockViewInfo[]
+		{
 
 			var objectBlockInfos: BlockViewInfo[] = [];
 			var dic: { [blockName: string]: BlockViewInfo } = {};
@@ -162,10 +181,12 @@ module feng3d {
 			//收集块信息
 			var i: number = 0;
 			var tempVec: BlockViewInfo[] = [];
-			for (i = 0; i < objectAttributeInfos.length; i++) {
+			for (i = 0; i < objectAttributeInfos.length; i++)
+			{
 				var blockName: string = objectAttributeInfos[i].block;
 				objectBlockInfo = dic[blockName];
-				if (objectBlockInfo == null) {
+				if (objectBlockInfo == null)
+				{
 					objectBlockInfo = dic[blockName] = { name: blockName, owner: object, itemList: [] };
 					tempVec.push(objectBlockInfo);
 				}
@@ -178,11 +199,14 @@ module feng3d {
 
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
-			if (classConfig != null) {
-				for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
+			if (classConfig != null)
+			{
+				for (i = 0; i < classConfig.blockDefinitionVec.length; i++)
+				{
 					blockDefinition = classConfig.blockDefinitionVec[i];
 					objectBlockInfo = dic[blockDefinition.name];
-					if (objectBlockInfo == null) {
+					if (objectBlockInfo == null)
+					{
 						objectBlockInfo = {
 							name: blockDefinition.name,
 							owner: object,
@@ -196,8 +220,10 @@ module feng3d {
 				}
 			}
 			//添加剩余的块信息
-			for (i = 0; i < tempVec.length; i++) {
-				if (Boolean(pushDic[tempVec[i].name]) == false) {
+			for (i = 0; i < tempVec.length; i++)
+			{
+				if (Boolean(pushDic[tempVec[i].name]) == false)
+				{
 					objectBlockInfos.push(tempVec[i]);
 				}
 			}
@@ -216,7 +242,8 @@ module feng3d {
 		 * 
 		 * @memberOf ObjectView
 		 */
-		private static getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo {
+		private static getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo
+		{
 
 			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
 			var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attributeName);
@@ -243,13 +270,15 @@ module feng3d {
 		 * 
 		 * @memberOf ObjectView
 		 */
-		private static getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition {
+		private static getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition
+		{
 
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
 			if (!classConfig)
 				return null;
-			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++) {
+			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++)
+			{
 				var attributeDefinition: AttributeDefinition = classConfig.attributeDefinitionVec[i];
 				if (attributeDefinition.name == attributeName)
 					return attributeDefinition;

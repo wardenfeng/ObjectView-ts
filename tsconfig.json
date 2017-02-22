@@ -26,13 +26,6 @@
         "src/viewInfo/BlockViewInfo.ts",
         "src/viewInfo/ObjectViewInfo.ts",
         //
-        "src/view/DefaultBaseObjectView.ts",
-        "src/view/DefaultObjectAttributeView.ts",
-        "src/view/DefaultObjectBlockView.ts",
-        "src/view/DefaultObjectView.ts",
-        //
-        "src/events/ObjectViewEvent.ts",
-        //
         "src/ObjectViewConfig.ts",
         "src/ObjectView.ts"
     ]
