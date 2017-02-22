@@ -1,5 +1,6 @@
 module feng3d
 {
+	var ClassUtils = objectview.ClassUtils;
 	/**
 	 * 对象界面
 	 * @author feng 2016-3-10
