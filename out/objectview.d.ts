@@ -1,5 +1,54 @@
 declare module feng3d {
     /**
+     * 类工具
+     * @author feng 2017-02-15
+     */
+    class ClassUtils {
+        /**
+         * 判断a对象是否为b类型
+         */
+        static is<T>(a: any, b: new () => T): boolean;
+        /**
+         * 如果a为b类型则返回，否则返回null
+         */
+        static as<T>(a: any, b: new () => T): T;
+        /**
+         * 是否为基础类型
+         * @param object    对象
+         */
+        static isBaseType(object: any): boolean;
+        /**
+         * 返回对象的完全限定类名。
+         * @param value 需要完全限定类名称的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型
+         * （如number)和类对象
+         * @returns 包含完全限定类名称的字符串。
+         */
+        static getQualifiedClassName(value: any): string;
+        /**
+         * 返回 value 参数指定的对象的基类的完全限定类名。
+         * @param value 需要取得父类的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型（如number）和类对象
+         * @returns 完全限定的基类名称，或 null（如果不存在基类名称）。
+         */
+        static getQualifiedSuperclassName(value: any): string;
+        /**
+         * 返回 name 参数指定的类的类对象引用。
+         * @param name 类的名称。
+         */
+        static getDefinitionByName(name: string): any;
+        /**
+         * 为一个类定义注册完全限定类名
+         * @param classDefinition 类定义
+         * @param className 完全限定类名
+         */
+        static registerClass(classDefinition: any, className: string): void;
+        /**
+         * 新增反射对象所在的命名空间，使得getQualifiedClassName能够得到正确的结果
+         */
+        static addClassNameSpace(namespace: string): void;
+    }
+}
+declare module feng3d {
+    /**
      * 排序比较函数
      * @author feng 2016-3-29
      */
@@ -309,116 +358,6 @@ declare module feng3d {
 }
 declare module feng3d {
     /**
-     * 默认基础对象界面
-     * @author feng 2016-3-11
-     */
-    class DefaultBaseObjectView extends eui.Component implements IObjectView {
-        private _space;
-        label: eui.Label;
-        constructor(objectViewInfo: ObjectViewInfo);
-        private onComplete();
-        space: Object;
-        getAttributeView(attributeName: String): IObjectAttributeView;
-        getblockView(blockName: String): IObjectBlockView;
-        /**
-         * 更新界面
-         */
-        updateView(): void;
-    }
-}
-declare module feng3d {
-    /**
-     * 默认对象属性界面
-     * @author feng 2016-3-10
-     */
-    class DefaultObjectAttributeView extends eui.Component implements IObjectAttributeView {
-        private textTemp;
-        private _space;
-        private _attributeName;
-        private _attributeType;
-        private attributeViewInfo;
-        label: eui.Label;
-        text: eui.TextInput;
-        constructor(attributeViewInfo: AttributeViewInfo);
-        private onComplete();
-        space: Object;
-        readonly attributeName: string;
-        attributeValue: Object;
-        /**
-         * 更新界面
-         */
-        updateView(): void;
-    }
-}
-declare module feng3d {
-    /**
-     * 默认对象属性块界面
-     * @author feng 2016-3-22
-     */
-    class DefaultObjectBlockView extends eui.Component implements IObjectBlockView {
-        private _space;
-        private _blockName;
-        private attributeViews;
-        private itemList;
-        private isInitView;
-        blockTitle: eui.Label;
-        group: eui.Group;
-        /**
-         * @inheritDoc
-         */
-        constructor(blockViewInfo: BlockViewInfo);
-        private onComplete();
-        private initView();
-        space: Object;
-        readonly blockName: string;
-        /**
-         * 更新自身界面
-         */
-        private $updateView();
-        updateView(): void;
-        getAttributeView(attributeName: String): IObjectAttributeView;
-    }
-}
-declare module feng3d {
-    /**
-     * 默认使用块的对象界面
-     * @author feng 2016-3-22
-     */
-    class DefaultObjectView extends eui.Component implements IObjectView {
-        private _space;
-        private _objectViewInfo;
-        private blockViews;
-        group: eui.Group;
-        /**
-         * 对象界面数据
-         */
-        constructor(objectViewInfo: ObjectViewInfo);
-        private onComplete();
-        space: Object;
-        /**
-         * 更新界面
-         */
-        updateView(): void;
-        /**
-         * 更新自身界面
-         */
-        private $updateView();
-        getblockView(blockName: string): IObjectBlockView;
-        getAttributeView(attributeName: string): IObjectAttributeView;
-    }
-}
-declare module feng3d {
-    class ObjectViewEvent extends egret.Event {
-        static VALUE_CHANGE: string;
-        space: any;
-        attributeName: string;
-        attributeValue: any;
-        constructor(type: string, bubbles?: boolean, cancelable?: boolean);
-        toString(): string;
-    }
-}
-declare module feng3d {
-    /**
      * ObjectView总配置数据
      * @author feng 2016-3-23
      */
@@ -469,7 +408,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getObjectView(object: Object): egret.DisplayObject;
+        static getObjectView(object: Object): any;
         /**
          * 获取属性界面
          *
@@ -479,7 +418,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getAttributeView(attributeViewInfo: AttributeViewInfo): egret.DisplayObject;
+        static getAttributeView(attributeViewInfo: AttributeViewInfo): any;
         /**
          * 获取块界面
          *
@@ -489,7 +428,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getBlockView(blockViewInfo: BlockViewInfo): egret.DisplayObject;
+        static getBlockView(blockViewInfo: BlockViewInfo): any;
         /**
          * 获取对象信息
          * @param object

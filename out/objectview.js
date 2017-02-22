@@ -1,6 +1,151 @@
 var feng3d;
 (function (feng3d) {
     /**
+     * 类工具
+     * @author feng 2017-02-15
+     */
+    class ClassUtils {
+        /**
+         * 判断a对象是否为b类型
+         */
+        static is(a, b) {
+            var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
+            while (prototype != null) {
+                //类型==自身原型的构造函数
+                if (prototype.constructor == b)
+                    return true;
+                //父类就是原型的原型构造函数
+                prototype = Object.getPrototypeOf(prototype);
+            }
+            return false;
+        }
+        /**
+         * 如果a为b类型则返回，否则返回null
+         */
+        static as(a, b) {
+            if (!ClassUtils.is(a, b))
+                return null;
+            return a;
+        }
+        /**
+         * 是否为基础类型
+         * @param object    对象
+         */
+        static isBaseType(object) {
+            return object == null || typeof object == "number" || typeof object == "boolean" || typeof object == "string";
+        }
+        /**
+         * 返回对象的完全限定类名。
+         * @param value 需要完全限定类名称的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型
+         * （如number)和类对象
+         * @returns 包含完全限定类名称的字符串。
+         */
+        static getQualifiedClassName(value) {
+            if (value == null) {
+                return null;
+            }
+            var className = null;
+            var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
+            if (prototype.hasOwnProperty(CLASS_KEY)) {
+                className = prototype[CLASS_KEY];
+            }
+            if (className == null) {
+                className = prototype.constructor.name;
+                if (ClassUtils.getDefinitionByName(className) == prototype.constructor) {
+                    ClassUtils.registerClass(prototype.constructor, className);
+                }
+                else {
+                    //在可能的命名空间内查找
+                    for (var i = 0; i < classNameSpaces.length; i++) {
+                        var tryClassName = classNameSpaces[i] + "." + className;
+                        if (ClassUtils.getDefinitionByName(tryClassName) == prototype.constructor) {
+                            className = tryClassName;
+                            ClassUtils.registerClass(prototype.constructor, className);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (ClassUtils.getDefinitionByName(className) != prototype.constructor) {
+                throw new Error("");
+            }
+            return className;
+        }
+        /**
+         * 返回 value 参数指定的对象的基类的完全限定类名。
+         * @param value 需要取得父类的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型（如number）和类对象
+         * @returns 完全限定的基类名称，或 null（如果不存在基类名称）。
+         */
+        static getQualifiedSuperclassName(value) {
+            if (value == null) {
+                return null;
+            }
+            var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
+            var superProto = Object.getPrototypeOf(prototype);
+            if (!superProto) {
+                return null;
+            }
+            var superClass = ClassUtils.getQualifiedClassName(superProto.constructor);
+            if (!superClass) {
+                return null;
+            }
+            return superClass;
+        }
+        /**
+         * 返回 name 参数指定的类的类对象引用。
+         * @param name 类的名称。
+         */
+        static getDefinitionByName(name) {
+            if (!name)
+                return null;
+            var definition = definitionCache[name];
+            if (definition) {
+                return definition;
+            }
+            var paths = name.split(".");
+            var length = paths.length;
+            definition = global;
+            for (var i = 0; i < length; i++) {
+                var path = paths[i];
+                definition = definition[path];
+                if (!definition) {
+                    return null;
+                }
+            }
+            definitionCache[name] = definition;
+            return definition;
+        }
+        /**
+         * 为一个类定义注册完全限定类名
+         * @param classDefinition 类定义
+         * @param className 完全限定类名
+         */
+        static registerClass(classDefinition, className) {
+            var prototype = classDefinition.prototype;
+            Object.defineProperty(prototype, CLASS_KEY, {
+                value: className,
+                enumerable: false,
+                writable: true
+            });
+        }
+        /**
+         * 新增反射对象所在的命名空间，使得getQualifiedClassName能够得到正确的结果
+         */
+        static addClassNameSpace(namespace) {
+            if (classNameSpaces.indexOf(namespace) == -1) {
+                classNameSpaces.push(namespace);
+            }
+        }
+    }
+    feng3d.ClassUtils = ClassUtils;
+    var definitionCache = {};
+    var global = window;
+    var CLASS_KEY = "__class__";
+    var classNameSpaces = ["feng3d"];
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
+    /**
      * 排序比较函数
      * @author feng 2016-3-29
      */
@@ -64,258 +209,11 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    /**
-     * 默认基础对象界面
-     * @author feng 2016-3-11
-     */
-    class DefaultBaseObjectView extends eui.Component {
-        constructor(objectViewInfo) {
-            super();
-            this._space = objectViewInfo.owner;
-            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
-            this.skinName = "resource/custom_skins/DefaultBaseObjectView.exml";
-        }
-        onComplete() {
-            this.updateView();
-        }
-        get space() {
-            return this._space;
-        }
-        set space(value) {
-            this._space = value;
-            this.updateView();
-        }
-        getAttributeView(attributeName) {
-            return null;
-        }
-        getblockView(blockName) {
-            return null;
-        }
-        /**
-         * 更新界面
-         */
-        updateView() {
-            this.label.text = String(this._space);
-        }
-    }
-    feng3d.DefaultBaseObjectView = DefaultBaseObjectView;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 默认对象属性界面
-     * @author feng 2016-3-10
-     */
-    class DefaultObjectAttributeView extends eui.Component {
-        constructor(attributeViewInfo) {
-            super();
-            this._space = attributeViewInfo.owner;
-            this._attributeName = attributeViewInfo.name;
-            this._attributeType = attributeViewInfo.type;
-            this.attributeViewInfo = attributeViewInfo;
-            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
-            this.skinName = "resource/custom_skins/DefaultObjectAttributeView.exml";
-        }
-        onComplete() {
-            this.text.enabled = this.attributeViewInfo.writable;
-            this.updateView();
-        }
-        get space() {
-            return this._space;
-        }
-        set space(value) {
-            this._space = value;
-            this.updateView();
-        }
-        get attributeName() {
-            return this._attributeName;
-        }
-        get attributeValue() {
-            return this._space[this._attributeName];
-        }
-        set attributeValue(value) {
-            if (this._space[this._attributeName] != value) {
-                this._space[this._attributeName] = value;
-            }
-            this.updateView();
-        }
-        /**
-         * 更新界面
-         */
-        updateView() {
-            this.label.text = this._attributeName + ":";
-            this.text.text = String(this.attributeValue);
-        }
-    }
-    feng3d.DefaultObjectAttributeView = DefaultObjectAttributeView;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 默认对象属性块界面
-     * @author feng 2016-3-22
-     */
-    class DefaultObjectBlockView extends eui.Component {
-        /**
-         * @inheritDoc
-         */
-        constructor(blockViewInfo) {
-            super();
-            this._space = blockViewInfo.owner;
-            this._blockName = blockViewInfo.name;
-            this.itemList = blockViewInfo.itemList;
-            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
-            this.skinName = "resource/custom_skins/DefaultObjectBlockView.exml";
-        }
-        onComplete() {
-            this.$updateView();
-        }
-        initView() {
-            var h = 0;
-            if (this._blockName != null && this._blockName.length > 0) {
-                this.blockTitle.text = this._blockName;
-                this.group.addChildAt(this.blockTitle, 0);
-            }
-            else {
-                this.group.removeChild(this.blockTitle);
-            }
-            this.attributeViews = [];
-            var objectAttributeInfos = this.itemList;
-            for (var i = 0; i < objectAttributeInfos.length; i++) {
-                var displayObject = feng3d.ObjectView.getAttributeView(objectAttributeInfos[i]);
-                this.group.addChild(displayObject);
-                this.attributeViews.push(displayObject);
-            }
-            this.isInitView = true;
-        }
-        get space() {
-            return this._space;
-        }
-        set space(value) {
-            this._space = value;
-            for (var i = 0; i < this.attributeViews.length; i++) {
-                this.attributeViews[i].space = this._space;
-            }
-            this.$updateView();
-        }
-        get blockName() {
-            return this._blockName;
-        }
-        /**
-         * 更新自身界面
-         */
-        $updateView() {
-            if (!this.isInitView) {
-                this.initView();
-            }
-        }
-        updateView() {
-            this.$updateView();
-            for (var i = 0; i < this.attributeViews.length; i++) {
-                this.attributeViews[i].updateView();
-            }
-        }
-        getAttributeView(attributeName) {
-            for (var i = 0; i < this.attributeViews.length; i++) {
-                if (this.attributeViews[i].attributeName == attributeName) {
-                    return this.attributeViews[i];
-                }
-            }
-            return null;
-        }
-    }
-    feng3d.DefaultObjectBlockView = DefaultObjectBlockView;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    /**
-     * 默认使用块的对象界面
-     * @author feng 2016-3-22
-     */
-    class DefaultObjectView extends eui.Component {
-        /**
-         * 对象界面数据
-         */
-        constructor(objectViewInfo) {
-            super();
-            this._objectViewInfo = objectViewInfo;
-            this._space = objectViewInfo.owner;
-            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
-            this.skinName = "resource/custom_skins/DefaultObjectView.exml";
-        }
-        onComplete() {
-            this.blockViews = [];
-            var objectBlockInfos = this._objectViewInfo.objectBlockInfos;
-            for (var i = 0; i < objectBlockInfos.length; i++) {
-                var displayObject = feng3d.ObjectView.getBlockView(objectBlockInfos[i]);
-                this.group.addChild(displayObject);
-                this.blockViews.push(displayObject);
-            }
-            this.$updateView();
-        }
-        get space() {
-            return this._space;
-        }
-        set space(value) {
-            this._space = value;
-            for (var i = 0; i < this.blockViews.length; i++) {
-                this.blockViews[i].space = this._space;
-            }
-            this.$updateView();
-        }
-        /**
-         * 更新界面
-         */
-        updateView() {
-            this.$updateView();
-            for (var i = 0; i < this.blockViews.length; i++) {
-                this.blockViews[i].updateView();
-            }
-        }
-        /**
-         * 更新自身界面
-         */
-        $updateView() {
-        }
-        getblockView(blockName) {
-            for (var i = 0; i < this.blockViews.length; i++) {
-                if (this.blockViews[i].blockName == blockName) {
-                    return this.blockViews[i];
-                }
-            }
-            return null;
-        }
-        getAttributeView(attributeName) {
-            for (var i = 0; i < this.blockViews.length; i++) {
-                var attributeView = this.blockViews[i].getAttributeView(attributeName);
-                if (attributeView != null) {
-                    return attributeView;
-                }
-            }
-            return null;
-        }
-    }
-    feng3d.DefaultObjectView = DefaultObjectView;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    class ObjectViewEvent extends egret.Event {
-        constructor(type, bubbles = false, cancelable = false) {
-            super(type, bubbles, cancelable);
-        }
-        toString() {
-            return "[{0} type=\"{1}\" space=\"{2}\"  attributeName=\"{3}\" attributeValue={4}]".replace("{0}", egret.getQualifiedClassName(this).split("::").pop()).replace("{1}", this.type).replace("{2}", egret.getQualifiedClassName(this).split("::").pop()).replace("{3}", this.attributeName).replace("{4}", JSON.stringify(this.attributeValue));
-        }
-    }
-    feng3d.ObjectViewEvent = ObjectViewEvent;
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     feng3d.$objectViewConfig = {
-        defaultBaseObjectViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultBaseObjectView),
-        defaultObjectViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectView),
-        defaultObjectAttributeViewClass: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectAttributeView),
-        defaultObjectAttributeBlockView: feng3d.ClassUtils.getQualifiedClassName(feng3d.DefaultObjectBlockView),
+        defaultBaseObjectViewClass: "",
+        defaultObjectViewClass: "",
+        defaultObjectAttributeViewClass: "",
+        defaultObjectAttributeBlockView: "",
         attributeDefaultViewClassByTypeVec: {},
         classConfigVec: {}
     };

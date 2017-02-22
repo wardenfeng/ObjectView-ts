@@ -8,7 +8,7 @@
     },
     "files": [ //注：如果有继承关系的，父类必须排在子类前面
         //
-        "typings/index.d.ts",
+        "src/ClassUtils.ts",
         //
         "src/utils/SortCompare.ts",
         "src/utils/AttributeInfo.ts",
@@ -25,13 +25,6 @@
         "src/viewInfo/AttributeViewInfo.ts",
         "src/viewInfo/BlockViewInfo.ts",
         "src/viewInfo/ObjectViewInfo.ts",
-        //
-        "src/view/DefaultBaseObjectView.ts",
-        "src/view/DefaultObjectAttributeView.ts",
-        "src/view/DefaultObjectBlockView.ts",
-        "src/view/DefaultObjectView.ts",
-        //
-        "src/events/ObjectViewEvent.ts",
         //
         "src/ObjectViewConfig.ts",
         "src/ObjectView.ts"
