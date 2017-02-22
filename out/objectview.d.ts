@@ -312,9 +312,11 @@ declare module feng3d {
      * 默认基础对象界面
      * @author feng 2016-3-11
      */
-    class DefaultBaseObjectView extends eui.Label implements IObjectView {
+    class DefaultBaseObjectView extends eui.Component implements IObjectView {
         private _space;
+        label: eui.Label;
         constructor(objectViewInfo: ObjectViewInfo);
+        private onComplete();
         space: Object;
         getAttributeView(attributeName: String): IObjectAttributeView;
         getblockView(blockName: String): IObjectBlockView;
@@ -329,14 +331,16 @@ declare module feng3d {
      * 默认对象属性界面
      * @author feng 2016-3-10
      */
-    class DefaultObjectAttributeView extends eui.Group implements IObjectAttributeView {
-        private label;
-        private text;
+    class DefaultObjectAttributeView extends eui.Component implements IObjectAttributeView {
         private textTemp;
         private _space;
         private _attributeName;
         private _attributeType;
+        private attributeViewInfo;
+        label: eui.Label;
+        text: eui.TextInput;
         constructor(attributeViewInfo: AttributeViewInfo);
+        private onComplete();
         space: Object;
         readonly attributeName: string;
         attributeValue: Object;
@@ -351,16 +355,19 @@ declare module feng3d {
      * 默认对象属性块界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectBlockView extends eui.Group implements IObjectBlockView {
+    class DefaultObjectBlockView extends eui.Component implements IObjectBlockView {
         private _space;
         private _blockName;
         private attributeViews;
         private itemList;
         private isInitView;
+        blockTitle: eui.Label;
+        group: eui.Group;
         /**
          * @inheritDoc
          */
         constructor(blockViewInfo: BlockViewInfo);
+        private onComplete();
         private initView();
         space: Object;
         readonly blockName: string;
@@ -377,14 +384,16 @@ declare module feng3d {
      * 默认使用块的对象界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectView extends eui.Group implements IObjectView {
+    class DefaultObjectView extends eui.Component implements IObjectView {
         private _space;
         private _objectViewInfo;
         private blockViews;
+        group: eui.Group;
         /**
          * 对象界面数据
          */
         constructor(objectViewInfo: ObjectViewInfo);
+        private onComplete();
         space: Object;
         /**
          * 更新界面

@@ -68,10 +68,14 @@ var feng3d;
      * 默认基础对象界面
      * @author feng 2016-3-11
      */
-    class DefaultBaseObjectView extends eui.Label {
+    class DefaultBaseObjectView extends eui.Component {
         constructor(objectViewInfo) {
             super();
             this._space = objectViewInfo.owner;
+            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
+            this.skinName = "resource/custom_skins/DefaultBaseObjectView.exml";
+        }
+        onComplete() {
             this.updateView();
         }
         get space() {
@@ -91,7 +95,7 @@ var feng3d;
          * 更新界面
          */
         updateView() {
-            this.text = String(this._space);
+            this.label.text = String(this._space);
         }
     }
     feng3d.DefaultBaseObjectView = DefaultBaseObjectView;
@@ -102,20 +106,18 @@ var feng3d;
      * 默认对象属性界面
      * @author feng 2016-3-10
      */
-    class DefaultObjectAttributeView extends eui.Group {
+    class DefaultObjectAttributeView extends eui.Component {
         constructor(attributeViewInfo) {
             super();
             this._space = attributeViewInfo.owner;
             this._attributeName = attributeViewInfo.name;
             this._attributeType = attributeViewInfo.type;
-            this.label = new eui.Label();
-            this.label.width = 100;
-            this.addChild(this.label);
-            this.text = new eui.TextInput();
-            this.text.x = 100;
-            this.text.width = 100;
-            this.addChild(this.text);
-            this.text.enabled = attributeViewInfo.writable;
+            this.attributeViewInfo = attributeViewInfo;
+            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
+            this.skinName = "resource/custom_skins/DefaultObjectAttributeView.exml";
+        }
+        onComplete() {
+            this.text.enabled = this.attributeViewInfo.writable;
             this.updateView();
         }
         get space() {
@@ -153,40 +155,35 @@ var feng3d;
      * 默认对象属性块界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectBlockView extends eui.Group {
+    class DefaultObjectBlockView extends eui.Component {
         /**
          * @inheritDoc
          */
         constructor(blockViewInfo) {
             super();
-            var hLayout = new eui.VerticalLayout();
-            hLayout.gap = 10;
-            hLayout.paddingTop = 30;
-            hLayout.horizontalAlign = egret.HorizontalAlign.LEFT;
-            this.layout = hLayout;
             this._space = blockViewInfo.owner;
             this._blockName = blockViewInfo.name;
             this.itemList = blockViewInfo.itemList;
+            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
+            this.skinName = "resource/custom_skins/DefaultObjectBlockView.exml";
+        }
+        onComplete() {
             this.$updateView();
         }
         initView() {
             var h = 0;
             if (this._blockName != null && this._blockName.length > 0) {
-                var blockTitle = new eui.Label();
-                //			label.height = 50;
-                blockTitle.width = 100;
-                blockTitle.textColor = 0xff0000;
-                blockTitle.text = this._blockName;
-                this.addChild(blockTitle);
-                h = blockTitle.x + blockTitle.height + 2;
+                this.blockTitle.text = this._blockName;
+                this.group.addChildAt(this.blockTitle, 0);
+            }
+            else {
+                this.group.removeChild(this.blockTitle);
             }
             this.attributeViews = [];
             var objectAttributeInfos = this.itemList;
             for (var i = 0; i < objectAttributeInfos.length; i++) {
                 var displayObject = feng3d.ObjectView.getAttributeView(objectAttributeInfos[i]);
-                displayObject.y = h;
-                this.addChild(displayObject);
-                h += displayObject.height + 2;
+                this.group.addChild(displayObject);
                 this.attributeViews.push(displayObject);
             }
             this.isInitView = true;
@@ -235,27 +232,23 @@ var feng3d;
      * 默认使用块的对象界面
      * @author feng 2016-3-22
      */
-    class DefaultObjectView extends eui.Group {
+    class DefaultObjectView extends eui.Component {
         /**
          * 对象界面数据
          */
         constructor(objectViewInfo) {
             super();
-            var hLayout = new eui.VerticalLayout();
-            hLayout.gap = 10;
-            hLayout.paddingTop = 30;
-            hLayout.horizontalAlign = egret.HorizontalAlign.LEFT;
-            this.layout = hLayout;
             this._objectViewInfo = objectViewInfo;
             this._space = objectViewInfo.owner;
+            this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
+            this.skinName = "resource/custom_skins/DefaultObjectView.exml";
+        }
+        onComplete() {
             this.blockViews = [];
-            var h = 0;
-            var objectBlockInfos = objectViewInfo.objectBlockInfos;
+            var objectBlockInfos = this._objectViewInfo.objectBlockInfos;
             for (var i = 0; i < objectBlockInfos.length; i++) {
                 var displayObject = feng3d.ObjectView.getBlockView(objectBlockInfos[i]);
-                displayObject.y = h;
-                this.addChild(displayObject);
-                h += displayObject.height + 2;
+                this.group.addChild(displayObject);
                 this.blockViews.push(displayObject);
             }
             this.$updateView();

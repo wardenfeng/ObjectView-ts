@@ -1,9 +1,11 @@
-module feng3d {
+module feng3d
+{
 	/**
 	 * 默认对象属性块界面
 	 * @author feng 2016-3-22
 	 */
-	export class DefaultObjectBlockView extends eui.Group implements IObjectBlockView {
+	export class DefaultObjectBlockView extends eui.Component implements IObjectBlockView
+	{
 		private _space: Object;
 		private _blockName: string;
 
@@ -11,85 +13,101 @@ module feng3d {
 		private itemList: AttributeViewInfo[];
 		private isInitView: boolean;
 
+		public blockTitle: eui.Label;
+		public group: eui.Group;
+
 		/**
 		 * @inheritDoc
 		 */
-		constructor(blockViewInfo: BlockViewInfo) {
+		constructor(blockViewInfo: BlockViewInfo)
+		{
 			super();
-			var hLayout: eui.VerticalLayout = new eui.VerticalLayout();
-			hLayout.gap = 10;
-			hLayout.paddingTop = 30;
-			hLayout.horizontalAlign = egret.HorizontalAlign.LEFT;
-			this.layout = hLayout;
 
 			this._space = blockViewInfo.owner;
 			this._blockName = blockViewInfo.name;
 			this.itemList = blockViewInfo.itemList;
 
+			this.addEventListener(eui.UIEvent.COMPLETE, this.onComplete, this);
+			this.skinName = "resource/custom_skins/DefaultObjectBlockView.exml";
+
+		}
+
+		private onComplete()
+		{
 			this.$updateView();
 		}
 
-		private initView(): void {
+		private initView(): void
+		{
 			var h = 0;
-			if (this._blockName != null && this._blockName.length > 0) {
-				var blockTitle = new eui.Label();
-				//			label.height = 50;
-				blockTitle.width = 100;
-				blockTitle.textColor = 0xff0000;
-				blockTitle.text = this._blockName;
-				this.addChild(blockTitle);
-				h = blockTitle.x + blockTitle.height + 2;
+			if (this._blockName != null && this._blockName.length > 0)
+			{
+				this.blockTitle.text = this._blockName;
+				this.group.addChildAt(this.blockTitle, 0);
+			} else
+			{
+				this.group.removeChild(this.blockTitle);
 			}
 
 			this.attributeViews = [];
 			var objectAttributeInfos = this.itemList;
-			for (var i = 0; i < objectAttributeInfos.length; i++) {
+			for (var i = 0; i < objectAttributeInfos.length; i++)
+			{
 				var displayObject = ObjectView.getAttributeView(objectAttributeInfos[i]);
-				displayObject.y = h;
-				this.addChild(displayObject);
-				h += displayObject.height + 2;
+				this.group.addChild(displayObject);
 				this.attributeViews.push(<any>displayObject);
 			}
 
 			this.isInitView = true;
 		}
 
-		public get space(): Object {
+		public get space(): Object
+		{
 			return this._space;
 		}
 
-		public set space(value: Object) {
+		public set space(value: Object)
+		{
 			this._space = value;
-			for (var i = 0; i < this.attributeViews.length; i++) {
+			for (var i = 0; i < this.attributeViews.length; i++)
+			{
 				this.attributeViews[i].space = this._space;
 			}
 
 			this.$updateView();
 		}
 
-		public get blockName(): string {
+		public get blockName(): string
+		{
 			return this._blockName;
 		}
 
 		/**
 		 * 更新自身界面
 		 */
-		private $updateView(): void {
-			if (!this.isInitView) {
+		private $updateView(): void
+		{
+			if (!this.isInitView)
+			{
 				this.initView();
 			}
 		}
 
-		public updateView(): void {
+		public updateView(): void
+		{
 			this.$updateView();
-			for (var i = 0; i < this.attributeViews.length; i++) {
+			for (var i = 0; i < this.attributeViews.length; i++)
+			{
 				this.attributeViews[i].updateView();
 			}
 		}
 
-		public getAttributeView(attributeName: String): IObjectAttributeView {
-			for (var i = 0; i < this.attributeViews.length; i++) {
-				if (this.attributeViews[i].attributeName == attributeName) {
+		public getAttributeView(attributeName: String): IObjectAttributeView
+		{
+			for (var i = 0; i < this.attributeViews.length; i++)
+			{
+				if (this.attributeViews[i].attributeName == attributeName)
+				{
 					return this.attributeViews[i];
 				}
 			}
