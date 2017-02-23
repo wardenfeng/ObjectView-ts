@@ -129,7 +129,7 @@ module feng3d
 		/**
 		 * 获取对象属性列表
 		 */
-		private static getObjectAttributeInfos(object: Object): AttributeViewInfo[]
+		private static getObjectAttributeInfos(object: Object, filterReg = /_\w+|\$\w+|_/): AttributeViewInfo[]
 		{
 
 			var attributeNames: string[] = [];
@@ -147,7 +147,13 @@ module feng3d
 			}
 			else
 			{
-				attributeNames = Object.keys(object);
+				var propertyDescriptors = objectview.PropertyDescriptorUtils.getAttributes(object);
+				var attributeNames = Object.keys(propertyDescriptors);
+				attributeNames = attributeNames.filter(function (value: string, index: number, array: string[])
+				{
+					var result = filterReg.exec(value);
+					return !result || value.indexOf(result[0]) != 0;
+				});
 				attributeNames = attributeNames.sort();
 			}
 
@@ -246,14 +252,14 @@ module feng3d
 		{
 
 			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-			var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attributeName);
+			var propertyDescriptor = objectview.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
 			var objectAttributeInfo: AttributeViewInfo = {
 				name: attributeName,
 				block: attributeDefinition ? attributeDefinition.block : "",
 				component: attributeDefinition ? attributeDefinition.component : "",
 				componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
 				owner: object,
-				writable: propertyDescriptor ? propertyDescriptor.writable : true,
+				writable: propertyDescriptor ? objectview.PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
 				type: ClassUtils.getQualifiedClassName(object[attributeName])
 			};
 			return objectAttributeInfo;

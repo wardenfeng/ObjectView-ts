@@ -1,5 +1,98 @@
 var feng3d;
 (function (feng3d) {
+    var objectview;
+    (function (objectview) {
+        /**
+         * 属性描述工具类
+         * @author feng 2017-02-23
+         */
+        class PropertyDescriptorUtils {
+            /**
+             * 判断是否为函数
+             *
+             * @static
+             * @param {PropertyDescriptor} propertyDescriptor 属性描述
+             * @returns
+             *
+             * @memberOf PropertyDescriptorUtils
+             */
+            static isFunction(propertyDescriptor) {
+                return Boolean(propertyDescriptor.value && typeof propertyDescriptor.value == "function");
+            }
+            /**
+             * 判断是否写
+             *
+             * @static
+             * @param {PropertyDescriptor} propertyDescriptor 属性描述
+             * @returns
+             *
+             * @memberOf PropertyDescriptorUtils
+             */
+            static isWritable(propertyDescriptor) {
+                return Boolean(propertyDescriptor.writable || propertyDescriptor.set);
+            }
+            /**
+             * 获取属性描述
+             *
+             * @static
+             * @param {Object} object
+             * @param {string} name
+             * @returns
+             *
+             * @memberOf PropertyDescriptorUtils
+             */
+            static getPropertyDescriptor(object, name) {
+                return Object.getOwnPropertyDescriptor(object, name) || Object.getOwnPropertyDescriptor(object.constructor.prototype, name);
+            }
+            /**
+             * 获取所有属性描述（不包含函数）
+             *
+             * @static
+             * @param {Object} object 对象
+             * @returns
+             *
+             * @memberOf PropertyDescriptorUtils
+             */
+            static getAttributes(object) {
+                var attributePropertyDescriptors = {};
+                var propertyDescriptors = this.getPropertyDescriptors(object);
+                for (var property in propertyDescriptors) {
+                    var element = propertyDescriptors[property];
+                    if (!this.isFunction(element))
+                        attributePropertyDescriptors[property] = element;
+                }
+                return attributePropertyDescriptors;
+            }
+            /**
+             * 获取所有属性描述
+             *
+             * @static
+             * @param {Object} object
+             * @returns
+             *
+             * @memberOf PropertyDescriptorUtils
+             */
+            static getPropertyDescriptors(object) {
+                var propertyDescriptors = {};
+                var names = Object.getOwnPropertyNames(object);
+                names.forEach(element => {
+                    propertyDescriptors[element] = this.getPropertyDescriptor(object, element);
+                });
+                if (object.constructor != Object) {
+                    var names = Object.getOwnPropertyNames(object.constructor.prototype);
+                    names.forEach(element => {
+                        propertyDescriptors[element] = this.getPropertyDescriptor(object, element);
+                    });
+                }
+                delete propertyDescriptors["constructor"];
+                return propertyDescriptors;
+            }
+        }
+        objectview.PropertyDescriptorUtils = PropertyDescriptorUtils;
+    })(objectview = feng3d.objectview || (feng3d.objectview = {}));
+})(feng3d || (feng3d = {}));
+var feng3d;
+(function (feng3d) {
     /**
      * 类工具
      * @author feng 2017-02-15
@@ -317,7 +410,7 @@ var feng3d;
         /**
          * 获取对象属性列表
          */
-        static getObjectAttributeInfos(object) {
+        static getObjectAttributeInfos(object, filterReg = /_\w+|\$\w+|_/) {
             var attributeNames = [];
             var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
@@ -330,7 +423,12 @@ var feng3d;
                 }
             }
             else {
-                attributeNames = Object.keys(object);
+                var propertyDescriptors = feng3d.objectview.PropertyDescriptorUtils.getAttributes(object);
+                var attributeNames = Object.keys(propertyDescriptors);
+                attributeNames = attributeNames.filter(function (value, index, array) {
+                    var result = filterReg.exec(value);
+                    return !result || value.indexOf(result[0]) != 0;
+                });
                 attributeNames = attributeNames.sort();
             }
             var objectAttributeInfos = [];
@@ -410,14 +508,14 @@ var feng3d;
          */
         static getAttributeViewInfo(object, attributeName) {
             var attributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-            var propertyDescriptor = Object.getOwnPropertyDescriptor(object, attributeName);
+            var propertyDescriptor = feng3d.objectview.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
             var objectAttributeInfo = {
                 name: attributeName,
                 block: attributeDefinition ? attributeDefinition.block : "",
                 component: attributeDefinition ? attributeDefinition.component : "",
                 componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
                 owner: object,
-                writable: propertyDescriptor ? propertyDescriptor.writable : true,
+                writable: propertyDescriptor ? feng3d.objectview.PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
                 type: feng3d.ClassUtils.getQualifiedClassName(object[attributeName])
             };
             return objectAttributeInfo;
