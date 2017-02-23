@@ -61,7 +61,7 @@ declare module feng3d.objectview {
         };
     }
 }
-declare module feng3d {
+declare module feng3d.objectview {
     /**
      * 类工具
      * @author feng 2017-02-15
