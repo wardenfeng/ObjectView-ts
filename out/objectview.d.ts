@@ -332,15 +332,11 @@ declare module feng3d {
         /**
          * 指定属性类型界面类定义字典（key:属性类名称,value:属性界面类定义）
          */
-        attributeDefaultViewClassByTypeVec: {
-            [type: string]: AttributeTypeDefinition;
-        };
+        attributeDefaultViewClassByTypeVec: AttributeTypeDefinition[];
         /**
          * ObjectView类配置字典 （key：类名称，value：ObjectView类配置）
          */
-        classConfigVec: {
-            [name: string]: ClassDefinition;
-        };
+        classConfigVec: ClassDefinition[];
     }
     var $objectViewConfig: ObjectViewConfig;
 }
@@ -370,6 +366,7 @@ declare module feng3d {
          * @memberOf ObjectView
          */
         static getAttributeView(attributeViewInfo: AttributeViewInfo): any;
+        private static getAttributeDefaultViewClassByType(type);
         /**
          * 获取块界面
          *
@@ -386,6 +383,7 @@ declare module feng3d {
          * @return
          */
         private static getObjectInfo(object);
+        private static getClassConfig(className);
         /**
          * 获取对象属性列表
          */

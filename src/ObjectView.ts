@@ -58,7 +58,7 @@ module feng3d
 			if (attributeViewInfo.component == null || attributeViewInfo.component == "")
 			{
 
-				var defaultViewClass: AttributeTypeDefinition = $objectViewConfig.attributeDefaultViewClassByTypeVec[attributeViewInfo.type];
+				var defaultViewClass: AttributeTypeDefinition = this.getAttributeDefaultViewClassByType(attributeViewInfo.type);
 				var tempComponent = defaultViewClass ? defaultViewClass.component : "";
 				if (tempComponent != null && tempComponent != "")
 				{
@@ -78,6 +78,21 @@ module feng3d
 			var cls = ClassUtils.getDefinitionByName(attributeViewInfo.component);
 			var view = new cls(attributeViewInfo);
 			return view;
+		}
+
+		private static getAttributeDefaultViewClassByType(type: string)
+		{
+			var defaultViewClass: AttributeTypeDefinition = null;
+			var attributeDefaultViewClassByTypeVec = $objectViewConfig.attributeDefaultViewClassByTypeVec;
+			for (var i = 0; i < attributeDefaultViewClassByTypeVec.length; i++)
+			{
+				if (attributeDefaultViewClassByTypeVec[i].type == type)
+				{
+					defaultViewClass = attributeDefaultViewClassByTypeVec[i];
+					break;
+				}
+			}
+			return defaultViewClass;
 		}
 
 		/**
@@ -114,7 +129,7 @@ module feng3d
 		{
 
 			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
+			var classConfig: ClassDefinition = this.getClassConfig(className);
 
 			var objectInfo: ObjectViewInfo = {
 				objectAttributeInfos: ObjectView.getObjectAttributeInfos(object),
@@ -127,6 +142,21 @@ module feng3d
 			return objectInfo;
 		}
 
+		private static getClassConfig(className: string)
+		{
+			var classConfig: ClassDefinition = null;
+			var classConfigVec = $objectViewConfig.classConfigVec;
+			for (var i = 0; i < classConfigVec.length; i++)
+			{
+				if (classConfigVec[i].name == className)
+				{
+					classConfig = classConfigVec[i];
+					break;
+				}
+			}
+			return classConfig;
+		}
+
 		/**
 		 * 获取对象属性列表
 		 */
@@ -135,7 +165,7 @@ module feng3d
 
 			var attributeNames: string[] = [];
 			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
+			var classConfig: ClassDefinition = this.getClassConfig(className);
 			if (classConfig != null)
 			{
 				//根据配置中默认顺序生产对象属性信息列表
@@ -205,7 +235,7 @@ module feng3d
 			var pushDic = {};
 
 			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
+			var classConfig: ClassDefinition = this.getClassConfig(className);
 			if (classConfig != null)
 			{
 				for (i = 0; i < classConfig.blockDefinitionVec.length; i++)
@@ -281,7 +311,7 @@ module feng3d
 		{
 
 			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = $objectViewConfig.classConfigVec[className];
+			var classConfig: ClassDefinition = this.getClassConfig(className);
 			if (!classConfig)
 				return null;
 			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++)
