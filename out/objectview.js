@@ -1,246 +1,5 @@
 var feng3d;
 (function (feng3d) {
-    var objectview;
-    (function (objectview) {
-        /**
-         * 属性描述工具类
-         * @author feng 2017-02-23
-         */
-        class PropertyDescriptorUtils {
-            /**
-             * 判断是否为函数
-             *
-             * @static
-             * @param {PropertyDescriptor} propertyDescriptor 属性描述
-             * @returns
-             *
-             * @memberOf PropertyDescriptorUtils
-             */
-            static isFunction(propertyDescriptor) {
-                return Boolean(propertyDescriptor.value && typeof propertyDescriptor.value == "function");
-            }
-            /**
-             * 判断是否写
-             *
-             * @static
-             * @param {PropertyDescriptor} propertyDescriptor 属性描述
-             * @returns
-             *
-             * @memberOf PropertyDescriptorUtils
-             */
-            static isWritable(propertyDescriptor) {
-                return Boolean(propertyDescriptor.writable || propertyDescriptor.set);
-            }
-            /**
-             * 获取属性描述
-             *
-             * @static
-             * @param {Object} object
-             * @param {string} name
-             * @returns
-             *
-             * @memberOf PropertyDescriptorUtils
-             */
-            static getPropertyDescriptor(object, name) {
-                return Object.getOwnPropertyDescriptor(object, name) || Object.getOwnPropertyDescriptor(object.constructor.prototype, name);
-            }
-            /**
-             * 获取所有属性描述（不包含函数）
-             *
-             * @static
-             * @param {Object} object 对象
-             * @returns
-             *
-             * @memberOf PropertyDescriptorUtils
-             */
-            static getAttributes(object) {
-                var attributePropertyDescriptors = {};
-                var propertyDescriptors = this.getPropertyDescriptors(object);
-                for (var property in propertyDescriptors) {
-                    var element = propertyDescriptors[property];
-                    if (!this.isFunction(element))
-                        attributePropertyDescriptors[property] = element;
-                }
-                return attributePropertyDescriptors;
-            }
-            /**
-             * 获取所有属性描述
-             *
-             * @static
-             * @param {Object} object
-             * @returns
-             *
-             * @memberOf PropertyDescriptorUtils
-             */
-            static getPropertyDescriptors(object) {
-                var propertyDescriptors = {};
-                var names = Object.getOwnPropertyNames(object);
-                names.forEach(element => {
-                    propertyDescriptors[element] = this.getPropertyDescriptor(object, element);
-                });
-                if (object.constructor != Object) {
-                    var names = Object.getOwnPropertyNames(object.constructor.prototype);
-                    names.forEach(element => {
-                        propertyDescriptors[element] = this.getPropertyDescriptor(object, element);
-                    });
-                }
-                delete propertyDescriptors["constructor"];
-                return propertyDescriptors;
-            }
-        }
-        objectview.PropertyDescriptorUtils = PropertyDescriptorUtils;
-    })(objectview = feng3d.objectview || (feng3d.objectview = {}));
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
-    var objectview;
-    (function (objectview) {
-        /**
-         * 类工具
-         * @author feng 2017-02-15
-         */
-        class ClassUtils {
-            /**
-             * 判断a对象是否为b类型
-             */
-            static is(a, b) {
-                var prototype = a.prototype ? a.prototype : Object.getPrototypeOf(a);
-                while (prototype != null) {
-                    //类型==自身原型的构造函数
-                    if (prototype.constructor == b)
-                        return true;
-                    //父类就是原型的原型构造函数
-                    prototype = Object.getPrototypeOf(prototype);
-                }
-                return false;
-            }
-            /**
-             * 如果a为b类型则返回，否则返回null
-             */
-            static as(a, b) {
-                if (!ClassUtils.is(a, b))
-                    return null;
-                return a;
-            }
-            /**
-             * 是否为基础类型
-             * @param object    对象
-             */
-            static isBaseType(object) {
-                return object == null || typeof object == "number" || typeof object == "boolean" || typeof object == "string";
-            }
-            /**
-             * 返回对象的完全限定类名。
-             * @param value 需要完全限定类名称的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型
-             * （如number)和类对象
-             * @returns 包含完全限定类名称的字符串。
-             */
-            static getQualifiedClassName(value) {
-                if (value == null) {
-                    return null;
-                }
-                var className = null;
-                var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
-                if (prototype.hasOwnProperty(CLASS_KEY)) {
-                    className = prototype[CLASS_KEY];
-                }
-                if (className == null) {
-                    className = prototype.constructor.name;
-                    if (ClassUtils.getDefinitionByName(className) == prototype.constructor) {
-                        ClassUtils.registerClass(prototype.constructor, className);
-                    }
-                    else {
-                        //在可能的命名空间内查找
-                        for (var i = 0; i < classNameSpaces.length; i++) {
-                            var tryClassName = classNameSpaces[i] + "." + className;
-                            if (ClassUtils.getDefinitionByName(tryClassName) == prototype.constructor) {
-                                className = tryClassName;
-                                ClassUtils.registerClass(prototype.constructor, className);
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (ClassUtils.getDefinitionByName(className) != prototype.constructor) {
-                    throw new Error("");
-                }
-                return className;
-            }
-            /**
-             * 返回 value 参数指定的对象的基类的完全限定类名。
-             * @param value 需要取得父类的对象，可以将任何 JavaScript 值传递给此方法，包括所有可用的 JavaScript 类型、对象实例、原始类型（如number）和类对象
-             * @returns 完全限定的基类名称，或 null（如果不存在基类名称）。
-             */
-            static getQualifiedSuperclassName(value) {
-                if (value == null) {
-                    return null;
-                }
-                var prototype = value.prototype ? value.prototype : Object.getPrototypeOf(value);
-                var superProto = Object.getPrototypeOf(prototype);
-                if (!superProto) {
-                    return null;
-                }
-                var superClass = ClassUtils.getQualifiedClassName(superProto.constructor);
-                if (!superClass) {
-                    return null;
-                }
-                return superClass;
-            }
-            /**
-             * 返回 name 参数指定的类的类对象引用。
-             * @param name 类的名称。
-             */
-            static getDefinitionByName(name) {
-                if (!name)
-                    return null;
-                var definition = definitionCache[name];
-                if (definition) {
-                    return definition;
-                }
-                var paths = name.split(".");
-                var length = paths.length;
-                definition = global;
-                for (var i = 0; i < length; i++) {
-                    var path = paths[i];
-                    definition = definition[path];
-                    if (!definition) {
-                        return null;
-                    }
-                }
-                definitionCache[name] = definition;
-                return definition;
-            }
-            /**
-             * 为一个类定义注册完全限定类名
-             * @param classDefinition 类定义
-             * @param className 完全限定类名
-             */
-            static registerClass(classDefinition, className) {
-                var prototype = classDefinition.prototype;
-                Object.defineProperty(prototype, CLASS_KEY, {
-                    value: className,
-                    enumerable: false,
-                    writable: true
-                });
-            }
-            /**
-             * 新增反射对象所在的命名空间，使得getQualifiedClassName能够得到正确的结果
-             */
-            static addClassNameSpace(namespace) {
-                if (classNameSpaces.indexOf(namespace) == -1) {
-                    classNameSpaces.push(namespace);
-                }
-            }
-        }
-        objectview.ClassUtils = ClassUtils;
-        var definitionCache = {};
-        var global = window;
-        var CLASS_KEY = "__class__";
-        var classNameSpaces = ["feng3d"];
-    })(objectview = feng3d.objectview || (feng3d.objectview = {}));
-})(feng3d || (feng3d = {}));
-var feng3d;
-(function (feng3d) {
     /**
      * 排序比较函数
      * @author feng 2016-3-29
@@ -316,7 +75,6 @@ var feng3d;
 })(feng3d || (feng3d = {}));
 var feng3d;
 (function (feng3d) {
-    var ClassUtils = feng3d.objectview.ClassUtils;
     /**
      * 对象界面
      * @author feng 2016-3-10
@@ -335,7 +93,7 @@ var feng3d;
             var classConfig = ObjectView.getObjectInfo(object);
             if (classConfig.component == null || classConfig.component == "") {
                 //返回基础类型界面类定义
-                if (ClassUtils.isBaseType(classConfig.owner)) {
+                if (feng3d.ClassUtils.isBaseType(classConfig.owner)) {
                     classConfig.component = feng3d.$objectViewConfig.defaultBaseObjectViewClass;
                 }
             }
@@ -343,7 +101,7 @@ var feng3d;
                 //使用默认类型界面类定义
                 classConfig.component = feng3d.$objectViewConfig.defaultObjectViewClass;
             }
-            var cls = ClassUtils.getDefinitionByName(classConfig.component);
+            var cls = feng3d.ClassUtils.getDefinitionByName(classConfig.component);
             var view = new cls(classConfig);
             return view;
         }
@@ -370,7 +128,7 @@ var feng3d;
                 attributeViewInfo.component = feng3d.$objectViewConfig.defaultObjectAttributeViewClass;
                 attributeViewInfo.componentParam = null;
             }
-            var cls = ClassUtils.getDefinitionByName(attributeViewInfo.component);
+            var cls = feng3d.ClassUtils.getDefinitionByName(attributeViewInfo.component);
             var view = new cls(attributeViewInfo);
             return view;
         }
@@ -389,7 +147,7 @@ var feng3d;
                 blockViewInfo.component = feng3d.$objectViewConfig.defaultObjectAttributeBlockView;
                 blockViewInfo.componentParam = null;
             }
-            var cls = ClassUtils.getDefinitionByName(blockViewInfo.component);
+            var cls = feng3d.ClassUtils.getDefinitionByName(blockViewInfo.component);
             var view = new cls(blockViewInfo);
             return view;
         }
@@ -399,7 +157,7 @@ var feng3d;
          * @return
          */
         static getObjectInfo(object) {
-            var className = ClassUtils.getQualifiedClassName(object);
+            var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
             var objectInfo = {
                 objectAttributeInfos: ObjectView.getObjectAttributeInfos(object),
@@ -416,7 +174,7 @@ var feng3d;
          */
         static getObjectAttributeInfos(object, filterReg = /_\w+|\$\w+|_/) {
             var attributeNames = [];
-            var className = ClassUtils.getQualifiedClassName(object);
+            var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
             if (classConfig != null) {
                 //根据配置中默认顺序生产对象属性信息列表
@@ -427,7 +185,7 @@ var feng3d;
                 }
             }
             else {
-                var propertyDescriptors = feng3d.objectview.PropertyDescriptorUtils.getAttributes(object);
+                var propertyDescriptors = feng3d.PropertyDescriptorUtils.getAttributes(object);
                 var attributeNames = Object.keys(propertyDescriptors);
                 attributeNames = attributeNames.filter(function (value, index, array) {
                     var result = filterReg.exec(value);
@@ -472,7 +230,7 @@ var feng3d;
             //按快的默认顺序生成 块信息列表
             var blockDefinition;
             var pushDic = {};
-            var className = ClassUtils.getQualifiedClassName(object);
+            var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
             if (classConfig != null) {
                 for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
@@ -512,15 +270,15 @@ var feng3d;
          */
         static getAttributeViewInfo(object, attributeName) {
             var attributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-            var propertyDescriptor = feng3d.objectview.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
+            var propertyDescriptor = feng3d.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
             var objectAttributeInfo = {
                 name: attributeName,
                 block: attributeDefinition ? attributeDefinition.block : "",
                 component: attributeDefinition ? attributeDefinition.component : "",
                 componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
                 owner: object,
-                writable: propertyDescriptor ? feng3d.objectview.PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
-                type: ClassUtils.getQualifiedClassName(object[attributeName])
+                writable: propertyDescriptor ? feng3d.PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
+                type: feng3d.ClassUtils.getQualifiedClassName(object[attributeName])
             };
             return objectAttributeInfo;
         }
@@ -536,7 +294,7 @@ var feng3d;
          * @memberOf ObjectView
          */
         static getAttributeDefinition(object, attributeName) {
-            var className = ClassUtils.getQualifiedClassName(object);
+            var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = feng3d.$objectViewConfig.classConfigVec[className];
             if (!classConfig)
                 return null;

@@ -1,6 +1,6 @@
 module feng3d
 {
-	var ClassUtils = objectview.ClassUtils;
+
 	/**
 	 * 对象界面
 	 * @author feng 2016-3-10
@@ -148,7 +148,7 @@ module feng3d
 			}
 			else
 			{
-				var propertyDescriptors = objectview.PropertyDescriptorUtils.getAttributes(object);
+				var propertyDescriptors = PropertyDescriptorUtils.getAttributes(object);
 				var attributeNames = Object.keys(propertyDescriptors);
 				attributeNames = attributeNames.filter(function (value: string, index: number, array: string[])
 				{
@@ -253,14 +253,14 @@ module feng3d
 		{
 
 			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
-			var propertyDescriptor = objectview.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
+			var propertyDescriptor = PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
 			var objectAttributeInfo: AttributeViewInfo = {
 				name: attributeName,
 				block: attributeDefinition ? attributeDefinition.block : "",
 				component: attributeDefinition ? attributeDefinition.component : "",
 				componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
 				owner: object,
-				writable: propertyDescriptor ? objectview.PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
+				writable: propertyDescriptor ? PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
 				type: ClassUtils.getQualifiedClassName(object[attributeName])
 			};
 			return objectAttributeInfo;
