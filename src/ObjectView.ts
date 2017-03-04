@@ -7,7 +7,6 @@ module feng3d
 	 */
 	export class ObjectView
 	{
-
 		/**
 		 * 获取对象界面
 		 * 
@@ -17,14 +16,12 @@ module feng3d
 		 * 
 		 * @memberOf ObjectView
 		 */
-		public static getObjectView(object: Object)
+		public getObjectView(object: Object)
 		{
-
-			var classConfig: ObjectViewInfo = ObjectView.getObjectInfo(object);
+			var classConfig: ObjectViewInfo = this.getObjectInfo(object);
 
 			if (classConfig.component == null || classConfig.component == "")
 			{
-
 				//返回基础类型界面类定义
 				if (ClassUtils.isBaseType(classConfig.owner))
 				{
@@ -33,7 +30,6 @@ module feng3d
 			}
 			if (classConfig.component == null || classConfig.component == "")
 			{
-
 				//使用默认类型界面类定义
 				classConfig.component = $objectViewConfig.defaultObjectViewClass;
 			}
@@ -52,12 +48,10 @@ module feng3d
 		 * 
 		 * @memberOf ObjectView
 		 */
-		public static getAttributeView(attributeViewInfo: AttributeViewInfo)
+		public getAttributeView(attributeViewInfo: AttributeViewInfo)
 		{
-
 			if (attributeViewInfo.component == null || attributeViewInfo.component == "")
 			{
-
 				var defaultViewClass: AttributeTypeDefinition = this.getAttributeDefaultViewClassByType(attributeViewInfo.type);
 				var tempComponent = defaultViewClass ? defaultViewClass.component : "";
 				if (tempComponent != null && tempComponent != "")
@@ -69,7 +63,6 @@ module feng3d
 
 			if (attributeViewInfo.component == null || attributeViewInfo.component == "")
 			{
-
 				//使用默认对象属性界面类定义
 				attributeViewInfo.component = $objectViewConfig.defaultObjectAttributeViewClass;
 				attributeViewInfo.componentParam = null;
@@ -80,7 +73,7 @@ module feng3d
 			return view;
 		}
 
-		private static getAttributeDefaultViewClassByType(type: string)
+		private getAttributeDefaultViewClassByType(type: string)
 		{
 			var defaultViewClass: AttributeTypeDefinition = null;
 			var attributeDefaultViewClassByTypeVec = $objectViewConfig.attributeDefaultViewClassByTypeVec;
@@ -104,12 +97,10 @@ module feng3d
 		 * 
 		 * @memberOf ObjectView
 		 */
-		public static getBlockView(blockViewInfo: BlockViewInfo)
+		public getBlockView(blockViewInfo: BlockViewInfo)
 		{
-
 			if (blockViewInfo.component == null || blockViewInfo.component == "")
 			{
-
 				//返回默认对象属性界面类定义
 				blockViewInfo.component = $objectViewConfig.defaultObjectAttributeBlockView;
 				blockViewInfo.componentParam = null;
@@ -125,15 +116,14 @@ module feng3d
 		 * @param object
 		 * @return
 		 */
-		private static getObjectInfo(object: Object): ObjectViewInfo
+		private getObjectInfo(object: Object): ObjectViewInfo
 		{
-
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = this.getClassConfig(className);
 
 			var objectInfo: ObjectViewInfo = {
-				objectAttributeInfos: ObjectView.getObjectAttributeInfos(object),
-				objectBlockInfos: ObjectView.getObjectBlockInfos(object),
+				objectAttributeInfos: this.getObjectAttributeInfos(object),
+				objectBlockInfos: this.getObjectBlockInfos(object),
 				name: className,
 				owner: object,
 				component: classConfig ? classConfig.component : "",
@@ -142,7 +132,7 @@ module feng3d
 			return objectInfo;
 		}
 
-		private static getClassConfig(className: string)
+		private getClassConfig(className: string)
 		{
 			var classConfig: ClassDefinition = null;
 			var classConfigVec = $objectViewConfig.classConfigVec;
@@ -160,9 +150,8 @@ module feng3d
 		/**
 		 * 获取对象属性列表
 		 */
-		private static getObjectAttributeInfos(object: Object, filterReg = /_\w+|\$\w+|_/): AttributeViewInfo[]
+		private getObjectAttributeInfos(object: Object, filterReg = /_\w+|\$\w+|_/): AttributeViewInfo[]
 		{
-
 			var attributeNames: string[] = [];
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = this.getClassConfig(className);
@@ -191,7 +180,7 @@ module feng3d
 			var objectAttributeInfos: AttributeViewInfo[] = [];
 			for (var i = 0; i < attributeNames.length; i++)
 			{
-				var objectAttributeInfo = ObjectView.getAttributeViewInfo(object, attributeNames[i]);
+				var objectAttributeInfo = this.getAttributeViewInfo(object, attributeNames[i]);
 				objectAttributeInfos.push(objectAttributeInfo);
 			}
 			return objectAttributeInfos;
@@ -207,13 +196,12 @@ module feng3d
 		 * 
 		 * @memberOf ObjectView
 		 */
-		private static getObjectBlockInfos(object: Object): BlockViewInfo[]
+		private getObjectBlockInfos(object: Object): BlockViewInfo[]
 		{
-
 			var objectBlockInfos: BlockViewInfo[] = [];
 			var dic: { [blockName: string]: BlockViewInfo } = {};
 			var objectBlockInfo: BlockViewInfo
-			var objectAttributeInfos: AttributeViewInfo[] = ObjectView.getObjectAttributeInfos(object);
+			var objectAttributeInfos: AttributeViewInfo[] = this.getObjectAttributeInfos(object);
 
 			//收集块信息
 			var i: number = 0;
@@ -279,10 +267,9 @@ module feng3d
 		 * 
 		 * @memberOf ObjectView
 		 */
-		private static getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo
+		private getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo
 		{
-
-			var attributeDefinition: AttributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
+			var attributeDefinition: AttributeDefinition = this.getAttributeDefinition(object, attributeName);
 			var propertyDescriptor = PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
 			var objectAttributeInfo: AttributeViewInfo = {
 				name: attributeName,
@@ -307,9 +294,8 @@ module feng3d
 		 * 
 		 * @memberOf ObjectView
 		 */
-		private static getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition
+		private getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition
 		{
-
 			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfig: ClassDefinition = this.getClassConfig(className);
 			if (!classConfig)
@@ -323,4 +309,6 @@ module feng3d
 			return null;
 		}
 	}
+
+	export var objectview = new ObjectView();
 }

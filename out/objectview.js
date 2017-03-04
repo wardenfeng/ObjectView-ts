@@ -89,8 +89,8 @@ var feng3d;
          *
          * @memberOf ObjectView
          */
-        static getObjectView(object) {
-            var classConfig = ObjectView.getObjectInfo(object);
+        getObjectView(object) {
+            var classConfig = this.getObjectInfo(object);
             if (classConfig.component == null || classConfig.component == "") {
                 //返回基础类型界面类定义
                 if (feng3d.ClassUtils.isBaseType(classConfig.owner)) {
@@ -114,7 +114,7 @@ var feng3d;
          *
          * @memberOf ObjectView
          */
-        static getAttributeView(attributeViewInfo) {
+        getAttributeView(attributeViewInfo) {
             if (attributeViewInfo.component == null || attributeViewInfo.component == "") {
                 var defaultViewClass = this.getAttributeDefaultViewClassByType(attributeViewInfo.type);
                 var tempComponent = defaultViewClass ? defaultViewClass.component : "";
@@ -132,7 +132,7 @@ var feng3d;
             var view = new cls(attributeViewInfo);
             return view;
         }
-        static getAttributeDefaultViewClassByType(type) {
+        getAttributeDefaultViewClassByType(type) {
             var defaultViewClass = null;
             var attributeDefaultViewClassByTypeVec = feng3d.$objectViewConfig.attributeDefaultViewClassByTypeVec;
             for (var i = 0; i < attributeDefaultViewClassByTypeVec.length; i++) {
@@ -152,7 +152,7 @@ var feng3d;
          *
          * @memberOf ObjectView
          */
-        static getBlockView(blockViewInfo) {
+        getBlockView(blockViewInfo) {
             if (blockViewInfo.component == null || blockViewInfo.component == "") {
                 //返回默认对象属性界面类定义
                 blockViewInfo.component = feng3d.$objectViewConfig.defaultObjectAttributeBlockView;
@@ -167,12 +167,12 @@ var feng3d;
          * @param object
          * @return
          */
-        static getObjectInfo(object) {
+        getObjectInfo(object) {
             var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = this.getClassConfig(className);
             var objectInfo = {
-                objectAttributeInfos: ObjectView.getObjectAttributeInfos(object),
-                objectBlockInfos: ObjectView.getObjectBlockInfos(object),
+                objectAttributeInfos: this.getObjectAttributeInfos(object),
+                objectBlockInfos: this.getObjectBlockInfos(object),
                 name: className,
                 owner: object,
                 component: classConfig ? classConfig.component : "",
@@ -180,7 +180,7 @@ var feng3d;
             };
             return objectInfo;
         }
-        static getClassConfig(className) {
+        getClassConfig(className) {
             var classConfig = null;
             var classConfigVec = feng3d.$objectViewConfig.classConfigVec;
             for (var i = 0; i < classConfigVec.length; i++) {
@@ -194,7 +194,7 @@ var feng3d;
         /**
          * 获取对象属性列表
          */
-        static getObjectAttributeInfos(object, filterReg = /_\w+|\$\w+|_/) {
+        getObjectAttributeInfos(object, filterReg = /_\w+|\$\w+|_/) {
             var attributeNames = [];
             var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = this.getClassConfig(className);
@@ -217,7 +217,7 @@ var feng3d;
             }
             var objectAttributeInfos = [];
             for (var i = 0; i < attributeNames.length; i++) {
-                var objectAttributeInfo = ObjectView.getAttributeViewInfo(object, attributeNames[i]);
+                var objectAttributeInfo = this.getAttributeViewInfo(object, attributeNames[i]);
                 objectAttributeInfos.push(objectAttributeInfo);
             }
             return objectAttributeInfos;
@@ -232,11 +232,11 @@ var feng3d;
          *
          * @memberOf ObjectView
          */
-        static getObjectBlockInfos(object) {
+        getObjectBlockInfos(object) {
             var objectBlockInfos = [];
             var dic = {};
             var objectBlockInfo;
-            var objectAttributeInfos = ObjectView.getObjectAttributeInfos(object);
+            var objectAttributeInfos = this.getObjectAttributeInfos(object);
             //收集块信息
             var i = 0;
             var tempVec = [];
@@ -290,8 +290,8 @@ var feng3d;
          *
          * @memberOf ObjectView
          */
-        static getAttributeViewInfo(object, attributeName) {
-            var attributeDefinition = ObjectView.getAttributeDefinition(object, attributeName);
+        getAttributeViewInfo(object, attributeName) {
+            var attributeDefinition = this.getAttributeDefinition(object, attributeName);
             var propertyDescriptor = feng3d.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
             var objectAttributeInfo = {
                 name: attributeName,
@@ -315,7 +315,7 @@ var feng3d;
          *
          * @memberOf ObjectView
          */
-        static getAttributeDefinition(object, attributeName) {
+        getAttributeDefinition(object, attributeName) {
             var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfig = this.getClassConfig(className);
             if (!classConfig)
@@ -329,5 +329,6 @@ var feng3d;
         }
     }
     feng3d.ObjectView = ObjectView;
+    feng3d.objectview = new ObjectView();
 })(feng3d || (feng3d = {}));
 //# sourceMappingURL=objectview.js.map

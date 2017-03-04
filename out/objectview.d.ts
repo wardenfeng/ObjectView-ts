@@ -355,7 +355,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getObjectView(object: Object): any;
+        getObjectView(object: Object): any;
         /**
          * 获取属性界面
          *
@@ -365,8 +365,8 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getAttributeView(attributeViewInfo: AttributeViewInfo): any;
-        private static getAttributeDefaultViewClassByType(type);
+        getAttributeView(attributeViewInfo: AttributeViewInfo): any;
+        private getAttributeDefaultViewClassByType(type);
         /**
          * 获取块界面
          *
@@ -376,18 +376,18 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        static getBlockView(blockViewInfo: BlockViewInfo): any;
+        getBlockView(blockViewInfo: BlockViewInfo): any;
         /**
          * 获取对象信息
          * @param object
          * @return
          */
-        private static getObjectInfo(object);
-        private static getClassConfig(className);
+        private getObjectInfo(object);
+        private getClassConfig(className);
         /**
          * 获取对象属性列表
          */
-        private static getObjectAttributeInfos(object, filterReg?);
+        private getObjectAttributeInfos(object, filterReg?);
         /**
          * 获取对象块信息列表
          *
@@ -398,7 +398,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        private static getObjectBlockInfos(object);
+        private getObjectBlockInfos(object);
         /**
          * 获取属性界面信息
          *
@@ -410,7 +410,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        private static getAttributeViewInfo(object, attributeName);
+        private getAttributeViewInfo(object, attributeName);
         /**
          * 获取属性定义
          *
@@ -422,6 +422,7 @@ declare module feng3d {
          *
          * @memberOf ObjectView
          */
-        private static getAttributeDefinition(object, attributeName);
+        private getAttributeDefinition(object, attributeName);
     }
+    var objectview: ObjectView;
 }
