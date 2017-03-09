@@ -383,7 +383,7 @@ declare module feng3d {
          * @return
          */
         private getObjectInfo(object);
-        private getClassConfig(className);
+        private getClassConfig(object);
         /**
          * 获取对象属性列表
          */

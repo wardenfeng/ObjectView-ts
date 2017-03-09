@@ -118,13 +118,12 @@ module feng3d
 		 */
 		private getObjectInfo(object: Object): ObjectViewInfo
 		{
-			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = this.getClassConfig(className);
+			var classConfig: ClassDefinition = this.getClassConfig(object);
 
 			var objectInfo: ObjectViewInfo = {
 				objectAttributeInfos: this.getObjectAttributeInfos(object),
 				objectBlockInfos: this.getObjectBlockInfos(object),
-				name: className,
+				name: ClassUtils.getQualifiedClassName(object),
 				owner: object,
 				component: classConfig ? classConfig.component : "",
 				componentParam: classConfig ? classConfig.componentParam : null
@@ -132,19 +131,21 @@ module feng3d
 			return objectInfo;
 		}
 
-		private getClassConfig(className: string)
+		private getClassConfig(object: Object)
 		{
-			var classConfig: ClassDefinition = null;
+			if (object == null || object == Object.prototype)
+				return null;
+			var className = ClassUtils.getQualifiedClassName(object);
 			var classConfigVec = $objectViewConfig.classConfigVec;
 			for (var i = 0; i < classConfigVec.length; i++)
 			{
 				if (classConfigVec[i].name == className)
 				{
-					classConfig = classConfigVec[i];
-					break;
+					return classConfigVec[i];
 				}
 			}
-			return classConfig;
+			var superCls = ClassUtils.getSuperClass(object);
+			return this.getClassConfig(superCls);
 		}
 
 		/**
@@ -153,8 +154,7 @@ module feng3d
 		private getObjectAttributeInfos(object: Object, filterReg = /_\w+|\$\w+|_/): AttributeViewInfo[]
 		{
 			var attributeNames: string[] = [];
-			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = this.getClassConfig(className);
+			var classConfig: ClassDefinition = this.getClassConfig(object);
 			if (classConfig != null)
 			{
 				//根据配置中默认顺序生产对象属性信息列表
@@ -222,8 +222,7 @@ module feng3d
 			var blockDefinition: BlockDefinition;
 			var pushDic = {};
 
-			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = this.getClassConfig(className);
+			var classConfig: ClassDefinition = this.getClassConfig(object);
 			if (classConfig != null)
 			{
 				for (i = 0; i < classConfig.blockDefinitionVec.length; i++)
@@ -296,8 +295,7 @@ module feng3d
 		 */
 		private getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition
 		{
-			var className = ClassUtils.getQualifiedClassName(object);
-			var classConfig: ClassDefinition = this.getClassConfig(className);
+			var classConfig: ClassDefinition = this.getClassConfig(object);
 			if (!classConfig)
 				return null;
 			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++)

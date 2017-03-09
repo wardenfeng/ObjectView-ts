@@ -168,36 +168,36 @@ var feng3d;
          * @return
          */
         getObjectInfo(object) {
-            var className = feng3d.ClassUtils.getQualifiedClassName(object);
-            var classConfig = this.getClassConfig(className);
+            var classConfig = this.getClassConfig(object);
             var objectInfo = {
                 objectAttributeInfos: this.getObjectAttributeInfos(object),
                 objectBlockInfos: this.getObjectBlockInfos(object),
-                name: className,
+                name: feng3d.ClassUtils.getQualifiedClassName(object),
                 owner: object,
                 component: classConfig ? classConfig.component : "",
                 componentParam: classConfig ? classConfig.componentParam : null
             };
             return objectInfo;
         }
-        getClassConfig(className) {
-            var classConfig = null;
+        getClassConfig(object) {
+            if (object == null || object == Object.prototype)
+                return null;
+            var className = feng3d.ClassUtils.getQualifiedClassName(object);
             var classConfigVec = feng3d.$objectViewConfig.classConfigVec;
             for (var i = 0; i < classConfigVec.length; i++) {
                 if (classConfigVec[i].name == className) {
-                    classConfig = classConfigVec[i];
-                    break;
+                    return classConfigVec[i];
                 }
             }
-            return classConfig;
+            var superCls = feng3d.ClassUtils.getSuperClass(object);
+            return this.getClassConfig(superCls);
         }
         /**
          * 获取对象属性列表
          */
         getObjectAttributeInfos(object, filterReg = /_\w+|\$\w+|_/) {
             var attributeNames = [];
-            var className = feng3d.ClassUtils.getQualifiedClassName(object);
-            var classConfig = this.getClassConfig(className);
+            var classConfig = this.getClassConfig(object);
             if (classConfig != null) {
                 //根据配置中默认顺序生产对象属性信息列表
                 var attributeDefinitions = classConfig.attributeDefinitionVec;
@@ -252,8 +252,7 @@ var feng3d;
             //按快的默认顺序生成 块信息列表
             var blockDefinition;
             var pushDic = {};
-            var className = feng3d.ClassUtils.getQualifiedClassName(object);
-            var classConfig = this.getClassConfig(className);
+            var classConfig = this.getClassConfig(object);
             if (classConfig != null) {
                 for (i = 0; i < classConfig.blockDefinitionVec.length; i++) {
                     blockDefinition = classConfig.blockDefinitionVec[i];
@@ -316,8 +315,7 @@ var feng3d;
          * @memberOf ObjectView
          */
         getAttributeDefinition(object, attributeName) {
-            var className = feng3d.ClassUtils.getQualifiedClassName(object);
-            var classConfig = this.getClassConfig(className);
+            var classConfig = this.getClassConfig(object);
             if (!classConfig)
                 return null;
             for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++) {
