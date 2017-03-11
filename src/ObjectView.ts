@@ -155,7 +155,7 @@ module feng3d
 		{
 			var attributeNames: string[] = [];
 			var classConfig: ClassDefinition = this.getClassConfig(object);
-			if (classConfig != null)
+			if (classConfig && classConfig.attributeDefinitionVec)
 			{
 				//根据配置中默认顺序生产对象属性信息列表
 				var attributeDefinitions: AttributeDefinition[] = classConfig.attributeDefinitionVec;
@@ -223,7 +223,7 @@ module feng3d
 			var pushDic = {};
 
 			var classConfig: ClassDefinition = this.getClassConfig(object);
-			if (classConfig != null)
+			if (classConfig && classConfig.blockDefinitionVec)
 			{
 				for (i = 0; i < classConfig.blockDefinitionVec.length; i++)
 				{
@@ -296,7 +296,7 @@ module feng3d
 		private getAttributeDefinition(object: Object, attributeName: string): AttributeDefinition
 		{
 			var classConfig: ClassDefinition = this.getClassConfig(object);
-			if (!classConfig)
+			if (!classConfig || !classConfig.attributeDefinitionVec)
 				return null;
 			for (var i = 0; i < classConfig.attributeDefinitionVec.length; i++)
 			{
