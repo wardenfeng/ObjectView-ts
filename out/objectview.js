@@ -208,7 +208,7 @@ var feng3d;
          * 获取对象属性列表
          */
         ObjectView.prototype.getObjectAttributeInfos = function (object, filterReg) {
-            if (filterReg === void 0) { filterReg = /([a-zA-Z](\w*)|(\d+))/; }
+            if (filterReg === void 0) { filterReg = /(([a-zA-Z0-9])+|(\d+))/; }
             var attributeNames = [];
             var classConfig = this.getClassConfig(object);
             if (classConfig && classConfig.attributeDefinitionVec) {

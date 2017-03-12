@@ -151,7 +151,7 @@ module feng3d
 		/**
 		 * 获取对象属性列表
 		 */
-		private getObjectAttributeInfos(object: Object, filterReg = /([a-zA-Z](\w*)|(\d+))/): AttributeViewInfo[]
+		private getObjectAttributeInfos(object: Object, filterReg = /(([a-zA-Z0-9])+|(\d+))/): AttributeViewInfo[]
 		{
 			var attributeNames: string[] = [];
 			var classConfig: ClassDefinition = this.getClassConfig(object);
