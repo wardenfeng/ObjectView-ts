@@ -208,7 +208,7 @@ var feng3d;
          * 获取对象属性列表
          */
         ObjectView.prototype.getObjectAttributeInfos = function (object, filterReg) {
-            if (filterReg === void 0) { filterReg = /_\w+|\$\w+|_/; }
+            if (filterReg === void 0) { filterReg = /([a-zA-Z](\w*)|(\d+))/; }
             var attributeNames = [];
             var classConfig = this.getClassConfig(object);
             if (classConfig && classConfig.attributeDefinitionVec) {
@@ -220,11 +220,10 @@ var feng3d;
                 }
             }
             else {
-                var propertyDescriptors = feng3d.PropertyDescriptorUtils.getAttributes(object);
-                var attributeNames = Object.keys(propertyDescriptors);
+                var attributeNames = Object.keys(object);
                 attributeNames = attributeNames.filter(function (value, index, array) {
                     var result = filterReg.exec(value);
-                    return !result || value.indexOf(result[0]) != 0;
+                    return result[0] == value;
                 });
                 attributeNames = attributeNames.sort();
             }
@@ -304,14 +303,13 @@ var feng3d;
          */
         ObjectView.prototype.getAttributeViewInfo = function (object, attributeName) {
             var attributeDefinition = this.getAttributeDefinition(object, attributeName);
-            var propertyDescriptor = feng3d.PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
             var objectAttributeInfo = {
                 name: attributeName,
                 block: attributeDefinition ? attributeDefinition.block : "",
                 component: attributeDefinition ? attributeDefinition.component : "",
                 componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
                 owner: object,
-                writable: propertyDescriptor ? feng3d.PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
+                writable: true,
                 type: feng3d.ClassUtils.getQualifiedClassName(object[attributeName])
             };
             return objectAttributeInfo;

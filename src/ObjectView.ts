@@ -151,7 +151,7 @@ module feng3d
 		/**
 		 * 获取对象属性列表
 		 */
-		private getObjectAttributeInfos(object: Object, filterReg = /_\w+|\$\w+|_/): AttributeViewInfo[]
+		private getObjectAttributeInfos(object: Object, filterReg = /([a-zA-Z](\w*)|(\d+))/): AttributeViewInfo[]
 		{
 			var attributeNames: string[] = [];
 			var classConfig: ClassDefinition = this.getClassConfig(object);
@@ -167,12 +167,11 @@ module feng3d
 			}
 			else
 			{
-				var propertyDescriptors = PropertyDescriptorUtils.getAttributes(object);
-				var attributeNames = Object.keys(propertyDescriptors);
+				var attributeNames = Object.keys(object);
 				attributeNames = attributeNames.filter(function (value: string, index: number, array: string[])
 				{
 					var result = filterReg.exec(value);
-					return !result || value.indexOf(result[0]) != 0;
+					return result[0] == value;
 				});
 				attributeNames = attributeNames.sort();
 			}
@@ -269,14 +268,13 @@ module feng3d
 		private getAttributeViewInfo(object: Object, attributeName: string): AttributeViewInfo
 		{
 			var attributeDefinition: AttributeDefinition = this.getAttributeDefinition(object, attributeName);
-			var propertyDescriptor = PropertyDescriptorUtils.getPropertyDescriptor(object, attributeName);
 			var objectAttributeInfo: AttributeViewInfo = {
 				name: attributeName,
 				block: attributeDefinition ? attributeDefinition.block : "",
 				component: attributeDefinition ? attributeDefinition.component : "",
 				componentParam: attributeDefinition ? attributeDefinition.componentParam : null,
 				owner: object,
-				writable: propertyDescriptor ? PropertyDescriptorUtils.isWritable(propertyDescriptor) : true,
+				writable: true,
 				type: ClassUtils.getQualifiedClassName(object[attributeName])
 			};
 			return objectAttributeInfo;
